@@ -5,12 +5,7 @@ import { UserContext } from '../../../users/UserContext';
 import { AppContext } from '../../AppContext';
 const Home = (props) => {
   const { navigation } = props;
-  const { } = useContext(UserContext);
-  const { onGetCategories, onGetProducts, onGetSubProducts, onGetReviews } = useContext(AppContext);
 
-  const [listCategory, setListCategory] = useState([]);
-
-  const [ListSale, setListSale] = useState([]);
   const category = [
     {
       _id: "645cfd060405a873dbcdda9c",
@@ -122,6 +117,9 @@ const Home = (props) => {
   //   };
   //   getData();
   // }, []);
+  const nextScreen = (category) => {
+    navigation.navigate('ListProduct', { category });
+};
 
   return (
     <ScrollView style={styles.contaier}>
@@ -133,7 +131,7 @@ const Home = (props) => {
         <Image style={styles.icon}
           source={require("../../../../assets/images/ic_ring.png")} />
       </View>
-      {/* headerbar */}
+
       {/* -------------------------------------------------------- */}
       {/* slideImage */}
       <View style={{ width: "100%", height: 160, justifyContent: 'center', alignItems: 'center' }}>
@@ -162,7 +160,7 @@ const Home = (props) => {
             source={{ uri: data[3].image }} />
         </Swiper>
       </View>
-      {/* slideImage */}
+
       {/* ---------------------------------------- */}
       {/* danh sách loại sản phẩm  */}
       <View style={styles.categoryView}>
@@ -171,14 +169,16 @@ const Home = (props) => {
           data={category}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.listCategory}>
+            <TouchableOpacity 
+            style={styles.listCategory}
+            onPress={() => nextScreen(item)}
+            >
               <Image style={styles.image} source={{ uri: item.image }} />
               <Text>{item.name}</Text>
             </TouchableOpacity>
           )}
         />
       </View>
-      {/* Danh sách loại sản phẩm */}
       {/* Banner  */}
       <Image
         style={{ width: '100%', height: 70, marginTop: 16 }}
@@ -189,6 +189,7 @@ const Home = (props) => {
         <Image style={{ width: 20, height: 20, marginRight: 10 }} source={require("../../../../assets/images/ic_fire.png")} />
         <Text style={{ color: "red", fontSize: 21, fontWeight: "bold" }}>HOT PROMOTION</Text>
       </View >
+      {/* Danh sách sản phẩm Hot promotion */}
       <View>
         <FlatList
           horizontal
@@ -196,15 +197,15 @@ const Home = (props) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem}>
-              <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius:20,borderTopRightRadius:20  }}>
+              <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                 <Text style={{ color: "white", fontSize: 16 }}>SALE </Text>
                 <Text style={{ color: "yellow", fontSize: 16 }}>Siêu đậm</Text>
               </View>
-
+              {/* Image product */}
               <Image style={styles.imageproduct} source={{ uri: item.image }} />
-
+              {/* name product */}
               <Text style={{ color: "black", fontSize: 16, marginLeft: 5, marginTop: 10 }}>{item.name}</Text>
-
+              {/* star */}
               <View style={{ flexDirection: "row", margin: 5 }}>
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
@@ -212,8 +213,9 @@ const Home = (props) => {
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
               </View>
+              {/* Price product */}
               <View style={{ flexDirection: "row", justifyContent: "space-between", width: 200, margin: 5 }}>
-                <Text style={{ color: "black", fontSize: 16,textDecorationLine: 'line-through' }}>${item.price} </Text>
+                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.price} </Text>
                 <Text style={{ color: "red", fontSize: 16 }}>${item.price - item.price * (item.sale / 100)}</Text>
               </View>
             </TouchableOpacity>
@@ -230,6 +232,7 @@ const Home = (props) => {
         <Image style={{ width: 20, height: 20, marginRight: 10 }} source={require("../../../../assets/images/ic_fire.png")} />
         <Text style={{ color: "red", fontSize: 21, fontWeight: "bold" }}>FEATURED PHONE</Text>
       </View >
+      {/* Danh sách sản phẩm Freatured phone*/}
       <View>
         <FlatList
           horizontal
@@ -237,15 +240,16 @@ const Home = (props) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem}>
-              <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210 ,borderTopLeftRadius:20,borderTopRightRadius:20}}>
+              <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                 <Text style={{ color: "white", fontSize: 16 }}>SALE </Text>
                 <Text style={{ color: "yellow", fontSize: 16 }}>Siêu đậm</Text>
               </View>
-
+              {/* Image product */}
               <Image style={styles.imageproduct} source={{ uri: item.image }} />
-
+              {/* Name */}
               <Text style={{ color: "black", fontSize: 16, marginLeft: 5, marginTop: 10 }}>{item.name}</Text>
 
+              {/* Star */}
               <View style={{ flexDirection: "row", margin: 5 }}>
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
@@ -253,6 +257,7 @@ const Home = (props) => {
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
               </View>
+              {/* Price product */}
               <View style={{ flexDirection: "row", justifyContent: "space-between", width: 200, margin: 5 }}>
                 <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.price} </Text>
                 <Text style={{ color: "red", fontSize: 16 }}>${item.price - item.price * (item.sale / 100)}</Text>
@@ -271,6 +276,7 @@ const Home = (props) => {
         <Image style={{ width: 20, height: 20, marginRight: 10 }} source={require("../../../../assets/images/ic_fire.png")} />
         <Text style={{ color: "red", fontSize: 21, fontWeight: "bold" }}>BEST SELLING LAPTOP</Text>
       </View >
+      {/* Danh sách sản phẩm best selling laptop */}
       <View>
         <FlatList
           horizontal
@@ -278,15 +284,15 @@ const Home = (props) => {
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem}>
-              <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210 , borderTopLeftRadius:20,borderTopRightRadius:20}}>
+              <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                 <Text style={{ color: "white", fontSize: 16 }}>SALE </Text>
                 <Text style={{ color: "yellow", fontSize: 16 }}>Siêu đậm</Text>
               </View>
-
+              {/* Image product */}
               <Image style={styles.imageproduct} source={{ uri: item.image }} />
-
+              {/* Name product */}
               <Text style={{ color: "black", fontSize: 16, marginLeft: 5, marginTop: 10 }}>{item.name}</Text>
-
+              {/* Star */}
               <View style={{ flexDirection: "row", margin: 5 }}>
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
@@ -294,6 +300,7 @@ const Home = (props) => {
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
               </View>
+              {/* Price product */}
               <View style={{ flexDirection: "row", justifyContent: "space-between", width: 200, margin: 5 }}>
                 <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.price} </Text>
                 <Text style={{ color: "red", fontSize: 16 }}>${item.price - item.price * (item.sale / 100)}</Text>
@@ -328,9 +335,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black"
   },
-  categoryView: {
 
-  },
   image: {
     width: 60,
     height: 60,
@@ -347,8 +352,8 @@ const styles = StyleSheet.create({
   listItem: {
     height: 300,
     marginRight: 5,
-    backgroundColor: "#EEEEEE", 
-    borderRadius:20
+    backgroundColor: "#EEEEEE",
+    borderRadius: 20
   },
   imageproduct: {
     width: "99%",
