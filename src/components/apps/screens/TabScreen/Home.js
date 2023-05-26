@@ -196,7 +196,7 @@ const Home = (props) => {
           data={product}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.listItem}>
+            <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
               <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                 <Text style={{ color: "white", fontSize: 16 }}>SALE </Text>
                 <Text style={{ color: "yellow", fontSize: 16 }}>Siêu đậm</Text>
@@ -239,7 +239,7 @@ const Home = (props) => {
           data={product}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.listItem}>
+            <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
               <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                 <Text style={{ color: "white", fontSize: 16 }}>SALE </Text>
                 <Text style={{ color: "yellow", fontSize: 16 }}>Siêu đậm</Text>
@@ -283,7 +283,7 @@ const Home = (props) => {
           data={product}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity style={styles.listItem}>
+            <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
               <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                 <Text style={{ color: "white", fontSize: 16 }}>SALE </Text>
                 <Text style={{ color: "yellow", fontSize: 16 }}>Siêu đậm</Text>
