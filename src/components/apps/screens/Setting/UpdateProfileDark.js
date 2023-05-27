@@ -29,6 +29,8 @@ const UpdateProfile = () => {
           <Text style={styles.txt}>Email</Text>
           <TextInput
             style={styles.input}
+            placeholderTextColor="red"
+
             keyboardType='email-address'
             placeholder="Your email"></TextInput>
         </View>
@@ -38,6 +40,8 @@ const UpdateProfile = () => {
           <Text style={styles.txt}>Name</Text>
           <TextInput
             style={styles.input}
+            placeholderTextColor="red"
+
             placeholder="Your name"></TextInput>
         </View>
 
@@ -47,6 +51,7 @@ const UpdateProfile = () => {
           <TextInput
             style={styles.input}
             keyboardType='birthday'
+            placeholderTextColor="red"
             placeholder="Your birthday"></TextInput>
         </View>
 
@@ -54,6 +59,7 @@ const UpdateProfile = () => {
           <Text style={styles.txt}>Phone number</Text>
           <TextInput
             style={styles.input}
+            placeholderTextColor="red"
             keyboardType='numeric'
             placeholder="Your phone number"></TextInput>
         </View>
@@ -87,10 +93,10 @@ const styles = StyleSheet.create({
     height: 50,
     width: 250,
     borderRadius: 50,
-    backgroundColor: 'black',
+    backgroundColor : '#BA0000',
   },
   txt:{
-    color: 'black',
+    color: 'red',
     fontWeight: 'bold',
     fontSize: 16,
     marginTop: 20,
@@ -100,6 +106,9 @@ const styles = StyleSheet.create({
     height: 40,
     width: 300,
     borderBottomWidth: 1,
+    borderColor: '#FF0000',
+    marginVertical: 15,
+    color: 'white',
 
   },
   icEdit: {
@@ -129,10 +138,8 @@ const styles = StyleSheet.create({
   title: {
     marginHorizontal: 25,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     fontSize: 18,
-    
-
   },
   viewHeader: {
     justifyContent: 'center',
@@ -151,6 +158,7 @@ const styles = StyleSheet.create({
 
   },
   container: {
+    backgroundColor: 'black',
     flex: 1,
   },
 

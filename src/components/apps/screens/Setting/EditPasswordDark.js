@@ -18,7 +18,9 @@ const EditPassword = () => {
           <TextInput
             style={styles.input}
             keyboardType='password'
-            placeholder="Current password"></TextInput>
+            placeholder="Current password"
+            placeholderTextColor="red"
+            ></TextInput>
 
           <Pressable>
             <Image
@@ -32,7 +34,9 @@ const EditPassword = () => {
           <TextInput
             style={styles.input}
             keyboardType='password'
-            placeholder="New password"></TextInput>
+            placeholder="New password"
+            placeholderTextColor="red"
+            ></TextInput>
 
           <Pressable>
             <Image
@@ -46,7 +50,9 @@ const EditPassword = () => {
           <TextInput
             style={styles.input}
             keyboardType='password'
-            placeholder="Retype password"></TextInput>
+            placeholder="Retype password"
+            placeholderTextColor="red"
+            ></TextInput>
 
           <Pressable>
             <Image
@@ -85,7 +91,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 150,
     borderRadius: 10,
-    backgroundColor: 'black',
+    backgroundColor : '#BA0000',
   },
   viewInput: {
     justifyContent: 'center',
@@ -100,12 +106,13 @@ const styles = StyleSheet.create({
   },
   input: {
     position: 'relative',
-
     paddingHorizontal: 15,
     height: 40,
     width: 300,
     borderBottomWidth: 1,
+    borderColor: '#FF0000',
     marginVertical: 15,
+    color: 'white',
 
   },
   txtTitle: {
@@ -123,7 +130,7 @@ const styles = StyleSheet.create({
   title: {
     marginHorizontal: 25,
     fontWeight: 'bold',
-    color: 'black',
+    color: 'white',
     fontSize: 18,
   },
   viewHeader: {
@@ -143,6 +150,7 @@ const styles = StyleSheet.create({
 
   },
   container: {
+    backgroundColor: 'black',
     flex: 1,
   },
 
