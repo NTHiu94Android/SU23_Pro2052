@@ -8,8 +8,11 @@ import {
   TouchableOpacity
 } from 'react-native'
 import React from 'react'
+import back from '../../../back/back';
 
-const ListProduct = () => {
+const ListProduct = (props) => {
+  const { navigation } = props;
+  back(navigation);
   const brand = [
     { image: "https://static.vecteezy.com/system/resources/previews/020/927/329/original/lenovo-logo-brand-phone-symbol-name-black-design-china-mobile-illustration-with-red-background-free-vector.jpg" },
     { image: "https://logoeps.com/wp-content/uploads/2011/08/asus-logo-vector.png" },
@@ -100,10 +103,13 @@ const ListProduct = () => {
                 <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.price} </Text>
                 <Text style={{ color: "red", fontSize: 16 }}>${item.price - item.price * (item.sale / 100)}</Text>
               </View>
+              <TouchableOpacity style={{ width: 35, height: 35, position: 'absolute', right: 13, bottom: 90 }}>
               <Image
-                style={{ width: 35, height: 35, position: 'absolute', right: 13, bottom: 90 }}
+                style={{ width: 35, height: 35}}
                 resizeMode='cover'
                 source={require('../../../../assets/images/ic_shop.png')} />
+              </TouchableOpacity>
+              
             </TouchableOpacity>
           )}
         />

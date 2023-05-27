@@ -1,8 +1,8 @@
 import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, FlatList } from 'react-native'
 import Swiper from 'react-native-swiper';
 import React, { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../../../users/UserContext';
-import { AppContext } from '../../AppContext';
+import back from '../../../back/back';
+
 const Home = (props) => {
   const { navigation } = props;
 
@@ -50,18 +50,21 @@ const Home = (props) => {
   ];
   const product = [
     {
+      id: "",
       sale: 10,
       name: "Macbook Pro 2022",
       image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
       price: 2000
     },
     {
+      id: "",
       sale: 10,
       name: "Macbook Pro 2023",
       image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
       price: 2000
     },
     {
+      id: "",
       sale: 10,
       name: "Macbook Pro 2023",
       image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
@@ -119,8 +122,8 @@ const Home = (props) => {
   // }, []);
   const nextScreen = (category) => {
     navigation.navigate('ListProduct', { category });
-};
-
+  };
+  back(navigation);
   return (
     <ScrollView style={styles.contaier}>
       {/* headerbar */}
@@ -169,9 +172,9 @@ const Home = (props) => {
           data={category}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <TouchableOpacity 
-            style={styles.listCategory}
-            onPress={() => nextScreen(item)}
+            <TouchableOpacity
+              style={styles.listCategory}
+              onPress={() => nextScreen(item)}
             >
               <Image style={styles.image} source={{ uri: item.image }} />
               <Text>{item.name}</Text>

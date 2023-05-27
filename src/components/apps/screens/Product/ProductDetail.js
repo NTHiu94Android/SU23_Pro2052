@@ -10,8 +10,11 @@ import {
 } from 'react-native'
 import React from 'react'
 import Swiper from 'react-native-swiper'
+import back from '../../../back/back';
 
-const ProductDetail = () => {
+const ProductDetail = (props) => {
+  const { navigation } = props;
+  back(navigation);
   // hinh anh banner 
   const data = [
     { image: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg' },
@@ -49,7 +52,10 @@ const ProductDetail = () => {
               )
             })}
           </Swiper> */}
+          <TouchableOpacity onPress={()=> navigation.goBack()}>
           <Image style={styles.icon} source={require('../../../../assets/images/ic_back.png')} />
+          </TouchableOpacity>
+          
         </View>
       </View>
       <View style={styles.body}>
