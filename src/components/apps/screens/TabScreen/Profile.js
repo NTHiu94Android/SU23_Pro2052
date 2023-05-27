@@ -5,9 +5,6 @@ import { UserContext } from '../../../users/UserContext';
 const Profile = (props) => {
   const { navigation } = props;
 
-  const handleSettingPress = () => {
-    navigation.navigate('Setting');
-  };
   return (
     <View style={styles.container}>
       <View style={styles.profileTextBox}>
@@ -32,7 +29,7 @@ const Profile = (props) => {
       <View style={{ flex: 1, marginTop: 30 }}>
 
         {/* Xem danh sách đơn hàng */}
-        <TouchableOpacity style={styles.functionBox}>
+        <TouchableOpacity style={styles.functionBox} onPress={()=>navigation.navigate('Order')}>
           <View>
             <Text style={styles.functionName}>My orders</Text>
             <Text style={styles.functionDescription}>Already have 10 orders</Text>
@@ -88,7 +85,7 @@ const Profile = (props) => {
         </TouchableOpacity>
 
         {/* Đến trang thiết lập */}
-        <TouchableOpacity style={styles.functionBox} onPress={handleSettingPress}>
+        <TouchableOpacity style={styles.functionBox} onPress={()=>navigation.navigate('Setting')}>
           <View>
             <Text style={styles.functionName}>Setting</Text>
             <Text style={styles.functionDescription}>Notification, Password, FAQ, Contact</Text>

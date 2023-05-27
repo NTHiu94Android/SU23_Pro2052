@@ -32,7 +32,7 @@ const Setting = (props) => {
       <View style={{ marginTop: 20 }}>
         <View style={styles.titleBox}>
           <Text style={styles.text2}>Personal Information</Text>
-          <TouchableOpacity style={styles.editIcon} onPress={handleBackPress}>
+          <TouchableOpacity style={styles.functionTouchIcon} onPress={handleBackPress}>
             <Image
               style={{ width: '100%', height: '100%', }}
               source={require('../../../../assets/images/edit2.png')}
@@ -56,7 +56,7 @@ const Setting = (props) => {
       <View style={{ marginTop: 38 }}>
         <View style={styles.titleBox}>
           <Text style={styles.text2}>Password</Text>
-          <TouchableOpacity style={styles.editIcon} onPress={handleBackPress}>
+          <TouchableOpacity style={styles.functionTouchIcon} onPress={handleBackPress}>
             <Image
               style={{ width: '100%', height: '100%', }}
               source={require('../../../../assets/images/edit2.png')}
@@ -100,7 +100,7 @@ const Setting = (props) => {
         <TouchableOpacity style={{ marginTop: 15 }}>
           <View style={[styles.infoBox, { height: 54, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={[styles.text1, { color: '#242424' }]}>FAQ</Text>
-            <View style={styles.editIcon} onPress={handleBackPress}>
+            <View style={styles.functionTouchIcon} onPress={handleBackPress}>
               <Image
                 style={{ width: '100%', height: '100%', }}
                 source={require('../../../../assets/images/next2.png')}
@@ -113,7 +113,7 @@ const Setting = (props) => {
         <TouchableOpacity style={{ marginTop: 10 }}>
           <View style={[styles.infoBox, { height: 54, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={[styles.text1, { color: '#242424' }]}>Contact Us</Text>
-            <View style={styles.editIcon} onPress={handleBackPress}>
+            <View style={styles.functionTouchIcon} onPress={handleBackPress}>
               <Image
                 style={{ width: '100%', height: '100%', }}
                 source={require('../../../../assets/images/next2.png')}
@@ -126,7 +126,7 @@ const Setting = (props) => {
         <TouchableOpacity style={{ marginTop: 10 }}>
           <View style={[styles.infoBox, { height: 54, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={[styles.text1, { color: '#242424' }]}>Log out</Text>
-            <View style={styles.editIcon} onPress={handleBackPress}>
+            <View style={styles.functionTouchIcon} onPress={handleBackPress}>
               <Image
                 style={{ width: '100%', height: '100%', }}
                 source={require('../../../../assets/images/next2.png')}
@@ -176,17 +176,6 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
   },
-  functionName: {
-    fontWeight: '700',
-    fontSize: 18,
-    marginBottom: 5,
-    color: '#242424',
-  },
-  functionDescription: {
-    fontWeight: '400',
-    fontSize: 12,
-    color: '#808080',
-  },
   text1: {
     fontSize: 16,
     fontWeight: '700',
@@ -209,10 +198,6 @@ const styles = StyleSheet.create({
   titleBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  editIcon: {
-    width: 24,
-    height: 24,
   },
 });
 
