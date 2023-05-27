@@ -34,10 +34,17 @@ const CheckOut = (props) => {
               <Text style={{ fontSize: 18, fontWeight: '300' }}>Delivery method</Text>
               <Image source={require('../../../../assets/images/edit-2.png')} style={{ width: 28 }} />
             </View>
-            <View style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'row' }]}>
-              <Image source={{ uri: 'https://theme.hstatic.net/200000472237/1000829412/14/logo.png?v=584' }}
-                style={{ height: 20, width: 90, margin: 10 }} />
-              <Text style={{ margin: 10, fontSize: 14, fontWeight: 'bold' }}>Fast (2-3 days)</Text>
+            <View style={{flexDirection: 'row', justifyContent:'space-between', marginTop:10}}>
+              <TouchableOpacity style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column',padding: 32 }]}>
+                <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png' }}
+                  style={{ height: 20, width: 90, margin: 10 }} />
+                <Text style={{ margin: 10, fontSize: 14, fontWeight: 'bold' }}>Fast (2-3 days)</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column',padding:32 }]}>
+                <Image source={{ uri: 'https://theme.hstatic.net/200000472237/1000829412/14/logo.png?v=584' }}
+                  style={{ height: 20, width: 90, margin: 10 }} />
+                <Text style={{ margin: 10, fontSize: 14, fontWeight: 'bold' }}>Fast (2-3 days)</Text>
+              </TouchableOpacity>
             </View>
           </View>
 

@@ -3,7 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import messaging from '@react-native-firebase/messaging';
 
 import Started from './src/components/splash/Started';
-import Home from './src/components/apps/screens/TabScreen/Home'
 const App = () => {
   useEffect(() => {
     const GetToken = async () => {
