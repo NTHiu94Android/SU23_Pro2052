@@ -1,23 +1,25 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native'
 import React from 'react'
 
-const ListReview = () => {
+const ListReview = (props) => {
+  const { navigation } = props;
+
   return (
     <View style={styleReview.container}>
-        <View style={styleReview.header}>
-            <View>
-                <TouchableOpacity>
-                    <Image
-                        style={styleReview.icBack}
-                        source={require('../../../../assets/images/back.png')}
-                        resizeMode='cover'
-                    ></Image>
-                </TouchableOpacity>
-            </View>
-            <Text style={styleReview.DetailTxt}>Rating & Review</Text>
+      <View style={styleReview.header}>
+        <View>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+            <Image
+              style={styleReview.icBack}
+              source={require('../../../../assets/images/back.png')}
+              resizeMode='cover'
+            ></Image>
+          </TouchableOpacity>
         </View>
+        <Text style={styleReview.DetailTxt}>Rating & Review</Text>
+      </View>
 
-        <ScrollView showsVertic alScrollIndicator={false}>
+      <ScrollView showsVertic alScrollIndicator={false}>
         <View style={styleReview.body}>
           <View style={styleReview.header}>
             <View>
@@ -200,15 +202,15 @@ const ListReview = () => {
 
         </View>
       </ScrollView>
-           {/* WRITE A REVIEW */}
-           <View style={styleReview.btn}>
-                    <TouchableOpacity>
-                        <Text style={styleReview.btnText}>Write a Review</Text>
-                    </TouchableOpacity>
-                </View>
+      {/* WRITE A REVIEW */}
+      <View style={styleReview.btn}>
+        <TouchableOpacity onPress={() => navigation.navigate('AddReview')}>
+          <Text style={styleReview.btnText}>Write a Review</Text>
+        </TouchableOpacity>
+      </View>
     </View>
 
-)
+  )
 }
 
 export default ListReview
@@ -216,118 +218,118 @@ export default ListReview
 const styleReview = StyleSheet.create({
   // container
   container: {
-      display: 'flex',
-      backgroundColor: 'white',
-      width: '100%',
-      height: '100%'
+    display: 'flex',
+    backgroundColor: 'white',
+    width: '100%',
+    height: '100%'
   },
 
   header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingTop: 20,
-      paddingHorizontal: 20
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 20,
+    paddingHorizontal: 20
   },
 
   icBack: {
-      width: 20,
-      height: 20,
+    width: 20,
+    height: 20,
   },
 
   DetailTxt: {
-      color: 'black',
-      fontSize: 16,
-      fontWeight: 'bold',
-      width: '70%'
+    color: 'black',
+    fontSize: 16,
+    fontWeight: 'bold',
+    width: '70%'
   },
 
   //body
   body: {
-      height: '100%',
-      width: '100%'
+    height: '100%',
+    width: '100%'
   },
 
   icImg: {
-      width: 100,
-      height: 100,
-      borderRadius: 10
+    width: 100,
+    height: 100,
+    borderRadius: 10
   },
 
   txtheader: {
-      width: '70%'
+    width: '70%'
   },
 
   //Star Point
   Star: {
-      flexDirection: 'row',
-      alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 
   icStar: {
-      width: 30,
-      height: 30
+    width: 30,
+    height: 30
   },
 
   txtStar: {
-      fontSize: 20,
-      paddingLeft: 10
+    fontSize: 20,
+    paddingLeft: 10
   },
 
   //Review
   BoxReview: {
-      width: '90%',
-      height: 160,
-      marginLeft: 20,
-      marginTop: 40,
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      backgroundColor: '#F1F1F1',
-      borderRadius: 10,
-      justifyContent: 'center'
+    width: '90%',
+    height: 160,
+    marginLeft: 20,
+    marginTop: 40,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#F1F1F1',
+    borderRadius: 10,
+    justifyContent: 'center'
   },
 
   icAva: {
-      width: 50,
-      height: 50,
-      bottom: 40,
-      marginLeft: 130
+    width: 50,
+    height: 50,
+    bottom: 40,
+    marginLeft: 130
   },
 
   RName: {
-      bottom: 30,
-      flexDirection: 'row',
-      justifyContent: 'space-between'
+    bottom: 30,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
 
   RatingStar: {
-      bottom: 25,
-      flexDirection: 'row'
+    bottom: 25,
+    flexDirection: 'row'
   },
 
   icStar01: {
-      width: 20,
-      height: 20
+    width: 20,
+    height: 20
   },
 
   //Comment
   comment: {
-      bottom: 15,
+    bottom: 15,
   },
 
   //Button
   btn: {
-      backgroundColor: 'black',
-      width: '90%',
-      height: 55,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginHorizontal: 20,
-      borderRadius: 8,
+    backgroundColor: 'black',
+    width: '90%',
+    height: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    borderRadius: 8,
   },
 
   btnText: {
-      color: 'white',
-      fontSize: 20
+    color: 'white',
+    fontSize: 20
   },
 })

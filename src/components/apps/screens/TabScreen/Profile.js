@@ -5,9 +5,7 @@ import { UserContext } from '../../../users/UserContext';
 const Profile = (props) => {
   const { navigation } = props;
 
-  const handleSettingPress = () => {
-    navigation.navigate('Setting');
-  };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileTextBox}>
@@ -46,7 +44,7 @@ const Profile = (props) => {
         </TouchableOpacity>
 
         {/* Xem danh sách địa chỉ nhận hàng */}
-        <TouchableOpacity style={styles.functionBox}>
+        <TouchableOpacity style={styles.functionBox} onPress={() => navigation.navigate('ShippingAddress')}>
           <View>
             <Text style={styles.functionName}>Shipping Addresses</Text>
             <Text style={styles.functionDescription}>03 Addresses</Text>
@@ -74,7 +72,7 @@ const Profile = (props) => {
         </TouchableOpacity>
 
         {/* Xem danh sách sản phẩm đã bình luận */}
-        <TouchableOpacity style={styles.functionBox}>
+        <TouchableOpacity style={styles.functionBox} onPress={() => navigation.navigate('ListReview')} >
           <View>
             <Text style={styles.functionName}>My reviews</Text>
             <Text style={styles.functionDescription}>Reviews for 5 items</Text>
@@ -88,7 +86,7 @@ const Profile = (props) => {
         </TouchableOpacity>
 
         {/* Đến trang thiết lập */}
-        <TouchableOpacity style={styles.functionBox} onPress={handleSettingPress}>
+        <TouchableOpacity style={styles.functionBox} onPress={() => navigation.navigate('Setting')}>
           <View>
             <Text style={styles.functionName}>Setting</Text>
             <Text style={styles.functionDescription}>Notification, Password, FAQ, Contact</Text>

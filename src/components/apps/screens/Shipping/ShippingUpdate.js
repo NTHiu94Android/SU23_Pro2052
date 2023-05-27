@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput } from 'react-native'
 import React from 'react'
 
-const ShippingUpdate = () => {
+const ShippingUpdate = (props) => {
+    const {navigation} = props
   return (
     <View style={styleShippingAddress.container}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6, paddingHorizontal: 12 }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('ShippingAddress')}>
                 <Image
                     style={{ width: 22, height: 22 }}
                     resizeMode='cover'
@@ -45,7 +46,7 @@ const ShippingUpdate = () => {
         </ScrollView>
         {/* SAVE ADDRESS */}
         <View style={styleShippingAddress.btn}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('ShippingAddress')} >
                 <Text style={styleShippingAddress.btnText}>SAVE ADDRESS</Text>
             </TouchableOpacity>
         </View>
