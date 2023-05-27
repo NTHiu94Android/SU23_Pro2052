@@ -5,6 +5,9 @@ import { UserContext } from '../../../users/UserContext';
 const Profile = (props) => {
   const { navigation } = props;
 
+  const handleSettingPress = () => {
+    navigation.navigate('Setting');
+  };
   return (
     <View style={styles.container}>
       <View style={styles.profileTextBox}>
@@ -29,7 +32,7 @@ const Profile = (props) => {
       <View style={{ flex: 1, marginTop: 30 }}>
 
         {/* Xem danh sách đơn hàng */}
-        <View style={styles.functionBox}>
+        <TouchableOpacity style={styles.functionBox}>
           <View>
             <Text style={styles.functionName}>My orders</Text>
             <Text style={styles.functionDescription}>Already have 10 orders</Text>
@@ -40,10 +43,10 @@ const Profile = (props) => {
               source={require('../../../../assets/images/next2.png')}
             />
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Xem danh sách địa chỉ nhận hàng */}
-        <View style={styles.functionBox}>
+        <TouchableOpacity style={styles.functionBox}>
           <View>
             <Text style={styles.functionName}>Shipping Addresses</Text>
             <Text style={styles.functionDescription}>03 Addresses</Text>
@@ -54,10 +57,10 @@ const Profile = (props) => {
               source={require('../../../../assets/images/next2.png')}
             />
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Xem các phương thức thanh toán */}
-        <View style={styles.functionBox}>
+        <TouchableOpacity style={styles.functionBox}>
           <View>
             <Text style={styles.functionName}>Payment Method</Text>
             <Text style={styles.functionDescription}>You have 2 cards</Text>
@@ -68,10 +71,10 @@ const Profile = (props) => {
               source={require('../../../../assets/images/next2.png')}
             />
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Xem danh sách sản phẩm đã bình luận */}
-        <View style={styles.functionBox}>
+        <TouchableOpacity style={styles.functionBox}>
           <View>
             <Text style={styles.functionName}>My reviews</Text>
             <Text style={styles.functionDescription}>Reviews for 5 items</Text>
@@ -82,10 +85,10 @@ const Profile = (props) => {
               source={require('../../../../assets/images/next2.png')}
             />
           </View>
-        </View>
+        </TouchableOpacity>
 
         {/* Đến trang thiết lập */}
-        <View style={styles.functionBox}>
+        <TouchableOpacity style={styles.functionBox} onPress={handleSettingPress}>
           <View>
             <Text style={styles.functionName}>Setting</Text>
             <Text style={styles.functionDescription}>Notification, Password, FAQ, Contact</Text>
@@ -96,7 +99,7 @@ const Profile = (props) => {
               source={require('../../../../assets/images/next2.png')}
             />
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   )
