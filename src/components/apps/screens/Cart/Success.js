@@ -1,10 +1,10 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import back from '../../../back/back';
+import backToScreen from '../../../back/backToScreen';
 
 const Success = (props) => {
   const { navigation } = props;
-  back(navigation);
+  backToScreen(navigation, 'BottomNavigation');
   return (
     <View style={{ padding: 30, flex: 1, flexDirection: 'column', justifyContent: 'space-evenly' }}>
       <View style={{alignItems:'center'}}>
@@ -16,14 +16,10 @@ const Success = (props) => {
           <Text style={{ fontSize: 18 }}>Thank you for choosing our app!</Text>
         </View>
       </View>
+
       <View style={{ justifyContent: 'space-between', height: 150 }}>
-        <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={{ backgroundColor: '#000', height: 60, borderRadius: 8, flexDirection: 'column', justifyContent: 'center' }}>
+        <TouchableOpacity onPress={() => navigation.navigate("Order")} style={{ backgroundColor: '#000', height: 60, borderRadius: 8, flexDirection: 'column', justifyContent: 'center' }}>
           <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>Track your orders</Text>
-          {/* Bấm đây nhảy qua ... */}
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Home")} style={{ backgroundColor: '#fff', height: 60, borderRadius: 8, flexDirection: 'column', justifyContent: 'center' }}>
-          <Text style={{ textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>BACK TO HOME</Text>
-          {/* Bấm đây nhảy qua home */}
         </TouchableOpacity>
       </View>
     </View>

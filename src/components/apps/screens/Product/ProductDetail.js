@@ -17,10 +17,18 @@ const ProductDetail = (props) => {
   back(navigation);
   // hinh anh banner 
   const data = [
-    { image: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg' },
-    { image: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg' },
-    { image: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg' },
-    { image: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg' },
+    {
+      _id: '1',
+      url: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg'
+    },
+    {
+      _id: '2',
+      url: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg'
+    },
+    {
+      _id: '3',
+      url: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg'
+    },
   ];
 
   const mau = [
@@ -34,28 +42,28 @@ const ProductDetail = (props) => {
 
         {/* slideImage */}
         <View style={{ flex: 1 }}>
-          {/* <Swiper
+          <Swiper
             style={{ height: 280 }}
             autoplayTimeout={3}
             autoplay={true}
             loop={true}
             showsPagination={true}>
-            {data.map((image, index) => {
+            {data.map((item, index) => {
               return (
                 <Image
                   key={index}
                   style={{ width: '100%', height: 280 }}
                   resizeMode='stretch'
                   source={{
-                    uri: image,
+                    uri: item.url,
                   }} />
               )
             })}
-          </Swiper> */}
-          <TouchableOpacity onPress={()=> navigation.goBack()}>
-          <Image style={styles.icon} source={require('../../../../assets/images/ic_back.png')} />
+          </Swiper>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Image style={styles.icon} source={require('../../../../assets/images/ic_back.png')} />
           </TouchableOpacity>
-          
+
         </View>
       </View>
       <View style={styles.body}>
@@ -67,7 +75,7 @@ const ProductDetail = (props) => {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={{ backgroundColor: item.color, width: 30, height: 30, margin: 3, borderRadius:10}}
+                style={{ backgroundColor: item.color, width: 30, height: 30, margin: 3, borderRadius: 10 }}
                 onPress={() => nextScreen(item)}
               >
               </TouchableOpacity>
@@ -102,25 +110,28 @@ const ProductDetail = (props) => {
           {/* Star */}
           <Text style={{ marginLeft: 10, fontSize: 24, fontWeight: "bold", color: "black" }}>4.5</Text>
           {/* So luong reviews */}
-          <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold", }}>(321 reviews)</Text>
+          <TouchableOpacity onPress={() => navigation.navigate('ListReview')}>
+            <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold", }}>(321 reviews)</Text>
+          </TouchableOpacity>
         </View>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "black", marginTop: 10 }}>Desciption</Text>
         {/* Mo ta san pham */}
         <View style={{ flex: 0.8, }}>
           <Text>
-            Minimal Stand is made of by natural wood. The design that is very simple and minimal. This is truly one of the best furnitures in any family for now. With 3 different colors, you can easily select the best match for your home. Minimal Stand is made of by natural wood. The design that is very simple and minimal. This is truly one of the best furnitures in any family for now. With 3 different colors, you can easily select the best match for your home.
+            Minimal Stand is made of by natural wood. It is designed to be simple and solid.
           </Text>
         </View>
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.button1}>
+        <TouchableOpacity onPress={() => navigation.navigate('Favorite')} style={styles.button1}>
           <Image style={{ width: 24, height: 24 }}
             source={require('../../../../assets/images/ic_fvr.png')} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => addOrderDatail(count, 'Cart')} style={styles.button2}>
-            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>
-              Add to cart</Text>
-          </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.button2}>
+          <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>
+            Add to cart
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -132,12 +143,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-
   },
   header: {
     flex: 4.5,
-
-
   },
   image: {
     width: "100%",
@@ -164,8 +172,7 @@ const styles = StyleSheet.create({
     flex: 0.7,
     margin: 10,
     flexDirection: "row",
-    justifyContent:"space-between"
-
+    justifyContent: "space-between"
   },
   colorProduct: {
     flex: 0.2,

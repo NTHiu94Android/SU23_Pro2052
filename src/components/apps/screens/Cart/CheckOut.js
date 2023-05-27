@@ -1,9 +1,11 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import back from '../../../back/back';
 
 const CheckOut = (props) => {
 
   const { navigation } = props;
+  back(navigation);
 
   return (
     <View style={{ flex: 1 }}>
@@ -20,7 +22,7 @@ const CheckOut = (props) => {
           <View style={{ justifyContent: 'space-between', marginTop: 30 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
               <Text style={{ fontSize: 18, fontWeight: '300' }}>Shipping Address</Text>
-              <Image source={require('../../../../assets/images/edit-2.png')} style={{ width: 28, height: 28 }} />
+              <Image source={require('../../../../assets/images/edit2.png')} style={{ width: 28, height: 28 }} />
             </View>
             <View style={[styles.box, { backgroundColor: '#fff', borderRadius: 8, paddingVertical: 10 }]}>
               <Text style={{ fontSize: 18, fontWeight: 'bold', borderBottomWidth: 0.5, borderBottomColor: 'grey', padding: 10 }}>Bruno Fernandes</Text>
@@ -32,7 +34,7 @@ const CheckOut = (props) => {
           <View style={{ justifyContent: 'space-between', marginTop: 30 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 18, fontWeight: '300' }}>Delivery method</Text>
-              <Image source={require('../../../../assets/images/edit-2.png')} style={{ width: 28 }} />
+              <Image source={require('../../../../assets/images/edit2.png')} style={{ width: 28 }} />
             </View>
             <View style={{flexDirection: 'row', justifyContent:'space-between', marginTop:10}}>
               <TouchableOpacity style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column',padding: 32 }]}>

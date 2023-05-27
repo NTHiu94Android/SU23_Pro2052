@@ -8,6 +8,7 @@ const Profile = (props) => {
   const handleSettingPress = () => {
     navigation.navigate('Setting');
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.profileTextBox}>
@@ -32,7 +33,7 @@ const Profile = (props) => {
       <View style={{ flex: 1, marginTop: 30 }}>
 
         {/* Xem danh sách đơn hàng */}
-        <TouchableOpacity style={styles.functionBox}>
+        <TouchableOpacity onPress={() => navigation.navigate('Order')} style={styles.functionBox}>
           <View>
             <Text style={styles.functionName}>My orders</Text>
             <Text style={styles.functionDescription}>Already have 10 orders</Text>
@@ -46,7 +47,7 @@ const Profile = (props) => {
         </TouchableOpacity>
 
         {/* Xem danh sách địa chỉ nhận hàng */}
-        <TouchableOpacity style={styles.functionBox}>
+        <TouchableOpacity onPress={() => navigation.navigate('ShippingAddress')} style={styles.functionBox}>
           <View>
             <Text style={styles.functionName}>Shipping Addresses</Text>
             <Text style={styles.functionDescription}>03 Addresses</Text>

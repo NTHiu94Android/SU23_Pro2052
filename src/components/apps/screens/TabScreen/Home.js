@@ -5,6 +5,7 @@ import back from '../../../back/back';
 
 const Home = (props) => {
   const { navigation } = props;
+  back(navigation);
 
   const category = [
     {
@@ -50,21 +51,21 @@ const Home = (props) => {
   ];
   const product = [
     {
-      id: "",
+      id: "1",
       sale: 10,
       name: "Macbook Pro 2022",
       image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
       price: 2000
     },
     {
-      id: "",
+      id: "2",
       sale: 10,
       name: "Macbook Pro 2023",
       image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
       price: 2000
     },
     {
-      id: "",
+      id: "3",
       sale: 10,
       name: "Macbook Pro 2023",
       image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
@@ -123,13 +124,15 @@ const Home = (props) => {
   const nextScreen = (category) => {
     navigation.navigate('ListProduct', { category });
   };
-  back(navigation);
+
   return (
     <ScrollView style={styles.contaier}>
       {/* headerbar */}
       <View style={styles.header}>
-        <Image style={styles.icon}
-          source={require("../../../../assets/images/ic_search.png")} />
+        <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
+          <Image style={styles.icon}
+            source={require("../../../../assets/images/ic_search.png")} />
+        </TouchableOpacity>
         <Text style={styles.text}>Hoàng Long Mobile</Text>
         <Image style={styles.icon}
           source={require("../../../../assets/images/ic_ring.png")} />
@@ -170,7 +173,7 @@ const Home = (props) => {
         <FlatList
           horizontal
           data={category}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.listCategory}
@@ -197,7 +200,7 @@ const Home = (props) => {
         <FlatList
           horizontal
           data={product}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
               <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
@@ -240,7 +243,7 @@ const Home = (props) => {
         <FlatList
           horizontal
           data={product}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
               <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
@@ -284,7 +287,7 @@ const Home = (props) => {
         <FlatList
           horizontal
           data={product}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
               <View style={{ flexDirection: "row", justifyContent: "center", backgroundColor: "red", width: 210, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>

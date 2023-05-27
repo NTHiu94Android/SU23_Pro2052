@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Switch } from 'react-native'
-import React, { useContext, useState } from 'react'
-import { UserContext } from '../../../users/UserContext';
+import React, { useState } from 'react'
+import back from '../../../back/back';
 
 const Setting = (props) => {
   const { navigation } = props;
+  back(navigation);
 
   const handleBackPress = () => {
     navigation.navigate('Profile');
@@ -32,7 +33,7 @@ const Setting = (props) => {
       <View style={{ marginTop: 20 }}>
         <View style={styles.titleBox}>
           <Text style={styles.text2}>Personal Information</Text>
-          <TouchableOpacity style={styles.editIcon} onPress={handleBackPress}>
+          <TouchableOpacity style={styles.editIcon} onPress={() => navigation.navigate('UpdateProfile')}>
             <Image
               style={{ width: '100%', height: '100%', }}
               source={require('../../../../assets/images/edit2.png')}
@@ -56,7 +57,7 @@ const Setting = (props) => {
       <View style={{ marginTop: 38 }}>
         <View style={styles.titleBox}>
           <Text style={styles.text2}>Password</Text>
-          <TouchableOpacity style={styles.editIcon} onPress={handleBackPress}>
+          <TouchableOpacity style={styles.editIcon} onPress={() => navigation.navigate('EditPassword')}>
             <Image
               style={{ width: '100%', height: '100%', }}
               source={require('../../../../assets/images/edit2.png')}
