@@ -7,9 +7,9 @@ const Processing = (props) => {
 
   const data = [
     { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
-    { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
-    { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
-    { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
+    { id: 'Order No238562313', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
+    { id: 'Order No238562314', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
+    { id: 'Order No238562315', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
   ];
   const renderItem = ({ item }) => (
     <View style={{ height: 172, justifyContent: 'space-between', marginTop: 25 }}>

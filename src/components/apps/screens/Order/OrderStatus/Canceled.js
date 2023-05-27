@@ -3,10 +3,10 @@ import React from 'react'
 
 const Canceled = () => {
   const data = [
+    { id: 'Order No238562311', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
     { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
-    { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
-    { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
-    { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
+    { id: 'Order No238562313', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
+    { id: 'Order No238562314', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
   ];
   const renderItem = ({ item }) => (
     <View style={{ height: 172, justifyContent: 'space-between', marginTop: 25 }}>

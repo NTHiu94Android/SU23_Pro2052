@@ -1,8 +1,10 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList } from 'react-native'
 import React from 'react'
+import back from '../../../back/back';
 
 const OrderDetail = (props) => {
   const { navigation } = props;
+  back(navigation);
 
   const handleBackPress = () => {
     navigation.navigate('Order');
@@ -10,7 +12,7 @@ const OrderDetail = (props) => {
 
   const data = [
     { id: 'LT238562312', img: '', productName: 'Macbook Pro 2022', quantity: '03', price: '$150', color: 'Silver' },
-    { id: 'LT238562312', img: '', productName: 'Macbook Pro 2022', quantity: '03', price: '$150', color: 'Silver' },
+    { id: 'LT238562313', img: '', productName: 'Macbook Pro 2022', quantity: '03', price: '$150', color: 'Silver' },
   ];
 
   const renderItem = ({ item }) => (
