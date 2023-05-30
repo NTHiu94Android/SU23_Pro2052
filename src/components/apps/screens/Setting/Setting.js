@@ -2,21 +2,44 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Switch } f
 import React, { useState } from 'react'
 import back from '../../../back/back';
 
+import ProgressDialog from 'react-native-progress-dialog';
+
 const Setting = (props) => {
   const { navigation } = props;
   back(navigation);
+
+  const { user, onLogout } = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => {
+    setIsEnabled(previousState => !previousState);
+  };
 
   const handleBackPress = () => {
     navigation.navigate('Profile');
   };
 
-  const [isEnabled, setIsEnabled] = useState(false);
-
-  const toggleSwitch = () => {
-    setIsEnabled(previousState => !previousState);
+  const handleLogout = async () => {
+    try {
+      setIsLoading(true);
+      const res = await onLogout(user._id);
+      if (res) {
+        console.log('Logout success');
+      } else {
+        console.log('Error when logout');
+      }
+      setIsLoading(false);
+    } catch (error) {
+      console.log('Error when logout: ', error);
+    }
   };
+
   return (
     <View style={styles.container}>
+      <ProgressDialog
+        visible={isLoading}
+        loaderColor="black"
+        label="Please wait..." />
       <View style={styles.headerBox}>
         <TouchableOpacity style={{ width: 12, height: 12 }} onPress={handleBackPress}>
           <Image
@@ -124,7 +147,7 @@ const Setting = (props) => {
         </TouchableOpacity>
 
         {/* Đăng xuất */}
-        <TouchableOpacity style={{ marginTop: 10 }}>
+        <TouchableOpacity onPress={() => handleLogout()} style={{ marginTop: 10 }}>
           <View style={[styles.infoBox, { height: 54, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={[styles.text1, { color: '#242424' }]}>Log out</Text>
             <View style={styles.editIcon} onPress={handleBackPress}>
