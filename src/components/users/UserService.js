@@ -6,11 +6,12 @@ export const get_user_by_id = async (id) => {
     return response;
 }
 
-export const login = async (email, password, tokenFcm) => {
+export const login = async (username, email, password, fcmToken) => {
     const body = {
+        username: username,
         email: email,
         password: password,
-        fcmToken: tokenFcm
+        fcmToken: fcmToken,
     }
     const response = await CustomAxios().post('users/api/login', body);
     return response;
@@ -25,8 +26,9 @@ export const updateFcmToken = async (_id, tokenFcm) => {
     return response;
 };
 
-export const register = async (email, password, name, birthday, numberPhone, avatar) => {
+export const register = async (username,  email, password, name, birthday, numberPhone, avatar) => {
     const body = {
+        username: username,
         email: email,
         password: password,
         name: name,

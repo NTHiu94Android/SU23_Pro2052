@@ -1,17 +1,18 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ToastAndroid, ScrollView, Alert } from 'react-native'
 import React, { useContext, useState } from 'react';
 
-// import { GoogleSignin } from '@react-native-google-signin/google-signin';
-// import auth from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import auth from '@react-native-firebase/auth';
 
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ProgressDialog from 'react-native-progress-dialog';
 
 import { UserContext } from '../UserContext';
 
 const Login = (props) => {
   const { navigation } = props;
-  const { onLogin, onRegister, setUser } = useContext(UserContext);
+  const { onLogin, onRegister } = useContext(UserContext);
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isShowPassword, setIsShowPassword] = useState(true);
@@ -25,7 +26,7 @@ const Login = (props) => {
 
   const handleLogin = async () => {
     setIsLoading(true);
-    if (!email || !password) {
+    if (!username || !password) {
       //neu tren android
       if (Platform.OS === 'android') {
         ToastAndroid.showWithGravityAndOffset('Please fill all the fields!', ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50);
@@ -35,37 +36,19 @@ const Login = (props) => {
       setIsLoading(false);
       return;
     } else {
-      // const fcmToken = await AsyncStorage.getItem('fcmToken');
-      // const res = await onLogin(email, password, fcmToken);
-      // if (res != null || res != undefined) {
-      //   console.log("Login success!");
-      // } else {
-      //   //neu tren android
-      //   if (Platform.OS === 'android') {
-      //     ToastAndroid.showWithGravityAndOffset('Login fail!', ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50);
-      //   } else {
-      //     Alert.alert('Login fail!');
-      //   }
-      // }
-      setUser(
-        {
-          "_id": "646b85818ebfde95b7851bd1",
-          "email": "1234@gmail.com",
-          "password": "$2a$10$xDcWVx/yHlh0ZqBqiqRtz.7KlNSdKty71mfV8Gbem7E1zE4iKHy1C",
-          "name": "CoV Music Official",
-          "birthday": "15/10/1999",
-          "numberPhone": "0778023038",
-          "role": "user",
-          "avatar": "https://lh3.googleusercontent.com/a/AGNmyxaVUyaBuHtpnd3MTbfbUlYfVfd-gEYYEK7VO7xpSw=s96-c",
-          "resetPasswordToken": null,
-          "fcmtoken": "eA4h-YdCQiWgCTnc58cNXi:APA91bEgEHhyg2c949skzh9vX_2-ADLDKS8pId5645zQeotHPCVaC9AA9FeRlX_GidlqIgIJEaHYmfH9IlHIfsqudoe9nWcE62Vr6dSXML-U6FdGXkSH9CyHALzcbgK47I4A5H5fYSmA",
-          "__v": 0,
-          "idCart":  "646b85818ebfde95b7851bd3",
-          "idFavorite":  "646b85818ebfde95b7851bd5"
+      const fcmToken = await AsyncStorage.getItem('fcmToken');
+      const res = await onLogin(username, null, password, fcmToken);
+      if (res != null || res != undefined) {
+        console.log("Login success!");
+        ToastAndroid.show('Welcome!', ToastAndroid.SHORT);
+      } else {
+        //neu tren android
+        if (Platform.OS === 'android') {
+          ToastAndroid.showWithGravityAndOffset('Login fail!', ToastAndroid.SHORT, ToastAndroid.BOTTOM, 25, 50);
+        } else {
+          Alert.alert('Login fail!');
         }
-      );
-
-
+      }
       setIsLoading(false);
     }
   };
@@ -74,23 +57,40 @@ const Login = (props) => {
   const onGoogleButtonPress = async () => {
     try {
       setIsLoading(true);
-      setUser(
-        {
-          "_id": "646b85818ebfde95b7851bd1",
-          "email": "1234@gmail.com",
-          "password": "$2a$10$xDcWVx/yHlh0ZqBqiqRtz.7KlNSdKty71mfV8Gbem7E1zE4iKHy1C",
-          "name": "CoV Music Official",
-          "birthday": "15/10/1999",
-          "numberPhone": "0778023038",
-          "role": "user",
-          "avatar": "https://lh3.googleusercontent.com/a/AGNmyxaVUyaBuHtpnd3MTbfbUlYfVfd-gEYYEK7VO7xpSw=s96-c",
-          "resetPasswordToken": null,
-          "fcmtoken": "eA4h-YdCQiWgCTnc58cNXi:APA91bEgEHhyg2c949skzh9vX_2-ADLDKS8pId5645zQeotHPCVaC9AA9FeRlX_GidlqIgIJEaHYmfH9IlHIfsqudoe9nWcE62Vr6dSXML-U6FdGXkSH9CyHALzcbgK47I4A5H5fYSmA",
-          "__v": 0,
-          "idCart":  "646b85818ebfde95b7851bd3",
-          "idFavorite":  "646b85818ebfde95b7851bd5"
+      console.log("onGoogleButtonPress");
+      // Check if your device supports Google Play
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      // Get the users ID token
+      const { idToken } = await GoogleSignin.signIn();
+      // Create a Google credential with the token
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+      // Sign-in the user with the credential
+      const userInfor = await auth().signInWithCredential(googleCredential);
+      //console.log(userInfor);
+      //Lay object user tu userInfor
+      const userResult = userInfor.user;
+      //console.log(userResult.photoURL);
+
+      const fcmToken = await AsyncStorage.getItem('fcmToken');
+      console.log("FCM Token Login screen: ", fcmToken);
+      const usLogin = await onLogin(userResult.username, userResult.uid, fcmToken);
+      if (usLogin) {
+        console.log("Login success");
+      } else if (usLogin == null || usLogin == undefined) {
+        //username, email, password, name, birthday, address, numberPhone, avatar
+        const usRegister = await onRegister(userResult.username, userResult.uid, userResult.displayName, "15/10/1999", "", userResult.photoURL);
+        if (usRegister) {
+          console.log("Register success");
+          const res = await onLogin(userResult.username, userResult.uid, fcmToken);
+          if (res) {
+            console.log("Login success after register");
+          } else {
+            console.log("Login fail");
+          }
         }
-      );
+      } else {
+        console.log("Login fail");
+      };
       setIsLoading(false);
     } catch (error) {
       console.log("Error onGoogleButtonPress: ", error);
@@ -119,11 +119,11 @@ const Login = (props) => {
           <Text style={{ fontWeight: 'bold', color: 'black', fontSize: 20, }} >WELCOME BACK</Text>
 
           <View style={{}}>
-            <Text style={{ color: 'black', fontWeight: '800', fontSize: 16, marginTop: 40 }}>Email</Text>
+            <Text style={{ color: 'black', fontWeight: '800', fontSize: 16, marginTop: 40 }}>Username</Text>
             <TextInput
-              value={email}
-              onChangeText={setEmail}
-              placeholder="Enter your email"
+              value={username}
+              onChangeText={setUsername}
+              placeholder="Enter your username"
               style={{}} />
             <View style={{ height: 1, backgroundColor: 'black', }} ></View>
           </View>
