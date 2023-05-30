@@ -22,12 +22,12 @@ const Register = (props) => {
   back(navigation);
 
   const handleRegister = async () => {
-    const patternEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const checkEmail = patternEmail.test(username);
-    if (!checkEmail) {
-      ToastAndroid.show('Email is not valid', ToastAndroid.SHORT);
-      return;
-    }
+    // const patternEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    // const checkEmail = patternEmail.test(username);
+    // if (!checkEmail) {
+    //   ToastAndroid.show('Email is not valid', ToastAndroid.SHORT);
+    //   return;
+    // }
     if (!username || !password || !name || !confirmPassword) {
       alert('Please fill all the fields');
       return;
