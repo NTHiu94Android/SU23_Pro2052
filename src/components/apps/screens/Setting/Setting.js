@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Switch } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
 
 import ProgressDialog from 'react-native-progress-dialog';

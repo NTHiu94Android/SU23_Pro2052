@@ -40,7 +40,7 @@ export const UserContextProvider = (props) => {
     try {
       await AsyncStorage.removeItem('idUser');
       await AsyncStorage.removeItem('token');
-      // await onUpdateFcmToken(usId, "");
+      await onUpdateFcmToken(usId, "");
       await GoogleSignin.signOut();
 
       setUser(null);
