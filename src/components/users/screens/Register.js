@@ -28,17 +28,28 @@ const Register = (props) => {
     //   ToastAndroid.show('Email is not valid', ToastAndroid.SHORT);
     //   return;
     // }
+
     if (!username || !password || !name || !confirmPassword) {
-      alert('Please fill all the fields');
+      ToastAndroid.show('Hãy điền đầy đủ thông tin!', ToastAndroid.SHORT);
       return;
-    };
+    }
+    if (username.length < 6 || username.length > 20) {
+      ToastAndroid.show('Tài khoản phải từ 6 đến 20 ký tự', ToastAndroid.SHORT);
+      return;
+    }
+    if (password.length < 8) {
+      ToastAndroid.show('Mật khẩu phải 8 ký tự trở lên', ToastAndroid.SHORT);
+      return;
+    }
     if (password !== confirmPassword) {
-      alert('Password and Confirm Password must be the same');
+      ToastAndroid.show('Password và Confirm Password phải giống nhau', ToastAndroid.SHORT);
       return;
-    };
+    }
     setIsLoading(true);
+
+
     //email, password, name, birthday, numberPhone, avatar
-    const user = await onRegister(username,  null , password, name, "", "", avatar);
+    const user = await onRegister(username, null, password, name, "", "", avatar);
     if (user == null || user == undefined) {
       ToastAndroid.show('Register Fail!', ToastAndroid.SHORT);
       console.log("--------That Bai -------");
@@ -104,7 +115,7 @@ const Register = (props) => {
             onChangeText={setName}
             placeholder="Ex: John Doe"
             style={{}}
-            />
+          />
           <View style={{ height: 1, backgroundColor: 'black', marginBottom: 20 }} ></View>
 
           {/* Password */}
