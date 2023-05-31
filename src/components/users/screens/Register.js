@@ -8,8 +8,9 @@ import ProgressDialog from 'react-native-progress-dialog';
 const Register = (props) => {
   const { navigation } = props;
   const { onRegister } = useContext(UserContext);
+  const [username, setUsername] = useState('');
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  //const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -21,13 +22,13 @@ const Register = (props) => {
   back(navigation);
 
   const handleRegister = async () => {
-    const patternEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    const checkEmail = patternEmail.test(email);
-    if (!checkEmail) {
-      ToastAndroid.show('Email is not valid', ToastAndroid.SHORT);
-      return;
-    }
-    if (!email || !password || !name || !confirmPassword) {
+    // const patternEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    // const checkEmail = patternEmail.test(username);
+    // if (!checkEmail) {
+    //   ToastAndroid.show('Email is not valid', ToastAndroid.SHORT);
+    //   return;
+    // }
+    if (!username || !password || !name || !confirmPassword) {
       alert('Please fill all the fields');
       return;
     };
@@ -36,9 +37,25 @@ const Register = (props) => {
       return;
     };
     setIsLoading(true);
-    navigation.navigate('Login');
+    //email, password, name, birthday, numberPhone, avatar
+    const user = await onRegister(username,  null , password, name, "", "", avatar);
+    if (user == null || user == undefined) {
+      ToastAndroid.show('Register Fail!', ToastAndroid.SHORT);
+      console.log("--------That Bai -------");
+      console.log("Username: " + username);
+      // console.log("Email: " + email);
+      console.log("Password: " + password);
+      console.log("Name: " + name);
+    } else {
+      ToastAndroid.show('Register Successfully!', ToastAndroid.SHORT);
+      console.log("--------Thanh Cong -------");
+      console.log("Username: " + username);
+      //console.log("Email: " + email);
+      console.log("Password: " + password);
+      console.log("Name: " + name);
+      navigation.navigate('Login');
+    }
     setIsLoading(false);
-
   };
 
   return (
@@ -61,28 +78,38 @@ const Register = (props) => {
         </View>
 
         <View style={{ width: '100%', justifyContent: 'center', }}>
+
+          {/* UserNamw */}
+          <Text style={{ color: 'black', fontWeight: '800', fontSize: 16, marginTop: 20 }}>Username</Text>
+          <TextInput
+            value={username}
+            onChangeText={setUsername}
+            placeholder="Ex: ABC"
+            style={{}} />
+          <View style={{ height: 1, backgroundColor: 'black', marginBottom: 20 }} ></View>
+
           {/* Email */}
-          <Text style={{ color: 'black', fontWeight: '800', fontSize: 16, marginTop: 20 }}>Email</Text>
+          {/* <Text style={{ color: 'black', fontWeight: '800', fontSize: 16}}>Email</Text>
           <TextInput
             value={email}
             onChangeText={setEmail}
             placeholder="Ex: johndoe194@gmail.com"
             style={{}} />
-          <View style={{ height: 1, backgroundColor: 'black', marginBottom: 20 }} ></View>
+          <View style={{ height: 1, backgroundColor: 'black', marginBottom: 20 }} ></View> */}
 
           {/* Name */}
-          <Text style={{ color: 'black', fontWeight: '800', fontSize: 16, }}>Name</Text>
+          <Text style={{ color: 'black', fontWeight: '800', fontSize: 16 }}>Name</Text>
           <TextInput
             value={name}
             onChangeText={setName}
             placeholder="Ex: John Doe"
             style={{}}
-            secureTextEntry={true} />
+            />
           <View style={{ height: 1, backgroundColor: 'black', marginBottom: 20 }} ></View>
 
           {/* Password */}
           <View style={{ position: 'relative' }}>
-            <Text style={{ color: 'black', fontWeight: '800', fontSize: 16, }}>Password</Text>
+            <Text style={{ color: 'black', fontWeight: '800', fontSize: 16 }}>Password</Text>
             <TextInput
               value={password}
               onChangeText={setPassword}

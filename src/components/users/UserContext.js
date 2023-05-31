@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import jwt_decode from "jwt-decode";
 
-// import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 export const UserContext = createContext();
 
@@ -12,30 +12,14 @@ export const UserContextProvider = (props) => {
   const { children } = props;
   const [user, setUser] = useState(null);
 
-  // GoogleSignin.configure({
-  //   webClientId: '13705249458-n11h88g38semsu2teplnr0fo05tdnrks.apps.googleusercontent.com'
-  // });
+  GoogleSignin.configure({
+    // webClientId: '13705249458-n11h88g38semsu2teplnr0fo05tdnrks.apps.googleusercontent.com'
+    webClientId: '1229200979-7dof3i1mi9ih5k2s387s8p113v786p69.apps.googleusercontent.com'
+  });
 
-  // useEffect(() => {
-  //   const loginUserCheckRemember = async () => {
-  //     const token = await AsyncStorage.getItem('token');
-  //     console.log("Login user remember: ",token);
-  //     if(token == null) return;
-  //     const decoded = jwt_decode(token);
-  //     if (decoded.accessToken == "") {
-  //       setUser(null);
-  //       return;
-  //     } else {
-  //       setUser(decoded.user);
-  //       return;
-  //     }
-  //   };
-  //   loginUserCheckRemember();
-  // }, []);
-
-  const onLogin = async (email, password, fcmToken) => {
+  const onLogin = async (username, email, password, fcmToken) => {
     try {
-      const response = await login(email, password, fcmToken);
+      const response = await login(username, email, password, fcmToken);
       if (response) {
         const token = response.accessToken;
         await AsyncStorage.setItem('token', token);
@@ -56,8 +40,8 @@ export const UserContextProvider = (props) => {
     try {
       await AsyncStorage.removeItem('idUser');
       await AsyncStorage.removeItem('token');
-      //await onUpdateFcmToken(usId, "");
-      //await GoogleSignin.signOut();
+      // await onUpdateFcmToken(usId, "");
+      await GoogleSignin.signOut();
 
       setUser(null);
 
@@ -76,9 +60,9 @@ export const UserContextProvider = (props) => {
     }
   };
 
-  const onRegister = async (email, password, name, birthday, numberPhone, avatar) => {
+  const onRegister = async (username,  email, password, name, birthday, numberPhone, avatar) => {
     try {
-      const response = await register(email, password, name, birthday, numberPhone, avatar);
+      const response = await register(username,  email, password, name, birthday, numberPhone, avatar);
       return response.data;
     } catch (error) {
       console.log("OnRegister Error: ", error);

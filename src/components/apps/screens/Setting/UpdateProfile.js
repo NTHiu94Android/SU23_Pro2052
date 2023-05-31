@@ -1,7 +1,10 @@
 import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React from 'react'
+import back from '../../../back/back';
 
-const UpdateProfile = () => {
+const UpdateProfile = (props) => {
+  const { navigation } = props;
+  back(navigation);
   return (
     <View style={styles.container}>
       <View style={styles.header}>

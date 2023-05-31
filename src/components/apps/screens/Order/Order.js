@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React from 'react'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import Delivered from './OrderStatus/Delivered';
 import Canceled from './OrderStatus/Canceled';
 import Processing from './OrderStatus/Processing';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+
 import backToScreen from '../../../back/backToScreen';
 
 const Tab = createMaterialTopTabNavigator();
