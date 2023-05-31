@@ -8,6 +8,7 @@ const Home = (props) => {
   const { navigation } = props;
   // back(navigation);
   const { categories } = useContext(AppContext);
+  const { products } = useContext(AppContext);
   
   const product = [
     {
@@ -118,7 +119,7 @@ const Home = (props) => {
       <View>
         <FlatList
           horizontal
-          data={product}
+          data={products}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
@@ -161,7 +162,7 @@ const Home = (props) => {
       <View>
         <FlatList
           horizontal
-          data={product}
+          data={products}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
@@ -205,7 +206,7 @@ const Home = (props) => {
       <View>
         <FlatList
           horizontal
-          data={product}
+          data={products}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >

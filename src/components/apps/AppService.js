@@ -8,3 +8,12 @@ export const getAllCategories = async () => {
         console.log(error);
     }
 };
+
+export const getAllProducts = async () => {
+    try {
+        const res = await CustomAxios().get('products/api/get-products');
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};
