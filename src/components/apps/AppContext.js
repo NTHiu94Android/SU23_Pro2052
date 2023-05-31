@@ -1,18 +1,28 @@
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react'
-import {
-
-} from './AppService';
-import { UserContext } from '../users/UserContext';
+import { createContext, useEffect, useState } from "react";
+import { getAllCategories } from "./AppService";
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
-  const { children } = props;
-  
+    const { children } = props;
 
-  return (
-    <AppContext.Provider value={{}}>
-      {children}
-    </AppContext.Provider>
-  )
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await getAllCategories();
+                setCategories(res.data);
+            }
+            catch (error) {
+                console.log(error);
+            }
+        };
+        fetchCategories();
+    }, []);
+    return (
+        <AppContext.Provider value={{ categories }}>
+            {children}
+        </AppContext.Provider>
+    );
 }

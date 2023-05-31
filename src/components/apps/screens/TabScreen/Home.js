@@ -2,53 +2,13 @@ import { Image, StyleSheet, Text, View, ScrollView, TouchableOpacity, FlatList }
 import Swiper from 'react-native-swiper';
 import React, { useContext, useEffect, useState } from 'react';
 import back from '../../../back/back';
+import { AppContext } from '../../AppContext';
 
 const Home = (props) => {
   const { navigation } = props;
-  back(navigation);
-
-  const category = [
-    {
-      _id: "645cfd060405a873dbcdda9c",
-      name: "Smartphone",
-      image: " https://assets.swappie.com/cdn-cgi/image/width=600,height=600,fit=contain,format=auto/swappie-iphone-14-pro-max-gold.png?v=34",
-    },
-
-    {
-      _id: "645cfcd60405a873dbcdda9a",
-      name: "Laptop",
-      image: "https://fptshop.com.vn/Uploads/Originals/2022/7/11/637931467519964702_hp-15s-fq-bac-win11-dd.jpg",
-
-    },
-    {
-      _id: "645cfd550405a873dbcdda9e",
-      name: "Smart watch",
-      image: "https://cdn.shopify.com/s/files/1/0997/6284/files/nav-noise-colorfit-loop-smartwatch.png?v=18114716816441478335",
-
-    },
-    {
-      _id: "645cfdad0405a873dbcddaa0",
-      name: "Tablet",
-      image: "https://www.popsci.com/uploads/2023/03/14/best-tablet-college-samsung-galaxy.jpg?auto=webp",
-
-    },
-    {
-      _id: "645cfe040405a873dbcddaa2",
-      name: "Earphones",
-      image: "https://www.sbsmobile.com/ita/180279-thickbox_default/spiritual-earphones-with-neck-band.jpg",
-
-    },
-    {
-      _id: "645cfe2c0405a873dbcddaa4",
-      name: "Speaker",
-      image: "https://cdn-amz.woka.io/images/I/51KZcUQIyiS.jpg"
-    },
-    {
-      _id: "645d05fcd462c8e4783df253",
-      name: "TV",
-      image: "https://www.lg.com/in/images/tvs/md07554883/gallery/55UQ7500PSF-D-2.jpg"
-    },
-  ];
+  // back(navigation);
+  const { categories } = useContext(AppContext);
+  
   const product = [
     {
       id: "1",
@@ -79,50 +39,9 @@ const Home = (props) => {
     { image: 'https://bachlongmobile.com/bnews/wp-content/uploads/2020/12/12-01-min.png' },
     { image: 'https://bachlongmobile.com/bnews/wp-content/uploads/2020/11/bh-952x500-min-1_1604280722.png' },
   ];
-  //Lay danh sach category
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       const resCategory = await onGetCategories();
-  //       setListCategory(resCategory.data);
-  //       //Lay danh sach san pham
-  //       const resProduct = await onGetProducts();
-  //       if (resProduct == null || resProduct == undefined) {
-  //         setIsLoading(false);
-  //         return;
-  //       }
-  //       const listProduct = resProduct.data;
-
-  //       //Them sao va subProduct vao tung item
-  //       for (let i = 0; i < listProduct.length; i++) {
-  //         listProduct[i].rating = await getStar(listProduct[i]._id);
-  //         const subProduct = await onGetSubProductsByIdProduct(listProduct[i]._id);
-  //         listProduct[i].subProduct = subProduct;
-  //       }
-
-  //       //Lay danh sach san pham sale va add vao listSale
-  //       let listSale = [];
-  //       for (let i = 0; i < listProduct.length; i++) {
-  //         if (listProduct[i].subProduct[0].sale > 5) {
-  //           listSale.push(listProduct[i]);
-  //         }
-  //       }
-  //       setListSale(listSale);
-
-  //       //Lay danh sach san pham phone va add vao listPhone
-
-  //       //Lay danh sach san pham laptop va add vao listLaptop
-
-  //       setIsLoading(false);
-  //     } catch (error) {
-  //       console.log("Error home screen: ", error);
-  //     }
-  //   };
-  //   getData();
-  // }, []);
-  const nextScreen = (category) => {
-    navigation.navigate('ListProduct', { category });
+  
+  const nextScreen = (categories) => {
+    navigation.navigate('ListProduct', { categories });
   };
 
   return (
@@ -172,7 +91,7 @@ const Home = (props) => {
       <View style={styles.categoryView}>
         <FlatList
           horizontal
-          data={category}
+          data={categories}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity
