@@ -17,3 +17,12 @@ export const getAllProducts = async () => {
         console.log(error);
     }
 };
+
+export const getAllSubProducts = async () => {
+    try {
+        const res = await CustomAxios().get('sub-products/api/get-all-sub-products');
+        return res;
+    } catch (error) {
+        console.log(error);
+    }
+};

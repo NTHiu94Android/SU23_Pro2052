@@ -6,33 +6,9 @@ import { AppContext } from '../../AppContext';
 
 const Home = (props) => {
   const { navigation } = props;
-  // back(navigation);
-  const { categories } = useContext(AppContext);
-  const { products } = useContext(AppContext);
+  const { categories, fullProducts, onGetProductsByCategory } = useContext(AppContext);
+  const [productsByCategory, setProductsByCategory] = useState([]);
   
-  const product = [
-    {
-      id: "1",
-      sale: 10,
-      name: "Macbook Pro 2022",
-      image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
-      price: 2000
-    },
-    {
-      id: "2",
-      sale: 10,
-      name: "Macbook Pro 2023",
-      image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
-      price: 2000
-    },
-    {
-      id: "3",
-      sale: 10,
-      name: "Macbook Pro 2023",
-      image: "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
-      price: 2000
-    },
-  ]
   // hinh anh banner 
   const data = [
     { image: 'https://hoangphucstore.com/assets/uploads/images/F1NRG392ni19_banner-trang-chu%CC%89.jpg' },
@@ -40,9 +16,11 @@ const Home = (props) => {
     { image: 'https://bachlongmobile.com/bnews/wp-content/uploads/2020/12/12-01-min.png' },
     { image: 'https://bachlongmobile.com/bnews/wp-content/uploads/2020/11/bh-952x500-min-1_1604280722.png' },
   ];
-  
-  const nextScreen = (categories) => {
-    navigation.navigate('ListProduct', { categories });
+
+  const nextScreen = (_category, _categoryId) => {
+    const _products = onGetProductsByCategory(_categoryId);
+    setProductsByCategory(_products);
+    navigation.navigate('ListProduct', { category: _category, products: _products });
   };
 
   return (
@@ -97,7 +75,7 @@ const Home = (props) => {
           renderItem={({ item }) => (
             <TouchableOpacity
               style={styles.listCategory}
-              onPress={() => nextScreen(item)}
+              onPress={() => nextScreen(item, item._id)}
             >
               <Image style={styles.image} source={{ uri: item.image }} />
               <Text>{item.name}</Text>
@@ -119,7 +97,7 @@ const Home = (props) => {
       <View>
         <FlatList
           horizontal
-          data={products}
+          data={fullProducts}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
@@ -141,8 +119,8 @@ const Home = (props) => {
               </View>
               {/* Price product */}
               <View style={{ flexDirection: "row", justifyContent: "space-between", width: 200, margin: 5 }}>
-                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.price} </Text>
-                <Text style={{ color: "red", fontSize: 16 }}>${item.price - item.price * (item.sale / 100)}</Text>
+                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.subProduct.price} </Text>
+                <Text style={{ color: "red", fontSize: 16 }}>${item.subProduct.price - item.subProduct.price * (item.subProduct.sale / 100)}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -162,7 +140,7 @@ const Home = (props) => {
       <View>
         <FlatList
           horizontal
-          data={products}
+          data={fullProducts}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
@@ -185,8 +163,8 @@ const Home = (props) => {
               </View>
               {/* Price product */}
               <View style={{ flexDirection: "row", justifyContent: "space-between", width: 200, margin: 5 }}>
-                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.price} </Text>
-                <Text style={{ color: "red", fontSize: 16 }}>${item.price - item.price * (item.sale / 100)}</Text>
+                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.subProduct.price} </Text>
+                <Text style={{ color: "red", fontSize: 16 }}>${item.subProduct.price - item.subProduct.price * (item.subProduct.sale / 100)}</Text>
               </View>
             </TouchableOpacity>
           )}
@@ -206,7 +184,7 @@ const Home = (props) => {
       <View>
         <FlatList
           horizontal
-          data={products}
+          data={fullProducts}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ProductDetail', { productItem: item })} >
@@ -228,8 +206,8 @@ const Home = (props) => {
               </View>
               {/* Price product */}
               <View style={{ flexDirection: "row", justifyContent: "space-between", width: 200, margin: 5 }}>
-                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.price} </Text>
-                <Text style={{ color: "red", fontSize: 16 }}>${item.price - item.price * (item.sale / 100)}</Text>
+                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.subProduct.price} </Text>
+                <Text style={{ color: "red", fontSize: 16 }}>${item.subProduct.price - item.subProduct.price * (item.subProduct.sale / 100)}</Text>
               </View>
             </TouchableOpacity>
           )}
