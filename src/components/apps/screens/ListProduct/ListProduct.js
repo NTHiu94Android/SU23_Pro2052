@@ -7,11 +7,15 @@ import {
   FlatList,
   TouchableOpacity
 } from 'react-native'
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import back from '../../../back/back';
+import { useRoute } from '@react-navigation/native';
+import { AppContext } from '../../AppContext';
 
 const ListProduct = (props) => {
   const { navigation } = props;
+  const { category, products } = useRoute().params;
+  console.log(JSON.stringify(products));
   back(navigation);
   const brand = [
     { image: "https://static.vecteezy.com/system/resources/previews/020/927/329/original/lenovo-logo-brand-phone-symbol-name-black-design-china-mobile-illustration-with-red-background-free-vector.jpg" },
@@ -58,7 +62,7 @@ const ListProduct = (props) => {
       </View>
       <View style={{ flexDirection: "row", margin: 10 }}>
         {/* Ten loai san pham  */}
-        <Text style={styles.text}>Smart phone</Text>
+        <Text style={styles.text}>{category.name}</Text>
         {/* So luong san pham cua loai san pham */}
         <Text style={styles.text}>(113)</Text>
       </View>
@@ -82,8 +86,8 @@ const ListProduct = (props) => {
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <FlatList
           numColumns={2}
-          data={product}
-          keyExtractor={(item) => item.id}
+          data={products}
+          keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.listItem}>
 
@@ -99,19 +103,19 @@ const ListProduct = (props) => {
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
                 <Image style={styles.icon} source={require("../../../../assets/images/star.png")} />
               </View>
-              
+
               {/* Price product */}
               <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.price} </Text>
-                <Text style={{ color: "red", fontSize: 16 }}>${item.price - item.price * (item.sale / 100)}</Text>
+                <Text style={{ color: "black", fontSize: 16, textDecorationLine: 'line-through' }}>${item.subProduct.price} </Text>
+                <Text style={{ color: "red", fontSize: 16 }}>${item.subProduct.price - item.subProduct.price * (item.subProduct.sale / 100)}</Text>
               </View>
               <TouchableOpacity style={{ width: 35, height: 35, position: 'absolute', right: 13, bottom: 90 }}>
-              <Image
-                style={{ width: 35, height: 35}}
-                resizeMode='cover'
-                source={require('../../../../assets/images/ic_shop.png')} />
+                <Image
+                  style={{ width: 35, height: 35 }}
+                  resizeMode='cover'
+                  source={require('../../../../assets/images/ic_shop.png')} />
               </TouchableOpacity>
-              
+
             </TouchableOpacity>
           )}
         />

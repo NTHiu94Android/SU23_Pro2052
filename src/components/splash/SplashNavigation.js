@@ -18,7 +18,6 @@ const NavigationApp = () => {
 
   return (
     <NavigationContainer independent={true}>
-     
       {user ? <AppNavigation /> : <UserNavigation />}
     </NavigationContainer>
   )

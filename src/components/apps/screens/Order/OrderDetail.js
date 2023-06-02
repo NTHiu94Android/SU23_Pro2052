@@ -16,7 +16,7 @@ const OrderDetail = (props) => {
   ];
 
   const renderItem = ({ item }) => (
-    <View style={{ marginTop: 15, flexDirection: 'row', justifyContent: 'space-between', width: '100%', borderBottomColor:'#000', borderBottomWidth:0.5 }}>
+    <View style={{ marginTop: 15, flexDirection: 'row', justifyContent: 'space-between', width: '100%', borderBottomColor: '#000', borderBottomWidth: 0.5 }}>
       <View style={{ width: 80, height: 80 }}>
         <Image
           style={{ width: '100%', height: '100%' }}
