@@ -249,22 +249,22 @@ const ListProduct = ({ navigation, route }) => {
                 <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>1$-100$</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{marginStart:7}}
+                style={{marginStart:10}}
                 onPress={() => getProductsByIdCategory()}>
                 <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>100$-300$</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{marginStart:7}}
+                style={{marginStart:10}}
                 onPress={() => getProductsByIdCategory()}>
                 <Text style={{textDecorationLine: 'underline' ,color:'blue', fontWeight: 600, fontSize: 13}}>300$-500$</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{marginStart:7}}
+                style={{marginStart:10}}
                 onPress={() => getProductsByIdCategory()}>
                 <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>500$-700$</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{marginStart:7}}
+                style={{marginStart:10}}
                 onPress={() => getProductsByIdCategory()}>
                 <Text style={{textDecorationLine: 'underline', color:'blue' , fontWeight: 600, fontSize: 13}}>700$-1000$</Text>
               </TouchableOpacity>
