@@ -24,7 +24,7 @@ const UpdateProfile = (props) => {
           <Pressable style={styles.btnEdit}>
             <Image
               style={styles.icEdit}
-              source={require('../../../../assets/images/edit-2.png')} ></Image>
+              source={require('../../../../assets/images/edit2.png')} ></Image>
           </Pressable>
         </View>
 
