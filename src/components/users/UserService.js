@@ -7,10 +7,11 @@ export const get_user_by_id = async (id) => {
 }
 
 export const login = async (email, password, tokenFcm) => {
+
     const body = {
         email: email,
         password: password,
-        fcmToken: tokenFcm
+        // fcmToken: tokenFcm
     }
     const response = await CustomAxios().post('users/api/login', body);
     return response;
@@ -42,20 +43,21 @@ export const register = async (email, password, name, birthday, numberPhone, ava
 export const update_profile = async (id, email, name, birthday, numberPhone, avatar) => {
     const body = {
         id: id,
+        email: email,
         name: name,
         birthday: birthday,
         numberPhone: numberPhone,
-        avatar: avatar,
-        email: email
+        avatar: avatar
     };
     const response = await CustomAxios().post('users/api/update-profile', body);
     return response;
 }
 
 //Doi mat khau
-export const change_password = async (id, new_password, confirm_password) => {
+export const change_password = async (id, password, new_password, confirm_password) => {
     const body = {
         id: id,
+        password: password,
         new_password: new_password,
         confirm_password: confirm_password,
     }
@@ -71,6 +73,8 @@ export const forgot_password = async (email) => {
     const response = await CustomAxios().post('users/api/forgot-password', body);
     return response;
 }
+
+
 
 //reset password
 export const reset_password = async (token, password, confirm_password) => {

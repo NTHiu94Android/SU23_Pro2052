@@ -1,10 +1,13 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Switch } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import back from '../../../back/back';
+import { UserContext } from '../../../users/UserContext';
 
 const Setting = (props) => {
   const { navigation } = props;
   back(navigation);
+
+  const {user} = useContext(UserContext);
 
   const handleBackPress = () => {
     navigation.navigate('Profile');
@@ -20,8 +23,8 @@ const Setting = (props) => {
       <View style={styles.headerBox}>
         <TouchableOpacity style={{ width: 12, height: 12 }} onPress={handleBackPress}>
           <Image
-            style={{ width: '100%', height: '100%', }}
-            source={require('../../../../assets/images/back2.png')}
+            style={{ width: 24, height: 24, }}
+            source={require('../../../../assets/images/back.png')}
           />
         </TouchableOpacity>
         <Text style={[styles.text1, { color: '#303030' }]}>Setting</Text>
@@ -44,11 +47,11 @@ const Setting = (props) => {
         <View style={{ marginTop: 15 }}>
           <View style={styles.infoBox}>
             <Text style={[styles.text3, { marginBottom: 5 }]}>Name</Text>
-            <Text style={styles.text4}>Phạm Quốc Tín</Text>
+            <Text style={styles.text4}>{user.name}</Text>
           </View>
           <View style={[styles.infoBox, { marginTop: 15 }]}>
             <Text style={[styles.text3, { marginBottom: 5 }]}>Email</Text>
-            <Text style={styles.text4}>tinpqps19513@fpt.edu.vn</Text>
+            <Text style={styles.text4}>{user.email}</Text>
           </View>
         </View>
       </View>
@@ -65,12 +68,7 @@ const Setting = (props) => {
           </TouchableOpacity>
         </View>
 
-        <View style={{ marginTop: 15 }}>
-          <View style={styles.infoBox}>
-            <Text style={[styles.text3, { marginBottom: 5 }]}>Password</Text>
-            <Text style={styles.text4}>******************</Text>
-          </View>
-        </View>
+        
       </View>
 
       {/* Thông báo */}
@@ -189,8 +187,9 @@ const styles = StyleSheet.create({
     color: '#808080',
   },
   text1: {
-    fontSize: 16,
-    fontWeight: '700',
+    marginTop: 10,
+    fontSize: 18,
+    fontWeight: '800',
   },
   text2: {
     fontSize: 16,

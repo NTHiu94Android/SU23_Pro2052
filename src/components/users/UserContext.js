@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react'
-import { login, register, updateFcmToken, forgot_password, update_profile } from './UserService';
+import { login, register, updateFcmToken, forgot_password, update_profile, change_password } from './UserService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import jwt_decode from "jwt-decode";
@@ -97,17 +97,26 @@ export const UserContextProvider = (props) => {
   const onForgotPassword = async (email) => {
     try {
       const response = await forgot_password(email);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log("OnForgotPassword Error: ", error);
     }
   }
 
+  const onChangePassword = async (id, password, new_password, confirm_password) => {
+    try {
+      const response = await change_password(id, password, new_password, confirm_password);
+      return response;
+    } catch (error) {
+      console.log("Change password Error: ", error);
+    }
+  };
 
   return (
     <UserContext.Provider value={{
       user, setUser, onLogin, onLogout, onRegister,
-      onUpdateProfile, onUpdateFcmToken, onForgotPassword
+      onUpdateProfile, onUpdateFcmToken, onForgotPassword, onChangePassword
     }}>
       {children}
     </UserContext.Provider>
