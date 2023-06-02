@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ToastAndroi
 import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
-import ImagePicker from 'react-native-image-crop-picker';
+//import ImagePicker from 'react-native-image-crop-picker';
 
 
 const UpdateProfile = (props) => {

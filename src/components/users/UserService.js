@@ -55,9 +55,10 @@ export const update_profile = async (id, email, name, birthday, numberPhone, ava
 }
 
 //Doi mat khau
-export const change_password = async (id, new_password, confirm_password) => {
+export const change_password = async (id, password, new_password, confirm_password) => {
     const body = {
         id: id,
+        password: password,
         new_password: new_password,
         confirm_password: confirm_password,
     }
