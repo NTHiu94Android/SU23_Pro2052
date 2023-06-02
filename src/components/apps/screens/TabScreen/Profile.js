@@ -4,7 +4,7 @@ import { UserContext } from '../../../users/UserContext';
 
 const Profile = (props) => {
   const { navigation } = props;
-
+  const {user} = useContext(UserContext);
   const handleSettingPress = () => {
     navigation.navigate('Setting');
   };
@@ -20,12 +20,12 @@ const Profile = (props) => {
         <View style={styles.imageContainer}>
           <Image
             style={{ width: '100%', height: '100%', }}
-            source={require('../../../../assets/images/avataruser.png')}
-          />
+            source={user.avatar ? { uri: user.avatar } : require('../../../../assets/images/avataruser.png')}
+            />
         </View>
         <View style={{ marginStart: 20 }}>
-          <Text style={{ fontWeight: '700', fontSize: 20, marginBottom: 5, color: '#303030' }}>Phạm Quốc Tín</Text>
-          <Text style={{ fontWeight: '400', fontSize: 14, color: '#808080' }}>tinpqps19513@fpt.edu.vn</Text>
+          <Text style={{ fontWeight: '700', fontSize: 20, marginBottom: 5, color: '#303030' }}>{user.name}</Text>
+          <Text style={{ fontWeight: '400', fontSize: 14, color: '#808080' }}>{user.email}</Text>
         </View>
       </View>
 
