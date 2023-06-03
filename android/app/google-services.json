@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "1037520700616",
-    "project_id": "datn-d1d85",
-    "storage_bucket": "datn-d1d85.appspot.com"
+    "project_number": "472692999572",
+    "project_id": "duantn-81fa7",
+    "storage_bucket": "duantn-81fa7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1037520700616:android:d2794480cf4a604d8ed1fd",
+        "mobilesdk_app_id": "1:472692999572:android:a4e6b47ac700c7f811bb81",
         "android_client_info": {
           "package_name": "com.itech"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1037520700616-m1patukttangu9trg0d1egc7spmhiv2s.apps.googleusercontent.com",
+          "client_id": "472692999572-g6d1cknldocprjs2q113p0pitfakq3ad.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.itech",
-            "certificate_hash": "a384e2778de2ee5092d15c9a0a695899b5a14ed2"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "1037520700616-sop9fbqa1a97b3k29g9bg18raok3olhd.apps.googleusercontent.com",
+          "client_id": "472692999572-56mudgijjk50l5q038vo8t4le147qk2g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBxey3xJZp7lWXnpOIqcvNQnOwNxSOJjIw"
+          "current_key": "AIzaSyDbQq1EM4kMkYVR5xbKgBRASBw2C9yUlwI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1037520700616-sop9fbqa1a97b3k29g9bg18raok3olhd.apps.googleusercontent.com",
+              "client_id": "472692999572-56mudgijjk50l5q038vo8t4le147qk2g.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
