@@ -1,6 +1,12 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
 apply plugin: "com.google.gms.google-services"
+project.ext.react = [
+    entryFile: "index.js",
+    enableHermes: true,  // Set this to true if you want to enable Hermes compiler
+    hermesCommandEnabled: false,
+    hermesEnabled: false
+]
 
 import com.android.build.OutputFile
 

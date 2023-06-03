@@ -43,37 +43,30 @@ const EditPassword = (props) => {
           <View style={styles.iconTopBar}></View>
         </View>
         <View style={{ paddingHorizontal: 20, marginTop: 30 }}>
-          <View style={{ backgroundColor: "#E8E8E8", padding: 10, borderRadius: 5, marginBottom: 10, paddingBottom: 0 }}>
-            <Text style={{ color: 'grey' }}>Password</Text>
-            <TextInput
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Enter password"
-              secureTextEntry={true}
-              style={{}} />
-            {/* <View style={{ height: 1, backgroundColor: 'black', }} ></View> */}
-
-          </View>
-
-          <View style={{ backgroundColor: "#E8E8E8", padding: 10, borderRadius: 5, marginBottom: 10, paddingBottom: 0  }}>
-            <Text style={{ color: 'grey' }}>New password</Text>
-            <TextInput
-              value={newPassword}
-              onChangeText={setNewPassword}
-              placeholder="Enter new password"
-              secureTextEntry={true}
-              style={{}} />
-          </View>
-          <View style={{ backgroundColor: "#E8E8E8", padding: 10, borderRadius: 5, marginBottom: 10, paddingBottom: 0  }}>
-            <Text style={{ color: 'grey'}}>Confirm Password</Text>
-            <TextInput
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder="Enter confirm password"
-              style={{}}
-              secureTextEntry={true} />
-          </View>
-          <View style={{ height: 1, backgroundColor: '#8B8989', marginTop: 20 }} ></View>
+          <Text style={{ color: 'black', marginTop: 30, marginBottom: 0, fontWeight: 'bold' }}>Password</Text>
+          <TextInput
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Enter password"
+            secureTextEntry={true}
+            style={{}} />
+          <View style={{ height: 1, backgroundColor: 'black', }} ></View>
+          <Text style={{  color: 'black', marginTop: 30, marginBottom: 0, fontWeight: 'bold' }}>New Password</Text>
+          <TextInput
+            value={newPassword}
+            onChangeText={setNewPassword}
+            placeholder="Enter new password"
+            secureTextEntry={true}
+            style={{}} />
+          <View style={{ height: 1, backgroundColor: 'black', }} ></View>
+          <Text style={{ color: 'black', marginTop: 30, marginBottom: 0, fontWeight: 'bold' }}>Confirm Password</Text>
+          <TextInput
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="Enter confirm password"
+            style={{}}
+            secureTextEntry={true} />
+          <View style={{ height: 1, backgroundColor: 'black', }} ></View>
 
           <TouchableOpacity style={styles.btn} onPress={() => handleChangePassword()}>
             <Text style={{ color: '#ffffff', textAlign: 'center', fontWeight: 'bold' }} >Submit</Text>
@@ -89,6 +82,8 @@ export default EditPassword
 
 const styles = StyleSheet.create({
   btn: {
+    alignSelf:'center',
+    width:200,
     height: 50,
     backgroundColor: 'black',
     borderRadius: 30,
