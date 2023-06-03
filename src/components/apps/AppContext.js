@@ -1,71 +1,122 @@
-import { createContext, useEffect, useState } from "react";
-import { getAllCategories, getAllProducts, getAllSubProducts } from "./AppService";
+import React, { createContext, useContext, useState } from 'react'
+import {
+  //Category & Brand
+  getCategories, getBrandsByIdCategory,
+  //Product, subProduct
+  getProducts, getSubProductsByIdProduct, getSubProducts,
+  //Picture
+  getPicturesByIdProduct,
+  //Cart
+
+  //Favorite
+
+  //OrderDetail
+  addOrderDetail, getOrderDetailsByIdOrder,
+
+  //Review
+  getReviews,
+
+} from './AppService';
+import { UserContext } from '../users/UserContext';
+//import { UserContext } from '../users/UserContext';
 
 export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
   const { children } = props;
 
-  const [categories, setCategories] = useState([]);
-  const [products, setProducts] = useState([]);
-  const [subProducts, setSubProducts] = useState([]);
-  const [fullProducts, setFullProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const _categories = await getAllCategories();
-        setCategories(_categories.data);
 
-        const _products = await getAllProducts();
-        setProducts(_products.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const _subProducts = await getAllSubProducts();
-        setSubProducts(_subProducts.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const mergeData = () => {
-      const _fullProduct = products.map((product) => {
-        const subProduct = subProducts.find((sub) => sub.idProduct === product._id);
-        return {
-          ...product,
-          subProduct: { ...subProduct }
-        };
-      });
-      setFullProducts(_fullProduct);
-    };
-
-    if (products.length > 0 && subProducts.length > 0) {
-      mergeData();
+  const onGetCategories = async () => {
+    try {
+      const res = await getCategories();
+      return res;
+    } catch (error) {
+      console.log('onGetCategories error: ', error);
     }
-  }, [products, subProducts]);
-
-  const onGetProductsByCategory = (idCategory) => {
-    const _products = fullProducts.filter((product) => product.idCategory === idCategory);
-    return _products;
   };
 
+  const onGetBrandsByIdCategory = async (idCategory) => {
+    try {
+      const res = await getBrandsByIdCategory(idCategory);
+      return res;
+    } catch (error) {
+      console.log('onGetBrandsByIdCategory error: ', error);
+    }
+  };
+
+  //Lay tat ca san pham
+  const onGetProducts = async () => {
+    try {
+      const res = await getProducts();
+      return res;
+    } catch (error) {
+      console.log('onGetProducts error: ', error);
+    }
+  };
+
+  //Lay san pham theo id
+  const onGetProductById = async (idProduct) => {
+    try {
+      const res = await getProducts();
+      const product = res.data.find((item) => item._id === idProduct);
+      return product;
+    } catch (error) {
+      console.log('onGetProductById error: ', error);
+    }
+  };
+
+  //Lay tat ca sub san pham theo idProduct
+  const onGetSubProductsByIdProduct = async (idProduct) => {
+    try {
+      const res = await getSubProductsByIdProduct(idProduct);
+      return res;
+    } catch (error) {
+      console.log('onGetSubProductsByIdProduct error: ', error);
+    }
+  };
+
+  //Lay tat ca subProducts
+  const onGetSubProducts = async () => {
+    try {
+      const res = await getSubProducts();
+      return res;
+    } catch (error) {
+      console.log('onGetSubProducts error: ', error);
+    }
+  };
+
+  //Lay tat ca picture theo idProduct
+  const onGetPicturesByIdProduct = async (idSubProduct) => {
+    try {
+      const res = await getPicturesByIdProduct(idSubProduct);
+      return res;
+    } catch (error) {
+      console.log('onGetPicturesByIdProduct error: ', error);
+    }
+  };
+
+  const onGetReviews = async () => {
+    try {
+      const res = await getReviews();
+      return res;
+    } catch (error) {
+      console.log('onGetReviews error: ', error);
+    }
+  };
 
   return (
-    <AppContext.Provider value={{ categories, products, subProducts, fullProducts, onGetProductsByCategory }}>
+    <AppContext.Provider value={{
+      //Category & Brand
+      onGetCategories, onGetBrandsByIdCategory,
+      //Product
+      onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts,
+      //Reviews
+      onGetReviews,
+      //Picture
+      onGetPicturesByIdProduct,
+    }}>
       {children}
     </AppContext.Provider>
-  );
-};
+  )
+}
