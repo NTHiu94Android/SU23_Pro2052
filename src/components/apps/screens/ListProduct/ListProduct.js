@@ -60,7 +60,7 @@ const ListProduct = ({ navigation, route }) => {
     }
   };
 
-  const showProductForPrice = async () => {
+  const showProductForPrice = async (num1, num2) => {
     const res = await onGetProducts();
     const list = res.data;
     let listFilter = [];
@@ -73,7 +73,7 @@ const ListProduct = ({ navigation, route }) => {
 
         const price = subProduct[0].price;
         // Add filtering logic for different price ranges
-        if (price > 1 && price < 100) {
+        if (price > num1 && price < num2) {
           listFilter.push(list[i]);
         }
       }
@@ -81,96 +81,6 @@ const ListProduct = ({ navigation, route }) => {
 
     setListProduct(listFilter);
   };
-
-  const showProductForPrice1 = async () => {
-    const res = await onGetProducts();
-    const list = res.data;
-    let listFilter = [];
-
-    for (let i = 0; i < list.length; i++) {
-      if (list[i].idCategory === category._id) {
-        list[i].rating = await getStar(list[i]._id);
-        const subProduct = await onGetSubProductsByIdProduct(list[i]._id);
-        list[i].subProduct = subProduct;
-
-        const price = subProduct[0].price;
-        // Add filtering logic for different price ranges
-        if (price >= 100 && price < 300) {
-          listFilter.push(list[i]);
-        }
-      }
-
-      setListProduct(listFilter);
-    }
-  };
-
-    const showProductForPrice2 = async () => {
-      const res = await onGetProducts();
-      const list = res.data;
-      let listFilter = [];
-
-      for (let i = 0; i < list.length; i++) {
-        if (list[i].idCategory === category._id) {
-          list[i].rating = await getStar(list[i]._id);
-          const subProduct = await onGetSubProductsByIdProduct(list[i]._id);
-          list[i].subProduct = subProduct;
-
-          const price = subProduct[0].price;
-          // Add filtering logic for different price ranges
-          if (price >= 300 && price < 500) {
-            listFilter.push(list[i]);
-          }
-        }
-      }
-
-      setListProduct(listFilter);
-    };
-
-    const showProductForPrice3 = async () => {
-      const res = await onGetProducts();
-      const list = res.data;
-      let listFilter = [];
-
-      for (let i = 0; i < list.length; i++) {
-        if (list[i].idCategory === category._id) {
-          list[i].rating = await getStar(list[i]._id);
-          const subProduct = await onGetSubProductsByIdProduct(list[i]._id);
-          list[i].subProduct = subProduct;
-
-          const price = subProduct[0].price;
-          // Add filtering logic for different price ranges
-          if (price >= 500 && price < 700) {
-            listFilter.push(list[i]);
-          }
-        }
-      }
-
-      setListProduct(listFilter);
-    };
-
-    const showProductForPrice4 = async () => {
-      const res = await onGetProducts();
-      const list = res.data;
-      let listFilter = [];
-
-      for (let i = 0; i < list.length; i++) {
-        if (list[i].idCategory === category._id) {
-          list[i].rating = await getStar(list[i]._id);
-          const subProduct = await onGetSubProductsByIdProduct(list[i]._id);
-          list[i].subProduct = subProduct;
-
-          const price = subProduct[0].price;
-          // Add filtering logic for different price ranges
-          if (price >= 700 && price < 1000) {
-            listFilter.push(list[i]);
-          }
-        }
-      }
-
-      setListProduct(listFilter);
-    };
-
-
 
 
     //Lay danh sach san pham theo idBrand va idCategory
@@ -337,34 +247,34 @@ const ListProduct = ({ navigation, route }) => {
                 {/* All */}
                 <TouchableOpacity
                   style={{ textDecorationLine: 'underline' }}
-                  onPress={() => showProductForPrice()}
+                  onPress={() => showProductForPrice(1,100)}
                 >
                   <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>1$-100$</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{ marginStart: 10 }}
-                  onPress={() => showProductForPrice1()}
+                  onPress={() => showProductForPrice(100, 300)}
 
                 >
                   <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>100$-300$</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{ marginStart: 10 }}
-                  onPress={() => showProductForPrice2()}
+                  onPress={() => showProductForPrice(300, 500)}
 
                 >
                   <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>300$-500$</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{ marginStart: 10 }}
-                  onPress={() => showProductForPrice3()}
+                  onPress={() => showProductForPrice(500, 700)}
 
                 >
                   <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>500$-700$</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={{ marginStart: 10 }}
-                  onPress={() => showProductForPrice4()}
+                  onPress={() => showProductForPrice(700, 1000)}
                 >
                   <Text
                     style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }
