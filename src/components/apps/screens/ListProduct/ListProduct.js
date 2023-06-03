@@ -39,7 +39,7 @@ const ListProduct = ({ navigation, route }) => {
     getData();
   }, []);
 
-  //Lay tat ca san pham theo idCategory
+  // Lay tat ca san pham theo idCategory
   const getProductsByIdCategory = async () => {
     setIdSelected('all');
     const res = await onGetProducts();
@@ -59,6 +59,7 @@ const ListProduct = ({ navigation, route }) => {
       setListProduct(listFilter);
     }
   };
+
 
   //Lay danh sach san pham theo idBrand va idCategory
   const getProductsByIdBrandAndIdCategory = async (idBrand) => {
@@ -120,41 +121,19 @@ const ListProduct = ({ navigation, route }) => {
     setVisibleSort(true);
   };
 
-  // const onSort = (sort) => {
-  //   setVisibleSort(false);
-  //   console.log(sort);
-  //   if (sort === 'down') {
-  //     const sortedProducts = listProduct.sort((a, b) => b.price - a.price);
-  //     setListProduct(sortedProducts);
-  //   } else if (sort === 'up') {
-  //     const sortedProducts = listProduct.sort((a, b) => a.price - b.price);
-  //     setListProduct(sortedProducts);
-  //   }
-  // };
-
   const onSort = (sort) => {
     setVisibleSort(false);
     console.log(sort);
     if (sort === 'down') {
-      const sortedProducts = [...listProduct].sort((a, b) => b.price - a.price);
+      const sortedProducts = [...listProduct].sort((a, b) => b.subProduct[0].price - a.subProduct[0].price);
       setListProduct(sortedProducts);
     } else if (sort === 'up') {
-      const sortedProducts = [...listProduct].sort((a, b) => a.price - b.price);
+      const sortedProducts = [...listProduct].sort((a, b) => a.subProduct[0].price - b.subProduct[0].price);
       setListProduct(sortedProducts);
     }
   };
 
-  // const onSort = (sort) => {
-  //   setVisibleSort(false);
-  //   console.log(sort);
-  //   if (sort === 'down') {
-  //     const sortedProducts = [...listProduct].sort((a, b) => b.price - a.price);
-  //     setListProduct(sortedProducts);
-  //   } else if (sort === 'up') {
-  //     const sortedProducts = [...listProduct].sort((a, b) => a.price - b.price);
-  //     setListProduct(sortedProducts);
-  //   }
-  // };
+
 
   return (
     <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -240,49 +219,50 @@ const ListProduct = ({ navigation, route }) => {
               }) : <View />
             }
           </ScrollView>
+
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <ScrollView style={{ margin: 10, height: 56, }} horizontal={true} showsHorizontalScrollIndicator={false}>
               {/* All */}
               <TouchableOpacity
-                style={{textDecorationLine: 'underline'}}
-                onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>1$-100$</Text>
+                style={{ textDecorationLine: 'underline' }}
+              >
+                <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>1$-100$</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{marginStart:10}}
-                onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>100$-300$</Text>
+                style={{ marginStart: 10 }}
+              >
+                <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>100$-300$</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{marginStart:10}}
-                onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline' ,color:'blue', fontWeight: 600, fontSize: 13}}>300$-500$</Text>
+                style={{ marginStart: 10 }}
+              >
+                <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>300$-500$</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{marginStart:10}}
-                onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>500$-700$</Text>
+                style={{ marginStart: 10 }}
+              >
+                <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>500$-700$</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={{marginStart:10}}
-                onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline', color:'blue' , fontWeight: 600, fontSize: 13}}>700$-1000$</Text>
+                style={{ marginStart: 10 }}
+              >
+                <Text style={{ textDecorationLine: 'underline', color: 'blue', fontWeight: 600, fontSize: 13 }}>700$-1000$</Text>
               </TouchableOpacity>
 
               <View />
 
             </ScrollView>
+
+
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 40, marginRight: 17 }}>
               <TouchableOpacity onPress={() => showDialogSort()}>
                 <Text style={{ color: 'black', fontWeight: 600, fontSize: 14, textDecorationLine: 'underline' }}>Sort by</Text>
               </TouchableOpacity>
             </View>
           </View>
-
           {
             visibleSort ? <ProductSortDialog onSort={onSort} isVisible={visibleSort} /> : null
           }
-
           <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginHorizontal: 10 }}>
             {
               listProduct ?
