@@ -29,11 +29,11 @@ const Home = (props) => {
 
                 const resProduct = await onGetProducts();
                 const resCategory = await onGetCategories();
-                //const resReview = await onGetReviews();
+                const resReview = await onGetReviews();
                 const resSubProduct = await onGetSubProducts();
 
                 //Lay danh sach san pham
-                if (!resProduct || !resCategory || !resSubProduct) {
+                if (!resProduct || !resCategory || !resSubProduct || !resReview) {
                     setIsLoading(false);
                     return;
                 }
@@ -44,8 +44,7 @@ const Home = (props) => {
                 let list3 = [];
                 const listProduct = resProduct.data;
                 listProduct.map(async (item) => {
-                    //item.rating = await getStar(item._id, resReview);
-                    item.rating = 4.5;
+                    item.rating = await getStar(item._id, resReview);
                     const subProduct = await onGetSubProductsByIdProduct(item._id, resSubProduct);
                     item.subProduct = subProduct;
                     //Lay danh sach san pham theo tung danh muc va add vao list danh muc do
@@ -95,7 +94,7 @@ const Home = (props) => {
         let star = 0;
         let count = 0;
 
-        if (res == null || res == undefined) {
+        if (!res.data) {
             return 0;
         }
         const review = res.data;

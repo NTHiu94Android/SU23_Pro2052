@@ -2,11 +2,12 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ToastAndroi
 import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
-import ImagePicker from 'react-native-image-picker';
+//import ImagePicker from 'react-native-image-picker';
 
 
 const UpdateProfile = (props) => {
    const { navigation } = props;
+   back(navigation);
    const { onUpdateProfile, user } = useContext(UserContext);
    const [name, setName] = useState('');
    const [birthday, setBirthday] = useState('');
@@ -42,23 +43,23 @@ const UpdateProfile = (props) => {
 
    };
    const handleSelectImage = () => {
-      const options = {
-         title: 'Select Avatar',
-         mediaType: 'photo',
-         quality: 0.7
-      };
+      // const options = {
+      //    title: 'Select Avatar',
+      //    mediaType: 'photo',
+      //    quality: 0.7
+      // };
 
-      ImagePicker.launchImageLibrary(options, (response) => {
-         if (response.didCancel) {
-            console.log('User cancelled image picker');
-         } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-         } else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-         } else {
-            setAvatar(response.uri);
-         }
-      });
+      // ImagePicker.launchImageLibrary(options, (response) => {
+      //    if (response.didCancel) {
+      //       console.log('User cancelled image picker');
+      //    } else if (response.error) {
+      //       console.log('ImagePicker Error: ', response.error);
+      //    } else if (response.customButton) {
+      //       console.log('User tapped custom button: ', response.customButton);
+      //    } else {
+      //       setAvatar(response.uri);
+      //    }
+      // });
    };
 
 

@@ -17,14 +17,7 @@ import back from '../../../back/back';
 
 const ListProduct = ({ navigation, route }) => {
   back(navigation);
-
-  //const { category } = route.params;
-  const category = {
-    "_id": "645cfd060405a873dbcdda9c",
-    "name": "Smartphone",
-    "image": "https://assets.swappie.com/cdn-cgi/image/width=600,height=600,fit=contain,format=auto/swappie-iphone-14-pro-max-gold.png?v=34",
-    "__v": 0
-  }
+  const { category } = route.params;
   const { onGetBrandsByIdCategory, onGetProducts, onGetSubProducts, onGetReviews } = useContext(AppContext);
   const [listBrand, setListBrand] = useState([]);
   const [listProduct, setListProduct] = useState([]);
@@ -349,15 +342,13 @@ const styles = StyleSheet.create({
 });
 
 
-
-
 const Item = ({ item, onPress }) => (
   <TouchableOpacity style={{ flexWrap: 'wrap', width: '49%', marginBottom: 10 }} onPress={onPress}>
     <View style={styles.itemContainer}>
       <View style={{ width: '100%', height: '100%' }}>
         <View style={styles.viewSaleDam}>
           <Text style={{ fontSize: 16, color: 'white', fontWeight: '600', marginRight: 8 }}>Sale</Text>
-          <Text style={{ fontSize: 14, color: 'yellow', fontWeight: '450', fontFamily: 'Caveat' }}>Siêu đậm</Text>
+          <Text style={{ fontSize: 14, color: 'yellow', fontWeight: '400', fontFamily: 'Caveat' }}>Siêu đậm</Text>
         </View>
         <Image
           style={{ width: '100%', height: 160, position: 'relative' }}
