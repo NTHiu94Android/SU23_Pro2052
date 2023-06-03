@@ -18,7 +18,13 @@ import back from '../../../back/back';
 const ListProduct = ({ navigation, route }) => {
   back(navigation);
 
-  const { category } = route.params;
+  //const { category } = route.params;
+  const category = {
+    "_id": "645cfd060405a873dbcdda9c",
+    "name": "Smartphone",
+    "image": "https://assets.swappie.com/cdn-cgi/image/width=600,height=600,fit=contain,format=auto/swappie-iphone-14-pro-max-gold.png?v=34",
+    "__v": 0
+  }
   const { onGetBrandsByIdCategory, onGetProducts, onGetSubProducts, onGetReviews } = useContext(AppContext);
   const [listBrand, setListBrand] = useState([]);
   const [listProduct, setListProduct] = useState([]);
@@ -246,27 +252,27 @@ const ListProduct = ({ navigation, route }) => {
               <TouchableOpacity
                 style={{textDecorationLine: 'underline'}}
                 onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>1$-100$</Text>
+                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: '600', fontSize: 13}}>1$-100$</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{marginStart:10}}
                 onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>100$-300$</Text>
+                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: '600', fontSize: 13}}>100$-300$</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{marginStart:10}}
                 onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline' ,color:'blue', fontWeight: 600, fontSize: 13}}>300$-500$</Text>
+                <Text style={{textDecorationLine: 'underline' ,color:'blue', fontWeight: '600', fontSize: 13}}>300$-500$</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{marginStart:10}}
                 onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: 600, fontSize: 13}}>500$-700$</Text>
+                <Text style={{textDecorationLine: 'underline', color:'blue', fontWeight: '600', fontSize: 13}}>500$-700$</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={{marginStart:10}}
                 onPress={() => getProductsByIdCategory()}>
-                <Text style={{textDecorationLine: 'underline', color:'blue' , fontWeight: 600, fontSize: 13}}>700$-1000$</Text>
+                <Text style={{textDecorationLine: 'underline', color:'blue' , fontWeight: '600', fontSize: 13}}>700$-1000$</Text>
               </TouchableOpacity>
 
               <View />
@@ -274,7 +280,7 @@ const ListProduct = ({ navigation, route }) => {
             </ScrollView>
             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 40, marginRight: 17 }}>
               <TouchableOpacity onPress={() => showDialogSort()}>
-                <Text style={{ color: 'black', fontWeight: 600, fontSize: 14, textDecorationLine: 'underline' }}>Sort by</Text>
+                <Text style={{ color: 'black', fontWeight: '600', fontSize: 14, textDecorationLine: 'underline' }}>Sort by</Text>
               </TouchableOpacity>
             </View>
           </View>
