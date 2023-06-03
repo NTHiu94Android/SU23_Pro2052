@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, TextInput, ToastAndroi
 import React, { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
-import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-picker';
 
 
 const UpdateProfile = (props) => {
@@ -10,7 +10,7 @@ const UpdateProfile = (props) => {
    const { onUpdateProfile, user } = useContext(UserContext);
    const [name, setName] = useState('');
    const [birthday, setBirthday] = useState('');
-   // const [address, setAddress] = useState('');
+   const [email, setEmail] = useState('');
    const [numberPhone, setNumberPhone] = useState('');
    const [avatar, setAvatar] = useState('');
 
@@ -18,7 +18,7 @@ const UpdateProfile = (props) => {
       if (user) {
          setName(user.name);
          setBirthday(user.birthday);
-         // setAddress(user.address);
+         setEmail(user.email);
          setNumberPhone(user.numberPhone);
          setAvatar(user.avatar);
       }
@@ -26,21 +26,41 @@ const UpdateProfile = (props) => {
 
 
    const handleUpdateProfile = async () => {
-      if (!name || !birthday || !numberPhone) {
+      if (!name || !birthday || !numberPhone || !email) {
          ToastAndroid.show('Please fill all the fields!', ToastAndroid.SHORT);
       };
-      const res = await onUpdateProfile(user._id, user.email, name, birthday, numberPhone, user.avatar);
-      if (!res.status === 200) {
+      const res = await onUpdateProfile(user._id, email, name, birthday, numberPhone, user.avatar);
+      if (res) {
          //ToastAndroid.show('Update password successfully!', ToastAndroid.SHORT);
-         console.log(res.data);
+         console.log("update success");
       } else {
          //ToastAndroid.show('Update password fail!', ToastAndroid.SHORT);
-         console.log("Update password fail!");
+         console.log("Update fail!");
       }
       navigation.navigate('Setting');
       console.log(user);
 
    };
+   const handleSelectImage = () => {
+      const options = {
+         title: 'Select Avatar',
+         mediaType: 'photo',
+         quality: 0.7
+      };
+
+      ImagePicker.launchImageLibrary(options, (response) => {
+         if (response.didCancel) {
+            console.log('User cancelled image picker');
+         } else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+         } else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+         } else {
+            setAvatar(response.uri);
+         }
+      });
+   };
+
 
 
    return (
@@ -58,53 +78,53 @@ const UpdateProfile = (props) => {
                <View style={styles.iconTopBar}></View>
             </View>
             <View style={{ width: "100%", alignItems: 'center', marginTop: 30 }}>
-               <TouchableOpacity style={styles.imageContainer}>
+               <TouchableOpacity style={styles.imageContainer} onPress={handleSelectImage}>
                   <Image
-                     style={{ width: '100%', height: '100%', }}
+                     style={{ width: '100%', height: '100%' }}
                      source={avatar ? { uri: avatar } : require('../../../../assets/images/avataruser.png')}
                   />
-
                </TouchableOpacity>
+
 
             </View>
 
 
-            <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
-               <View style={{ backgroundColor: "#E8E8E8", padding: 10, borderRadius: 5, marginBottom: 10, paddingBottom: 0 }}>
-                  <Text style={{ color: 'grey' }}>Name</Text>
-                  <TextInput
-                     value={name}
-                     onChangeText={setName}
-                     placeholder="Enter your name"
-                     style={{}} />
-               </View>
-               <View style={{ backgroundColor: "#E8E8E8", padding: 10, borderRadius: 5, marginBottom: 10, paddingBottom: 0 }}>
-
-                  <Text style={{ color: 'grey' }}>Birthday</Text>
-                  <TextInput
-                     value={birthday}
-                     onChangeText={setBirthday}
-                     placeholder="Enter your birthday"
-                     style={{}} />
-               </View>
-               {/* <Text style={{ color: 'grey', marginTop: 20, marginBottom: 8 }}>Address</Text>
+            <View style={{ paddingHorizontal: 20, }}>
+               <Text style={{ color: 'black', marginTop: 30, marginBottom: 0, fontWeight: 'bold' }}>Name</Text>
                <TextInput
-                  value={address}
-                  onChangeText={setAddress}
-                  placeholder="Address"
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Enter your name"
                   style={{}} />
-               <View style={{ height: 1, backgroundColor: 'black' }} ></View> */}
-               <View style={{ backgroundColor: "#E8E8E8", padding: 10, borderRadius: 5, marginBottom: 10, paddingBottom: 0 }}>
+               <View style={{ height: 1, backgroundColor: 'black', }} ></View>
 
-                  <Text style={{ color: 'grey' }}>Number phone</Text>
-                  <TextInput
-                     value={numberPhone}
-                     onChangeText={setNumberPhone}
-                     placeholder="Enter your number phone"
-                     style={{}} />
-               </View>
+               <Text style={{ color: 'black', marginTop: 30, marginBottom: 0, fontWeight: 'bold' }}>Email</Text>
+               <TextInput
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="Enter your email"
+                  style={{}} />
+               <View style={{ height: 1, backgroundColor: 'black', }} ></View>
 
-               <View style={{ height: 1, backgroundColor: '#8B8989', marginTop: 20 }} ></View>
+
+               <Text style={{ color: 'black', marginTop: 30, marginBottom: 0, fontWeight: 'bold' }}>Birthday</Text>
+               <TextInput
+                  value={birthday}
+                  onChangeText={setBirthday}
+                  placeholder="Enter your birthday"
+                  style={{}} />
+               <View style={{ height: 1, backgroundColor: 'black', }} ></View>
+
+
+
+               <Text style={{ color: 'black', marginTop: 30, marginBottom: 0, fontWeight: 'bold' }}>Number phone</Text>
+               <TextInput
+                  value={numberPhone}
+                  onChangeText={setNumberPhone}
+                  placeholder="Enter your number phone"
+                  style={{}} />
+               <View style={{ height: 1, backgroundColor: 'black', }} ></View>
+
 
                <TouchableOpacity style={styles.btn} onPress={() => handleUpdateProfile()}>
                   <Text style={{ color: '#ffffff', textAlign: 'center', fontWeight: 'bold' }} >Submit</Text>
