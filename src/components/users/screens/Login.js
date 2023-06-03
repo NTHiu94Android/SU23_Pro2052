@@ -13,15 +13,14 @@ const Login = (props) => {
   const { navigation } = props;
   const { onLogin, onRegister } = useContext(UserContext);
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isShowPassword, setIsShowPassword] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // GoogleSignin.configure({
-  //   webClientId: '',
-  // });
+  GoogleSignin.configure({
+    webClientId: '472692999572-56mudgijjk50l5q038vo8t4le147qk2g.apps.googleusercontent.com',
+  });
 
 
   const handleLogin = async () => {
@@ -72,16 +71,16 @@ const Login = (props) => {
       //console.log(userResult.photoURL);
 
       const fcmToken = await AsyncStorage.getItem('fcmToken');
-      console.log("FCM Token Login screen: ", fcmToken);
-      const usLogin = await onLogin(userResult.username, userResult.uid, fcmToken);
+      //console.log("FCM Token Login screen: ", fcmToken);
+      const usLogin = await onLogin(null,userResult.email, userResult.uid, fcmToken);
       if (usLogin) {
         console.log("Login success");
       } else if (usLogin == null || usLogin == undefined) {
         //username, email, password, name, birthday, address, numberPhone, avatar
-        const usRegister = await onRegister(userResult.username, userResult.uid, userResult.displayName, "15/10/1999", "", userResult.photoURL);
+        const usRegister = await onRegister(null,userResult.email, userResult.uid, userResult.displayName, "15/10/1999", "", userResult.photoURL);
         if (usRegister) {
           console.log("Register success");
-          const res = await onLogin(userResult.username, userResult.uid, fcmToken);
+          const res = await onLogin(null,userResult.email, userResult.uid, fcmToken);
           if (res) {
             console.log("Login success after register");
           } else {

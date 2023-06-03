@@ -13,8 +13,7 @@ export const UserContextProvider = (props) => {
   const [user, setUser] = useState(null);
 
   GoogleSignin.configure({
-    // webClientId: '13705249458-n11h88g38semsu2teplnr0fo05tdnrks.apps.googleusercontent.com'
-    webClientId: '1229200979-7dof3i1mi9ih5k2s387s8p113v786p69.apps.googleusercontent.com'
+    webClientId: '472692999572-56mudgijjk50l5q038vo8t4le147qk2g.apps.googleusercontent.com'
   });
 
   const onLogin = async (username, email, password, fcmToken) => {

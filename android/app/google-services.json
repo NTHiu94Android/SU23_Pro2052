@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "13705249458",
-    "project_id": "itech-f3d23",
-    "storage_bucket": "itech-f3d23.appspot.com"
+    "project_number": "472692999572",
+    "project_id": "duantn-81fa7",
+    "storage_bucket": "duantn-81fa7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:13705249458:android:cbe514e1299f6f83923fab",
+        "mobilesdk_app_id": "1:472692999572:android:a4e6b47ac700c7f811bb81",
         "android_client_info": {
           "package_name": "com.itech"
         }
       },
       "oauth_client": [
         {
-          "client_id": "13705249458-tkrggiqqctgijphr243nr4frj5lpra71.apps.googleusercontent.com",
+          "client_id": "472692999572-g6d1cknldocprjs2q113p0pitfakq3ad.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.itech",
@@ -22,20 +22,20 @@
           }
         },
         {
-          "client_id": "13705249458-n11h88g38semsu2teplnr0fo05tdnrks.apps.googleusercontent.com",
+          "client_id": "472692999572-56mudgijjk50l5q038vo8t4le147qk2g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAqqQA-XzD9pEzRfvmiFzYcJiNya2BsYkk"
+          "current_key": "AIzaSyDbQq1EM4kMkYVR5xbKgBRASBw2C9yUlwI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "13705249458-n11h88g38semsu2teplnr0fo05tdnrks.apps.googleusercontent.com",
+              "client_id": "472692999572-56mudgijjk50l5q038vo8t4le147qk2g.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
