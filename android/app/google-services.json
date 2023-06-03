@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "13705249458",
-    "project_id": "itech-f3d23",
-    "storage_bucket": "itech-f3d23.appspot.com"
+    "project_number": "1037520700616",
+    "project_id": "datn-d1d85",
+    "storage_bucket": "datn-d1d85.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:13705249458:android:cbe514e1299f6f83923fab",
+        "mobilesdk_app_id": "1:1037520700616:android:d2794480cf4a604d8ed1fd",
         "android_client_info": {
           "package_name": "com.itech"
         }
       },
       "oauth_client": [
         {
-          "client_id": "13705249458-tkrggiqqctgijphr243nr4frj5lpra71.apps.googleusercontent.com",
+          "client_id": "1037520700616-m1patukttangu9trg0d1egc7spmhiv2s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.itech",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "a384e2778de2ee5092d15c9a0a695899b5a14ed2"
           }
         },
         {
-          "client_id": "13705249458-n11h88g38semsu2teplnr0fo05tdnrks.apps.googleusercontent.com",
+          "client_id": "1037520700616-sop9fbqa1a97b3k29g9bg18raok3olhd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAqqQA-XzD9pEzRfvmiFzYcJiNya2BsYkk"
+          "current_key": "AIzaSyBxey3xJZp7lWXnpOIqcvNQnOwNxSOJjIw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "13705249458-n11h88g38semsu2teplnr0fo05tdnrks.apps.googleusercontent.com",
+              "client_id": "1037520700616-sop9fbqa1a97b3k29g9bg18raok3olhd.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
