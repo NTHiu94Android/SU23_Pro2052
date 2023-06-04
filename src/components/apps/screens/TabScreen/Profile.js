@@ -75,7 +75,7 @@ const Profile = (props) => {
         </TouchableOpacity>
 
         {/* Xem danh sách sản phẩm đã bình luận */}
-        <TouchableOpacity style={styles.functionBox}>
+        <TouchableOpacity onPress={() => navigation.navigate('ListReview')} style={styles.functionBox}>
           <View>
             <Text style={styles.functionName}>My reviews</Text>
             <Text style={styles.functionDescription}>Reviews for 5 items</Text>

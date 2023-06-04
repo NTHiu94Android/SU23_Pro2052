@@ -10,7 +10,7 @@ const ShippingAddress = (props) => {
         <View style={styleShippingAddress.container}>
             <View style={styleShippingAddress.header}>
                 <View>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Image
                             style={styleShippingAddress.icBack}
                             source={require('../../../../assets/images/back.png')}
@@ -109,7 +109,7 @@ const styleShippingAddress = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: 20,
+        paddingTop: 10,
         paddingHorizontal: 20
     },
 
@@ -120,7 +120,7 @@ const styleShippingAddress = StyleSheet.create({
 
     DetailTxt: {
         color: 'black',
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
         width: '70%'
     },
@@ -137,7 +137,7 @@ const styleShippingAddress = StyleSheet.create({
         width: '90%',
         height: 150,
         marginLeft: 20,
-        marginTop: 20,
+        marginTop: 30,
         paddingVertical: 10,
         paddingHorizontal: 20,
         backgroundColor: '#FFFFFF',
@@ -153,15 +153,19 @@ const styleShippingAddress = StyleSheet.create({
 
     txt02: {
         marginTop: 10,
+        fontSize: 14,
+        color: 'black'
     },
 
     txt1: {
         fontWeight: '500',
-        color: 'black'
+        color: 'black',
+        fontSize: 14,
     },
 
     txt2: {
-        color: 'red'
+        color: 'red',
+        fontSize: 14
     },
 
     //CheckBOx
@@ -182,7 +186,8 @@ const styleShippingAddress = StyleSheet.create({
 
     BoxText: {
         marginLeft: 20,
-        color: 'black'
+        color: 'black',
+        fontSize: 14
     },
 
     //FloatBox

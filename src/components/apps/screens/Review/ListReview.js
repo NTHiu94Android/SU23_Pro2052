@@ -9,7 +9,7 @@ const ListReview = (props) => {
     <View style={styleReview.container}>
       <View style={styleReview.header}>
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Image
               style={styleReview.icBack}
               source={require('../../../../assets/images/back.png')}
@@ -36,9 +36,9 @@ const ListReview = (props) => {
                   style={styleReview.icStar}
                   source={require('../../../../assets/images/star.png')}
                 ></Image>
-                <Text style={styleReview.txtStar}>4.5</Text>
+                <Text style={styleReview.txtStar}>5.0</Text>
               </View>
-              <Text>10 Reviews</Text>
+              <Text>1 Reviews</Text>
             </View>
           </View>
 
@@ -52,8 +52,8 @@ const ListReview = (props) => {
               ></Image>
 
               <View style={styleReview.RName}>
-                <Text>Bruno Fernandes</Text>
-                <Text>20/02/2020</Text>
+                <Text style={{ color: 'black', fontWeight: 'bold' }}>CoV Music Offical</Text>
+                <Text style={{ color: 'black', fontWeight: 'bold' }} >26/05/2023</Text>
               </View>
               <View style={styleReview.RatingStar}>
                 <Image
@@ -78,137 +78,32 @@ const ListReview = (props) => {
                 ></Image>
               </View>
 
-              <View style={styleReview.comment}>
-                <Text>Máy tốt sang xịn mịn, đập không nát, chọi không banh, đánh giá ngàn sao.</Text>
-              </View>
-            </View>
-
-            {/* 2 */}
-            <View style={styleReview.BoxReview}>
-              <Image
-                style={styleReview.icAva}
-                source={require('../../../../assets/images/avataruser.png')}
-              ></Image>
-
-              <View style={styleReview.RName}>
-                <Text>Bruno Fernandes</Text>
-                <Text>20/02/2020</Text>
-              </View>
-              <View style={styleReview.RatingStar}>
+              <View style={styleReview.imgCmt} >
                 <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
+                  style={styleReview.imgComment}
+                  source={require('../../../../assets/images/Meo.jpg')}
                 ></Image>
                 <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
+                  style={styleReview.imgComment01}
+                  source={require('../../../../assets/images/Meo.jpg')}
                 ></Image>
               </View>
 
               <View style={styleReview.comment}>
-                <Text>Máy tốt sang xịn mịn, đập không nát, chọi không banh, đánh giá ngàn sao.</Text>
+                <Text>Net như Ngọc Trinh :))</Text>
               </View>
             </View>
 
-            {/* 3 */}
-            <View style={styleReview.BoxReview}>
-              <Image
-                style={styleReview.icAva}
-                source={require('../../../../assets/images/avataruser.png')}
-              ></Image>
-
-              <View style={styleReview.RName}>
-                <Text>Bruno Fernandes</Text>
-                <Text>20/02/2020</Text>
-              </View>
-              <View style={styleReview.RatingStar}>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-              </View>
-
-              <View style={styleReview.comment}>
-                <Text>Máy tốt sang xịn mịn, đập không nát, chọi không banh, đánh giá ngàn sao.</Text>
-              </View>
-            </View>
-
-            {/* 4 */}
-            <View style={styleReview.BoxReview}>
-              <Image
-                style={styleReview.icAva}
-                source={require('../../../../assets/images/avataruser.png')}
-              ></Image>
-
-              <View style={styleReview.RName}>
-                <Text>Bruno Fernandes</Text>
-                <Text>20/02/2020</Text>
-              </View>
-              <View style={styleReview.RatingStar}>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-              </View>
-
-              <View style={styleReview.comment}>
-                <Text>Máy tốt sang xịn mịn, đập không nát, chọi không banh, đánh giá ngàn sao.</Text>
-              </View>
-            </View>
           </View>
 
         </View>
       </ScrollView>
       {/* WRITE A REVIEW */}
-      <View style={styleReview.btn}>
+      {/* <View style={styleReview.btn}>
         <TouchableOpacity>
           <Text style={styleReview.btnText}>Write a Review</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
 
   )
@@ -258,6 +153,7 @@ const styleReview = StyleSheet.create({
   },
 
   txtheader: {
+    paddingHorizontal: 20,
     width: '70%'
   },
 
@@ -291,21 +187,22 @@ const styleReview = StyleSheet.create({
   },
 
   icAva: {
-    width: 50,
-    height: 50,
-    bottom: 40,
+    width: 40,
+    height: 40,
+    bottom: 15,
     marginLeft: 130
   },
 
   RName: {
+    marginTop: 10,
     bottom: 30,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
 
   RatingStar: {
-    bottom: 25,
-    flexDirection: 'row'
+    bottom: 20,
+    flexDirection: 'row',
   },
 
   icStar01: {
@@ -313,24 +210,45 @@ const styleReview = StyleSheet.create({
     height: 20
   },
 
+  imgCmt: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+
+  imgComment: {
+    width: 50,
+    height: 50,
+    bottom: 5,
+    borderRadius: 10,
+  },
+
+  imgComment01: {
+    width: 50,
+    height: 50,
+    bottom: 5,
+    borderRadius: 10,
+    marginLeft: 5
+  },
+
   //Comment
   comment: {
+    marginTop: 20,
     bottom: 15,
   },
 
   //Button
-  btn: {
-    backgroundColor: 'black',
-    width: '90%',
-    height: 55,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 20,
-    borderRadius: 8,
-  },
+  // btn: {
+  //   backgroundColor: 'black',
+  //   width: '90%',
+  //   height: 55,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   marginHorizontal: 20,
+  //   borderRadius: 8,
+  // },
 
-  btnText: {
-    color: 'white',
-    fontSize: 20
-  },
+  // btnText: {
+  //   color: 'white',
+  //   fontSize: 20
+  // },
 })

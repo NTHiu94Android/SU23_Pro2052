@@ -10,7 +10,7 @@ const Shipping = (props) => {
         <View style={styleShippingAddress.container}>
             <View style={styleShippingAddress.header}>
                 <View>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Image
                             style={styleShippingAddress.icBack}
                             source={require('../../../../assets/images/back.png')}
@@ -25,27 +25,27 @@ const Shipping = (props) => {
                 <View style={styleShippingAddress.body}>
                     {/* Full Name */}
                     <View style={styleShippingAddress.input}>
-                        <Text>Full Name</Text>
-                        <TextInput placeholder='Ex:' ></TextInput>
+                        <Text style={{fontSize: 12, marginTop: 5}} >Full Name</Text>
+                        <TextInput style={{fontSize: 16, marginStart: -5, marginTop: -5}} placeholder='Ex: Bruno Pham' ></TextInput>
                     </View>
 
                     {/* Address */}
                     <View style={styleShippingAddress.input}>
-                        <Text>Andress</Text>
-                        <TextInput placeholder='Ex:' ></TextInput>
+                        <Text style={{fontSize: 12, marginTop: 5}} >Andress</Text>
+                        <TextInput style={{fontSize: 16, marginStart: -5, marginTop: -5}} placeholder='Ex: 25 Robert Latouche Street' ></TextInput>
                     </View>
 
                     {/* ZipCode */}
-                    <View style={styleShippingAddress.input}>
-                        <Text>ZipCode (Postal Code)</Text>
-                        <TextInput placeholder='Ex:' ></TextInput>
+                    <View style={styleShippingAddress.input1}>
+                        <Text style={{fontSize: 12, marginTop: 5}} >ZipCode (Postal Code)</Text>
+                        <TextInput style={{fontSize: 16, marginStart: -5, marginTop: -5}} placeholder='Ex: Pham Cong Thanh' ></TextInput>
                     </View>
 
                     {/* Country */}
                     <View style={styleShippingAddress.viewCountry}>
                         <View>
-                            <Text>Country</Text>
-                            <TextInput placeholder='Select Country'></TextInput>
+                            <Text style={{fontSize: 12}} >Country</Text>
+                            <Text style={{fontSize: 16, marginTop: 10}} >Select Country</Text>
                         </View>
                         <View>
                             <Image
@@ -56,10 +56,10 @@ const Shipping = (props) => {
                     </View>
 
                     {/* City */}
-                    <View style={styleShippingAddress.viewCountry}>
+                    <View style={styleShippingAddress.viewCountry1}>
                         <View>
-                            <Text>City</Text>
-                            <TextInput placeholder='Select City'></TextInput>
+                            <Text style={{fontSize: 12}} >City</Text>
+                            <Text style={{fontSize: 16, marginTop: 10}} >New York</Text>
                         </View>
                         <View>
                             <Image
@@ -72,8 +72,8 @@ const Shipping = (props) => {
                     {/* District */}
                     <View style={styleShippingAddress.viewCountry}>
                         <View>
-                            <Text>District</Text>
-                            <TextInput placeholder='Select District'></TextInput>
+                            <Text style={{fontSize: 12}} >District</Text>
+                            <Text style={{fontSize: 16, marginTop: 10}} >Select District</Text>
                         </View>
                         <View>
                             <Image
@@ -85,7 +85,7 @@ const Shipping = (props) => {
 
                     {/* SAVE ADDRESS */}
                     <View style={styleShippingAddress.btn}>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('ShippingAddress')}>
                             <Text style={styleShippingAddress.btnText}>SAVE ADDRESS</Text>
                         </TouchableOpacity>
                     </View>
@@ -133,24 +133,36 @@ const styleShippingAddress = StyleSheet.create({
 
     input: {
         width: '90%',
-        height: 65,
+        height: 66,
         marginLeft: 20,
         marginTop: 20,
-        paddingVertical: 10,
+        paddingVertical: 5,
         paddingHorizontal: 20,
         backgroundColor: '#F5F5F5',
         borderRadius: 5,
     },
+    input1: {
+        width: '90%',
+        height: 66,
+        marginLeft: 20,
+        marginTop: 20,
+        paddingVertical: 5,
+        paddingHorizontal: 20,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#DBDBDB',
+    },
 
     btn: {
         backgroundColor: 'black',
-        marginTop: 150,
+        marginTop: 120,
         width: '90%',
         height: 55,
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 20,
-        borderRadius: 8,
+        borderRadius: 50,
     },
 
     btnText: {
@@ -159,7 +171,20 @@ const styleShippingAddress = StyleSheet.create({
     },
 
     viewCountry: {
-        borderColor: '#F5F5F5',
+        paddingHorizontal: 20,
+        backgroundColor: '#F5F5F5',
+        width: '90%',
+        height: 66,
+        marginHorizontal: 20,
+        marginTop: 20,
+        borderRadius: 5,
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    viewCountry1: {
+        borderColor: '#DBDBDB',
         borderWidth: 1,
         paddingHorizontal: 20,
         backgroundColor: 'white',
