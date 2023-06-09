@@ -61,7 +61,6 @@ const Home = (props) => {
                         list3.push(item);
                     }
                 });
-
                 setListSale(list1);
                 setListPhone(list2);
                 setListLaptop(list3);
@@ -384,7 +383,7 @@ const Item = ({ item, onPress }) => (
                                     Price: {item.subProduct[0].price} $
                                 </Text>
                         }
-                        <View style={{ flexDirection: 'row', paddingHorizontal: 8}}>
+                        <View style={{ flexDirection: 'row', paddingHorizontal: 8 }}>
                             <Image
                                 style={{ width: 15, height: 15, marginEnd: 5 }}
                                 resizeMode='cover'
