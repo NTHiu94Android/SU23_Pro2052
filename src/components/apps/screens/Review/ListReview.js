@@ -1,15 +1,76 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, FlatList } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
+import { AppContext } from '../../AppContext';
+import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
+import { useRoute } from '@react-navigation/native';
 
 const ListReview = (props) => {
   const { navigation } = props;
-  back(navigation);
+  const route = useRoute();
+  const [star, setStar] = useState([]);
+  const [listImage, setListImage] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [review, setReview] = useState([]);
+  const [listReview, setListReview] = useState([]);
+  const { onGetPicturesByIdProduct, onGetSubProductsByIdProduct, onGetReviewsByIdProduct,
+  } = useContext(AppContext);
+
+  useEffect(() => {
+    setIsLoading(false);
+
+    const getSubProducts = async () => {
+      try {
+        const response = await onGetSubProductsByIdProduct(route.params.idProduct);
+        const products = response.data;
+
+        const tempReview = await onGetReviewsByIdProduct(route.params.idProduct);
+        const reviews = tempReview.data;
+        setListReview(reviews);
+        // Kiểm tra dữ liệu reviews trong console
+
+        const reviewCount = reviews.length; // Lấy số lượng reviews
+        console.log(reviewCount); // Kiểm tra số lượng reviews trong console
+        setReview(reviewCount);
+        // Tính tổng rating
+        let totalRating = 0;
+        reviews.forEach(review => {
+          totalRating += review.rating;
+        });
+
+        const averageRating = totalRating / reviewCount; // Tính trung bình cộng của rate
+        setStar(averageRating);
+        console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
+
+        if (products.length > 0) {
+          const productId = products[0]._id; // Giả sử bạn muốn lấy hình ảnh dựa trên _id của sản phẩm đầu tiên
+          const imagesResponse = await onGetPicturesByIdProduct(productId);
+          const images = imagesResponse.data;
+
+          let list = [];
+          for (let i = 0; i < images.length; i++) {
+            list.push(images[i].url);
+          }
+          setListImage(list);
+
+        }
+
+        setIsLoading(true);
+      } catch (error) {
+        console.log("Error fetching sub-products: ", error);
+      }
+    };
+
+    getSubProducts();
+
+  }, []);
+  console.log(listReview);
+
   return (
     <View style={styleReview.container}>
       <View style={styleReview.header}>
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity  onPress={() => navigation.navigate("ProductDetail")}>
             <Image
               style={styleReview.icBack}
               source={require('../../../../assets/images/back.png')}
@@ -26,179 +87,41 @@ const ListReview = (props) => {
             <View>
               <Image
                 style={styleReview.icImg}
-                source={require('../../../../assets/images/s23.jpg')}
+                source={{ uri: listImage[0] }}
               ></Image>
             </View>
             <View style={styleReview.txtheader}>
-              <Text>SamSung S23 Utral</Text>
+              {/* <Text>SamSung S23 Utral</Text> */}
               <View style={styleReview.Star}>
                 <Image
                   style={styleReview.icStar}
                   source={require('../../../../assets/images/star.png')}
                 ></Image>
-                <Text style={styleReview.txtStar}>4.5</Text>
+                <Text style={styleReview.txtStar}>{star}</Text>
               </View>
-              <Text>10 Reviews</Text>
+              <Text>{review} Reviews</Text>
             </View>
           </View>
 
           <View style={styleReview.AllReview}>
+            <FlatList
+              data={listReview}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <Item
+                  // name={item.idUser}
+                  // content={item.content}
+                  // time={item.time}
+                  // rate={item.rating}
+                  userId={item.idUser}
+                  content={item.content}
+                  time={item.time}
+                  rate={item.rating}
+                />
 
-            {/* 1 */}
-            <View style={styleReview.BoxReview}>
-              <Image
-                style={styleReview.icAva}
-                source={require('../../../../assets/images/avataruser.png')}
-              ></Image>
-
-              <View style={styleReview.RName}>
-                <Text>Bruno Fernandes</Text>
-                <Text>20/02/2020</Text>
-              </View>
-              <View style={styleReview.RatingStar}>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-              </View>
-
-              <View style={styleReview.comment}>
-                <Text>Máy tốt sang xịn mịn, đập không nát, chọi không banh, đánh giá ngàn sao.</Text>
-              </View>
-            </View>
-
-            {/* 2 */}
-            <View style={styleReview.BoxReview}>
-              <Image
-                style={styleReview.icAva}
-                source={require('../../../../assets/images/avataruser.png')}
-              ></Image>
-
-              <View style={styleReview.RName}>
-                <Text>Bruno Fernandes</Text>
-                <Text>20/02/2020</Text>
-              </View>
-              <View style={styleReview.RatingStar}>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-              </View>
-
-              <View style={styleReview.comment}>
-                <Text>Máy tốt sang xịn mịn, đập không nát, chọi không banh, đánh giá ngàn sao.</Text>
-              </View>
-            </View>
-
-            {/* 3 */}
-            <View style={styleReview.BoxReview}>
-              <Image
-                style={styleReview.icAva}
-                source={require('../../../../assets/images/avataruser.png')}
-              ></Image>
-
-              <View style={styleReview.RName}>
-                <Text>Bruno Fernandes</Text>
-                <Text>20/02/2020</Text>
-              </View>
-              <View style={styleReview.RatingStar}>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-              </View>
-
-              <View style={styleReview.comment}>
-                <Text>Máy tốt sang xịn mịn, đập không nát, chọi không banh, đánh giá ngàn sao.</Text>
-              </View>
-            </View>
-
-            {/* 4 */}
-            <View style={styleReview.BoxReview}>
-              <Image
-                style={styleReview.icAva}
-                source={require('../../../../assets/images/avataruser.png')}
-              ></Image>
-
-              <View style={styleReview.RName}>
-                <Text>Bruno Fernandes</Text>
-                <Text>20/02/2020</Text>
-              </View>
-              <View style={styleReview.RatingStar}>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-              </View>
-
-              <View style={styleReview.comment}>
-                <Text>Máy tốt sang xịn mịn, đập không nát, chọi không banh, đánh giá ngàn sao.</Text>
-              </View>
-            </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
           </View>
 
         </View>
@@ -213,8 +136,62 @@ const ListReview = (props) => {
 
   )
 }
-
 export default ListReview
+
+const Item = ({ userId, content, time, rate }) => {
+  const [userName, setUserName] = useState();
+  const { onGetUserById, user } = useContext(UserContext);
+  // const getUserName = async (idUser) => {
+  //   try {
+  //     const userResponse = await onGetUserById(idUser);
+  //     const usedatar = userResponse;
+  //     setUserName(usedatar.name);
+  //     console.log(userName);
+  //     return userName;
+  //   } catch (error) {
+  //     console.log('Error user:', error);
+  //   }
+  // };
+  // console.log(name);
+  // const id = getUserName(name);
+  // console.log(id);
+  useEffect(() => {
+    const getUserName = async () => {
+      try {
+        const user = await onGetUserById(userId);
+        const userName = user.name;
+        setUserName(userName);
+      } catch (error) {
+        console.log('Error getting user name:', error);
+      }
+    };
+    getUserName();
+  }, [userId]);
+  return (
+    <View style={styleReview.BoxReview}>
+      <Image
+        style={styleReview.icImg}
+        source={require('../../../../assets/images/avataruser.png')}
+      />
+      <View style={styleReview.RName}>
+        <Text>{userName}</Text>
+        <Text>{time}</Text>
+      </View>
+      <View style={styleReview.RatingStar}>
+        <Image
+          style={styleReview.icStar01}
+          source={require('../../../../assets/images/star.png')}
+        />
+        <Text>{rate}</Text>
+      </View>
+
+      <View style={styleReview.comment}>
+        <Text>{content}</Text>
+      </View>
+    </View>
+  );
+};
+
 
 const styleReview = StyleSheet.create({
   // container
@@ -252,9 +229,10 @@ const styleReview = StyleSheet.create({
   },
 
   icImg: {
-    width: 100,
-    height: 100,
-    borderRadius: 10
+    width: 70,
+    height: 70,
+    borderRadius: 10,
+    alignSelf:'center',
   },
 
   txtheader: {
@@ -288,6 +266,7 @@ const styleReview = StyleSheet.create({
     backgroundColor: '#F1F1F1',
     borderRadius: 10,
     justifyContent: 'center'
+    
   },
 
   icAva: {
@@ -334,3 +313,4 @@ const styleReview = StyleSheet.create({
     fontSize: 20
   },
 })
+

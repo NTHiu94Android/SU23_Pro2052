@@ -2,7 +2,7 @@ import CustomAxios from "../../helpers/Axiosinstance";
 
 //get user by id
 export const get_user_by_id = async (id) => {
-    const response = await CustomAxios().get('us/api/get-user-by-id/' + id);
+    const response = await CustomAxios().get('users/api/get-user-by-id/' + id);
     return response;
 }
 

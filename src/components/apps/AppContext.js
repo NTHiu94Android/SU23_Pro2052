@@ -14,7 +14,7 @@ import {
   addOrderDetail, getOrderDetailsByIdOrder,
 
   //Review
-  getReviews,
+  getReviews, getReviewsById
 
 } from './AppService';
 import { UserContext } from '../users/UserContext';
@@ -105,6 +105,15 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //Lay tat ca review theo idProduct
+  const onGetReviewsByIdProduct = async (idProduct) => {
+    try {
+      const res = await getReviewsById(idProduct);
+      return res;
+    } catch (error) {
+      console.log('onGetReviewsByIdProduct error: ', error);
+    }
+  };
   return (
     <AppContext.Provider value={{
       //Category & Brand
@@ -112,7 +121,7 @@ export const AppContextProvider = (props) => {
       //Product
       onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts,
       //Reviews
-      onGetReviews,
+      onGetReviews, onGetReviewsByIdProduct,
       //Picture
       onGetPicturesByIdProduct,
     }}>
