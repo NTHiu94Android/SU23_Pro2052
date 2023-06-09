@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TextInput, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native'
-import React, { useState, useEffect, useContext, useRef } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { StyleSheet, Text, View, TextInput, ScrollView, Image, TouchableOpacity, Dimensions } from 'react-native';
 
 import { AppContext } from '../../AppContext';
 import back from '../../../back/back';
@@ -9,6 +9,7 @@ const DimensionsW = Dimensions.get('window').width;
 const SearchScreen = (props) => {
   const { navigation } = props;
   const { } = useContext(AppContext);
+    const { onGetProducts, onGetSubProducts, onGetReviews } = useContext(AppContext);
   const [listSearch, setListSearch] = useState([]); //list search
   const [listName, setListName] = useState([]); //list name product
   const [name, setName] = useState('');
@@ -17,9 +18,9 @@ const SearchScreen = (props) => {
 
   useEffect(() => {
     const getListProduct = async () => {
-      const res = products;
-      const resSubProduct = subProducts;
-      const resReview = reviews;
+      const res = await onGetProducts();
+      const resSubProduct = await onGetSubProducts();
+      const resReview = await onGetReviews();
       const list = res.data;
       //Them sao va subProduct vao tung item
       for (let i = 0; i < list.length; i++) {
@@ -68,7 +69,7 @@ const SearchScreen = (props) => {
     try {
 
       if (res == null || res == undefined) {
-        return;
+        return null;
       } else {
         const subProduct = res.data.filter((item) => item.idProduct == idProduct);
         return subProduct;
@@ -89,7 +90,7 @@ const SearchScreen = (props) => {
     const review = res.data;
     for (let i = 0; i < review.length; i++) {
       if (review[i].idProduct == idProduct) {
-        count = count + 1;
+count = count + 1;
         star += review[i].rating;
       }
     }
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#333',
     padding: 10,
-    borderRadius: 10,
+borderRadius: 10,
     paddingRight: 36,
     position: 'relative',
   },
@@ -255,7 +256,7 @@ const Item = ({ item, onPress }) => (
                 {item.subProduct[0].price} $
               </Text>
               <Text style={{ height: 19, color: 'red', fontWeight: '700', fontSize: 14, lineHeight: 19.1, marginStart: 10 }}>
-                {item.subProduct[0].price - item.subProduct[0].price * item.subProduct[0].sale / 100} $
+{item.subProduct[0].price - item.subProduct[0].price * item.subProduct[0].sale / 100} $
               </Text>
             </View> :
             <Text style={{ height: 19, color: 'black', fontWeight: '700', fontSize: 14, lineHeight: 19.1, paddingHorizontal: 8 }}>
@@ -303,262 +304,3 @@ const Item = ({ item, onPress }) => (
     </View>
   </TouchableOpacity>
 );
-
-const products = {
-  'data': [{
-    "_id": "64631ef7b054109c4a42b757",
-    "name": "Macbook Pro 2022",
-    "image": "https://images.fpt.shop/unsafe/fit-in/585x390/filters:quality(90):fill(white)/fptshop.com.vn/Uploads/Originals/2020/11/12/637408006342832761_mbp-2020-m1-silver-1.png",
-    "idCategory": "645cfcd60405a873dbcdda9a",
-    "idBrand": "645d176c2a262fd91c56556f"
-  }, {
-    "_id": "6463ab59d0f76ed2bb92bbd9",
-    "name": "Iphone 13",
-    "image": "https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg",
-    "idCategory": "645cfd060405a873dbcdda9c",
-    "idBrand": "6463a74cd3dbf3f315fb97a2"
-  }, {
-    "_id": "6463aec19f29e71381893790",
-    "name": "Laptop MSI Gaming GF63",
-    "image": "https://cdn.tgdd.vn/Products/Images/44/303500/msi-gaming-gf63-thin-11sc-i5-664vn-123-glr-1-2.jpg",
-    "idCategory": "645cfcd60405a873dbcdda9a",
-    "idBrand": "645d18122a262fd91c565577"
-  }, {
-    "_id": "6463b0349f29e7138189379c",
-    "name": "Laptop MSI Modern 14 B11MOU",
-    "image": "https://cdn.tgdd.vn/Products/Images/44/266898/msi-modern-14-b11mou-i3-1027vn-1-1.jpg",
-    "idCategory": "645cfcd60405a873dbcdda9a",
-    "idBrand": "645d18122a262fd91c565577"
-  }, {
-    "_id": "6463b63cd0f76ed2bb92bc1d",
-    "name": "Iphone 12 ",
-    "image": "https://cdn.tgdd.vn/Products/Images/42/213031/iphone-12-tim-1-600x600.jpg",
-    "idCategory": "645cfd060405a873dbcdda9c",
-    "idBrand": "6463a74cd3dbf3f315fb97a2"
-  }]
-};
-
-const subProducts = {
-  'data': [
-    {
-      "_id": "646328779dcc2f5fc8821f65",
-      "price": 125,
-      "description": "",
-      "quantity": 300,
-      "color": "silver",
-      "sale": 10,
-      "ram": 8,
-      "rom": 16,
-      "screen": "2560 x 1664 pixels - 13 inches",
-      "cpu": "Apple M2 tám nhân CPU",
-      "pin": 58,
-      "idProduct": "64631ef7b054109c4a42b757"
-    }, {
-      "_id": "646328949dcc2f5fc8821f69",
-      "price": 125,
-      "description": "",
-      "quantity": 300,
-      "color": "gold",
-      "sale": 10,
-      "ram": 8,
-      "rom": 16,
-      "screen": "2560 x 1664 pixels - 13 inches",
-      "cpu": "Apple M2 tám nhân CPU",
-      "pin": 58,
-      "idProduct": "64631ef7b054109c4a42b757"
-    }, {
-      "_id": "6463ac99d0f76ed2bb92bbdb",
-      "price": 125,
-      "description": "",
-      "quantity": 300,
-      "color": "blue",
-      "sale": 10,
-      "ram": 8,
-      "rom": 16,
-      "screen": "Super Retina XDR (1170 x 2532 Pixels)",
-      "cpu": "Apple A15 Bionic 6 nhân",
-      "pin": 5000,
-      "idProduct": "6463ab59d0f76ed2bb92bbd9"
-    }, {
-      "_id": "6463accfd0f76ed2bb92bbdd",
-      "price": 125,
-      "description": "",
-      "quantity": 300,
-      "color": "pink",
-      "sale": 10,
-      "ram": 8,
-      "rom": 16,
-      "screen": "Super Retina XDR (1170 x 2532 Pixels)",
-      "cpu": "Apple A15 Bionic 6 nhân",
-      "pin": 5000,
-      "idProduct": "6463ab59d0f76ed2bb92bbd9"
-    }, {
-      "_id": "6463ace3d0f76ed2bb92bbdf",
-      "price": 125,
-      "description": "",
-      "quantity": 300,
-      "color": "white",
-      "sale": 10,
-      "ram": 8,
-      "rom": 16,
-      "screen": "Super Retina XDR (1170 x 2532 Pixels)",
-      "cpu": "Apple A15 Bionic 6 nhân",
-      "pin": 5000,
-      "idProduct": "6463ab59d0f76ed2bb92bbd9"
-    }, {
-      "_id": "6463af289f29e71381893792",
-      "price": 85,
-      "description": "",
-      "quantity": 400,
-      "color": "black",
-      "sale": 33,
-      "ram": 8,
-      "rom": 16,
-      "screen": "2560 x 1664 pixels - 13 inches",
-      "cpu": "i511400H2.7GHz",
-      "pin": 58,
-      "idProduct": "6463aec19f29e71381893790"
-    }, {
-      "_id": "6463b0939f29e7138189379e",
-      "price": 93,
-      "description": "",
-      "quantity": 200,
-      "color": "gray",
-      "sale": 33,
-      "ram": 8,
-      "rom": 16,
-      "screen": "2560 x 1664 pixels - 14 inches",
-      "cpu": "i511400H2.7GHz",
-      "pin": 58,
-      "idProduct": "6463b0349f29e7138189379c"
-    }, {
-      "_id": "6463b2e7d0f76ed2bb92bbfb",
-      "price": 125,
-      "description": "",
-      "quantity": 300,
-      "color": "black",
-      "sale": 10,
-      "ram": 6,
-      "rom": 16,
-      "screen": "Super Retina XDR (1170 x 2532 Pixels)",
-      "cpu": "Apple A15 Bionic 6 nhân",
-      "pin": 3279,
-      "idProduct": "6463ab59d0f76ed2bb92bbd9"
-    }, {
-      "_id": "6463b482d0f76ed2bb92bc05",
-      "price": 125,
-      "description": "",
-      "quantity": 300,
-      "color": "yellow",
-      "sale": 10,
-      "ram": 6,
-      "rom": 16,
-      "screen": "Super Retina XDR (1170 x 2532 Pixels)",
-      "cpu": "Apple A15 Bionic 6 nhân",
-      "pin": 3279,
-      "idProduct": "6463ab59d0f76ed2bb92bbd9"
-    }, {
-      "_id": "6463b553d0f76ed2bb92bc0f",
-      "price": 125,
-      "description": "",
-      "quantity": 300,
-      "color": "purple",
-      "sale": 10,
-      "ram": 6,
-      "rom": 16,
-      "screen": "Super Retina XDR (1170 x 2532 Pixels)",
-      "cpu": "Apple A15 Bionic 6 nhân",
-      "pin": 3279,
-      "idProduct": "6463ab59d0f76ed2bb92bbd9"
-    }, {
-      "_id": "6463b77dd0f76ed2bb92bc1f",
-      "price": 434,
-      "description": "",
-      "quantity": 300,
-      "color": "purple",
-      "sale": 10,
-      "ram": 4,
-      "rom": 65,
-      "screen": "Super Retina XDR OLED, kích thước 6.1 inch, độ phân giải 2532 x 1170 pixel",
-      "cpu": "Apple A14 Bionic hexa-core",
-      "pin": 3279,
-      "idProduct": "6463b63cd0f76ed2bb92bc1d"
-    }, {
-      "_id": "6463b877d0f76ed2bb92bc2d",
-      "price": 434,
-      "description": "",
-      "quantity": 300,
-      "color": "black",
-      "sale": 10,
-      "ram": 4,
-      "rom": 65,
-      "screen": "Super Retina XDR OLED, kích thước 6.1 inch, độ phân giải 2532 x 1170 pixel",
-      "cpu": "Apple A14 Bionic hexa-core",
-      "pin": 3279,
-      "idProduct": "6463b63cd0f76ed2bb92bc1d"
-    }, {
-      "_id": "6463b922d0f76ed2bb92bc3d",
-      "price": 434,
-      "description": "",
-      "quantity": 300,
-      "color": "red",
-      "sale": 10,
-      "ram": 4,
-      "rom": 65,
-      "screen": "Super Retina XDR OLED, kích thước 6.1 inch, độ phân giải 2532 x 1170 pixel",
-      "cpu": "Apple A14 Bionic hexa-core",
-      "pin": 3279,
-      "idProduct": "6463b63cd0f76ed2bb92bc1d"
-    }, {
-      "_id": "6463bac8d0f76ed2bb92bc4f",
-      "price": 434,
-      "description": "",
-      "quantity": 300,
-      "color": "green",
-      "sale": 10,
-      "ram": 4,
-      "rom": 65,
-      "screen": "Super Retina XDR OLED, kích thước 6.1 inch, độ phân giải 2532 x 1170 pixel",
-      "cpu": "Apple A14 Bionic hexa-core",
-      "pin": 3279,
-      "idProduct": "6463b63cd0f76ed2bb92bc1d"
-    }, {
-      "_id": "6463bbbad0f76ed2bb92bc63",
-      "price": 434,
-      "description": "",
-      "quantity": 300,
-      "color": "blue",
-      "sale": 10,
-      "ram": 4,
-      "rom": 65,
-      "screen": "Super Retina XDR OLED, kích thước 6.1 inch, độ phân giải 2532 x 1170 pixel",
-      "cpu": "Apple A14 Bionic hexa-core",
-      "pin": 3279,
-      "idProduct": "6463b63cd0f76ed2bb92bc1d"
-    }]
-};
-
-const reviews = {
-  'data': [{
-    "_id": "64704c1bd0bedb9bc3a48fbf",
-    "time": "26/5/2023",
-    "content": "Chọi không bể, hàng giả :)))",
-    "rating": 4,
-    "idUser": "646b85818ebfde95b7851bd1",
-    "idProduct": "64631ef7b054109c4a42b757"
-  }, {
-    "_id": "64704d5cd0bedb9bc3a48fff",
-    "time": "26/5/2023",
-    "content": "Ngon lành :)))",
-    "rating": 5,
-    "idUser": "646b85818ebfde95b7851bd1",
-    "idProduct": "64631ef7b054109c4a42b757"
-  }, {
-    "_id": "64705011d0bedb9bc3a49026",
-    "time": "26/5/2023",
-    "content": "Nét như Ngọc Trinh :))",
-    "rating": 5,
-    "idUser": "646b85818ebfde95b7851bd1",
-    "idProduct": "6463b63cd0f76ed2bb92bc1d"
-  }]
-} 
