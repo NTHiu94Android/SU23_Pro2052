@@ -42,6 +42,37 @@ export const getReviews = async () => {
     return response;
 };
 
+//---------------------------------Adderss---------------------------------
+//Lay danh sach dia chi theo idUser
+export const getAddressByIdUser = async(idUser) => {
+    const res = await CustomAxios().get(`/address/api/get-address-by-idUser/${idUser}`);
+    return res;
+};
+
+//Them dia chi
+export const addAddress = async (body, status, idUser) => {
+    const data = {
+        body, status, idUser
+    };
+    const response = await CustomAxios().post(`/address/api/add-address`, data);
+    return response;
+}
+
+//Cap nhat dia chi
+export const updateAddress = async(_id, body, status, idUser) => {
+    const data = {
+        _id, body, status, idUser
+    }
+    const res = await CustomAxios().post(`/address/api/update-address`, data);
+    return res;
+};
+
+//Xoa dia chi
+export const deleteAddress = async(_id) => {
+    const res = await CustomAxios().get(`/address/api/delete-address/${_id}`);
+    return res;
+};
+
 
 
 

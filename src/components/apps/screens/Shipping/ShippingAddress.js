@@ -1,86 +1,106 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ToastAndroid } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import back from '../../../back/back';
+import { UserContext } from '../../../users/UserContext';
+import { AppContext } from '../../AppContext';
+
+import ProgressDialog from 'react-native-progress-dialog';
 
 const ShippingAddress = (props) => {
     const { navigation } = props;
     back(navigation);
+    const { user } = useContext(UserContext);
+    const {
+        onGetAddressByIdUser, onUpdateAddress, onDeleteAddress,
+        countAddress, setCountAddress
+    } = useContext(AppContext);
+
+    const [listAddress, setListAddress] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        const getListAddress = async () => {
+            setIsLoading(true);
+            try {
+                const res = await onGetAddressByIdUser(user._id);
+                console.log('getListAddress res: ', res);
+                if (res.data != undefined) {
+                    setListAddress(res.data);
+                }
+                //setListAddress(data);
+            } catch (error) {
+                console.log('getListAddress error: ', error);
+            }
+            setIsLoading(false);
+        };
+        getListAddress();
+    }, [countAddress]);
+
+    //Cap nhat dia chi mac dinh
+    const onUpdateDefaultAddress = async (idAddress) => {
+        //setIsLoading(true);
+        for (let i = 0; i < listAddress.length; i++) {
+            if (listAddress[i]._id == idAddress) {
+                await onUpdateAddress(idAddress, listAddress[i].body, true, user._id);
+            } else {
+                await onUpdateAddress(listAddress[i]._id, listAddress[i].body, false, user._id);
+            }
+        }
+        setCountAddress(countAddress + 1);
+    };
+
+    //Xoa dia chi
+    const onDeleteAddressById = async (idAddress) => {
+        setIsLoading(true);
+        await onUpdateDefaultAddress(listAddress[0]._id);
+        await onDeleteAddress(idAddress);
+        ToastAndroid.show("Delete successfully!", ToastAndroid.SHORT);
+        setCountAddress(countAddress + 2);
+    };
 
     return (
         <View style={styleShippingAddress.container}>
-            <View style={styleShippingAddress.header}>
-                <View>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Image
-                            style={styleShippingAddress.icBack}
-                            source={require('../../../../assets/images/back.png')}
-                            resizeMode='cover'
-                        ></Image>
-                    </TouchableOpacity>
+
+            <ProgressDialog
+                visible={isLoading}
+                loaderColor="black"
+                lable="Please wait..."
+            />
+
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6, paddingHorizontal: 12 }}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Image
+                        style={{ width: 22, height: 22 }}
+                        resizeMode='cover'
+                        source={require('../../../../assets/images/back.png')} />
+                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: 50 }}>
+                    <Text style={{ color: 'black', fontWeight: '800', fontSize: 18 }}>Shipping address</Text>
+
                 </View>
-                <Text style={styleShippingAddress.DetailTxt}>Shipping Address</Text>
+
+                <TouchableOpacity onPress={() => navigation.navigate('SearchScreen')}>
+                    <View style={{ width: 22, height: 22 }} />
+                </TouchableOpacity>
             </View>
 
             <View style={styleShippingAddress.body}>
-                <View style={styleShippingAddress.input}>
-                    <View style={styleShippingAddress.txt01}>
-                        <Text style={styleShippingAddress.txt1}>Jane Doe</Text>
-                        <Text style={styleShippingAddress.txt2}>Edit</Text>
-                    </View>
 
-                    <View style={styleShippingAddress.txt02}>
-                        <Text>3 Newbridge court</Text>
-                        <Text>Chino Hills, CA 91709, United States</Text>
-                    </View>
-
-                    <View style={styleShippingAddress.checkbox}>
-                        <TouchableOpacity style={styleShippingAddress.Box}>
-                            <Text> </Text>
-                        </TouchableOpacity>
-                        <Text style={styleShippingAddress.BoxText}>Use as the shipping address</Text>
-                    </View>
-                </View>
-
-                <View style={styleShippingAddress.input}>
-                    <View style={styleShippingAddress.txt01}>
-                        <Text style={styleShippingAddress.txt1}>Jane Doe</Text>
-                        <Text style={styleShippingAddress.txt2}>Edit</Text>
-                    </View>
-
-                    <View style={styleShippingAddress.txt02}>
-                        <Text>3 Newbridge court</Text>
-                        <Text>Chino Hills, CA 91709, United States</Text>
-                    </View>
-
-                    <View style={styleShippingAddress.checkbox}>
-                        <TouchableOpacity style={styleShippingAddress.Box}>
-                            <Text> </Text>
-                        </TouchableOpacity>
-                        <Text style={styleShippingAddress.BoxText}>Use as the shipping address</Text>
-                    </View>
-                </View>
-
-                <View style={styleShippingAddress.input}>
-                    <View style={styleShippingAddress.txt01}>
-                        <Text style={styleShippingAddress.txt1}>Jane Doe</Text>
-                        <Text style={styleShippingAddress.txt2}>Edit</Text>
-                    </View>
-
-                    <View style={styleShippingAddress.txt02}>
-                        <Text>3 Newbridge court</Text>
-                        <Text>Chino Hills, CA 91709, United States</Text>
-                    </View>
-
-                    <View style={styleShippingAddress.checkbox}>
-                        <TouchableOpacity style={styleShippingAddress.Box}>
-                            <Text> </Text>
-                        </TouchableOpacity>
-                        <Text style={styleShippingAddress.BoxText}>Use as the shipping address</Text>
-                    </View>
-                </View>
+                {
+                    listAddress.map((item, index) => {
+                        return <Item
+                            key={index}
+                            item={item}
+                            user={user}
+                            onUpdateDefaultAddress={onUpdateDefaultAddress}
+                            onDeleteAddressById={onDeleteAddressById}
+                            navigation={navigation}
+                        />
+                    })
+                }
 
                 <View style={styleShippingAddress.floatBox} >
-                    <TouchableOpacity onPress={() => navigation.navigate('Shipping')}>
+                    <TouchableOpacity onPress={() => navigation.navigate("Shipping")}>
                         <Image
                             style={styleShippingAddress.icAdd}
                             source={require('../../../../assets/images/add.png')}
@@ -93,7 +113,6 @@ const ShippingAddress = (props) => {
         </View>
     )
 }
-
 export default ShippingAddress
 
 const styleShippingAddress = StyleSheet.create({
@@ -109,8 +128,7 @@ const styleShippingAddress = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingTop: 10,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
     },
 
     icBack: {
@@ -120,14 +138,13 @@ const styleShippingAddress = StyleSheet.create({
 
     DetailTxt: {
         color: 'black',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         width: '70%'
     },
 
     //body
     body: {
-        marginTop: 10,
         backgroundColor: '#F5F5F5',
         height: '100%',
         width: '100%'
@@ -137,7 +154,7 @@ const styleShippingAddress = StyleSheet.create({
         width: '90%',
         height: 150,
         marginLeft: 20,
-        marginTop: 30,
+        marginTop: 20,
         paddingVertical: 10,
         paddingHorizontal: 20,
         backgroundColor: '#FFFFFF',
@@ -153,19 +170,16 @@ const styleShippingAddress = StyleSheet.create({
 
     txt02: {
         marginTop: 10,
-        fontSize: 14,
-        color: 'black'
     },
 
     txt1: {
         fontWeight: '500',
-        color: 'black',
-        fontSize: 14,
+        color: 'black'
     },
 
     txt2: {
         color: 'red',
-        fontSize: 14
+        marginLeft: 10
     },
 
     //CheckBOx
@@ -177,6 +191,7 @@ const styleShippingAddress = StyleSheet.create({
 
     Box: {
         width: 25,
+        height: 25,
         header: 25,
         borderWidth: 2,
         borderColor: 'black',
@@ -184,10 +199,32 @@ const styleShippingAddress = StyleSheet.create({
         marginRight: 5
     },
 
+    BoxChecked: {
+        width: 25,
+        height: 25,
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 5,
+        marginRight: 5,
+        padding: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+
+    color1: {
+        backgroundColor: 'black',
+        width: 15,
+        height: 15,
+    },
+    color2: {
+        backgroundColor: 'white',
+        width: 15,
+        height: 15,
+    },
+
     BoxText: {
         marginLeft: 20,
-        color: 'black',
-        fontSize: 14
+        color: 'black'
     },
 
     //FloatBox
@@ -202,3 +239,34 @@ const styleShippingAddress = StyleSheet.create({
         height: 50,
     },
 })
+
+
+const Item = ({ item, navigation, user, onUpdateDefaultAddress, onDeleteAddressById }) => (
+    <View style={styleShippingAddress.input}>
+        <View style={styleShippingAddress.txt01}>
+            <Text style={styleShippingAddress.txt1}>{user.name}</Text>
+            <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity onPress={() => navigation.navigate("ShippingUpdate", { item: item })}>
+                    <Text style={styleShippingAddress.txt2}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => onDeleteAddressById(item._id)}>
+                    <Text style={styleShippingAddress.txt2}>Delete</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+
+        <View style={styleShippingAddress.txt02}>
+            <Text>Phone: {user.numberPhone}</Text>
+            <Text>{item.body}</Text>
+        </View>
+
+        <View style={styleShippingAddress.checkbox}>
+            <TouchableOpacity
+                onPress={() => onUpdateDefaultAddress(item._id)}
+                style={item.status ? styleShippingAddress.BoxChecked : styleShippingAddress.Box}>
+                <View style={item.status ? styleShippingAddress.color1 : styleShippingAddress.color2} />
+            </TouchableOpacity>
+            <Text style={styleShippingAddress.BoxText}>Use as the shipping address</Text>
+        </View>
+    </View>
+);

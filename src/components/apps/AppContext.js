@@ -12,9 +12,10 @@ import {
 
   //OrderDetail
   addOrderDetail, getOrderDetailsByIdOrder,
-
   //Review
   getReviews,
+  //Address
+  getAddressByIdUser, addAddress, updateAddress, deleteAddress,
 
 } from './AppService';
 import { UserContext } from '../users/UserContext';
@@ -24,6 +25,8 @@ export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
   const { children } = props;
+
+  const [countAddress, setCountAddress] = useState(0);
 
 
 
@@ -105,6 +108,48 @@ export const AppContextProvider = (props) => {
     }
   };
 
+
+  //-------------------------------------------------Address-------------------------------------------------
+  //Them address
+  const onAddAddress = async (body, status, idUser) => {
+    try {
+      const res = await addAddress(body, status, idUser);
+      return res;
+    } catch (error) {
+      console.log('onAddAddress error: ', error);
+    }
+  };
+
+  //Lay danh sach address by idUser
+  const onGetAddressByIdUser = async (idUser) => {
+    try {
+      const res = await getAddressByIdUser(idUser);
+      return res;
+    } catch (error) {
+      console.log('onGetAddressByIdUser error: ', error);
+    }
+  };
+
+  //Cap nhat address
+  const onUpdateAddress = async (idAddress, body, status, idUser) => {
+    try {
+      const res = await updateAddress(idAddress, body, status, idUser);
+      return res;
+    } catch (error) {
+      console.log('onUpdateAddress error: ', error);
+    }
+  };
+
+  //Xoa address
+  const onDeleteAddress = async (idAddress) => {
+    try {
+      const res = await deleteAddress(idAddress);
+      return res;
+    } catch (error) {
+      console.log('onDeleteAddress error: ', error);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       //Category & Brand
@@ -115,6 +160,11 @@ export const AppContextProvider = (props) => {
       onGetReviews,
       //Picture
       onGetPicturesByIdProduct,
+      //Address
+      onAddAddress, onGetAddressByIdUser, onUpdateAddress, onDeleteAddress,
+
+      //State
+      countAddress, setCountAddress,
     }}>
       {children}
     </AppContext.Provider>
