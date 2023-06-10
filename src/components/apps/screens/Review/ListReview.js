@@ -8,13 +8,21 @@ import { useRoute } from '@react-navigation/native';
 const ListReview = (props) => {
   const { navigation } = props;
   const route = useRoute();
+  const { idProduct } = route.params;
+
   const [star, setStar] = useState([]);
   const [listImage, setListImage] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [review, setReview] = useState([]);
   const [listReview, setListReview] = useState([]);
-  const { onGetPicturesByIdProduct, onGetSubProductsByIdProduct, onGetReviewsByIdProduct,
+  const [productDetail, setProductDetail] = useState();
+  const [listPrice, setPrice] = useState([]);
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [product, setProduct] = useState({});
+  const { onGetPicturesByIdProduct, onGetSubProductsByIdProduct, onGetReviewsByIdProduct, onGetProductById, onGetProducts, onGetSubProducts, countOrderDetail
   } = useContext(AppContext);
+
 
   useEffect(() => {
     setIsLoading(false);
@@ -66,11 +74,64 @@ const ListReview = (props) => {
   }, []);
   console.log(listReview);
 
+  useEffect(() => {
+    setIsLoading(true);
+
+    const getData = async (_idProduct) => {
+      try {
+        const resProduct = await onGetProducts();
+        const resSubProduct = await onGetSubProducts();
+
+        if (!resProduct || !resSubProduct) {
+          setIsLoading(false);
+          return;
+        }
+        //lấy sản phẩm theo id
+        const product = await onGetProductById(_idProduct);
+
+        //lấy tất cả sản phẩm chi tiết theo id sản phẩm
+        const subProduct = await onGetSubProductsByIdProducts(product._id, resSubProduct);
+
+        //gộp những dự liệu cần thiết từ subProduct vào product
+        const detail = await subProduct.map((item) => ({
+          id: item._id,
+          color: item.color,
+          price: item.price,
+          sale: item.sale,
+          description: item.description,
+        }));
+        product.detail = detail;
+
+        setProduct(product);
+        setProductDetail(product.detail[0]);
+      } catch (error) {
+        setIsLoading(false);
+        console.log("Error home screen: ", error);
+      }
+      setIsLoading(false);
+    };
+
+    getData(idProduct);
+  }, [countOrderDetail]);
+
+  const onGetSubProductsByIdProducts = async (idProduct, res) => {
+    try {
+      if (!res.data) {
+        return;
+      } else {
+        const subProduct = res.data.filter((item) => item.idProduct == idProduct);
+        return subProduct;
+      }
+    } catch (error) {
+      console.log('onGetSubProductsByIdProduct error: ', error);
+    }
+  };
+
   return (
     <View style={styleReview.container}>
       <View style={styleReview.header}>
         <View>
-          <TouchableOpacity  onPress={() => navigation.navigate("ProductDetail")}>
+          <TouchableOpacity onPress={() => navigation.navigate("ProductDetail", { idProduct: route.params.idProduct })}>
             <Image
               style={styleReview.icBack}
               source={require('../../../../assets/images/back.png')}
@@ -91,7 +152,7 @@ const ListReview = (props) => {
               ></Image>
             </View>
             <View style={styleReview.txtheader}>
-              {/* <Text>SamSung S23 Utral</Text> */}
+              <Text style={{ fontSize: 20, fontWeight: 'bold'}}>{product.name}</Text>
               <View style={styleReview.Star}>
                 <Image
                   style={styleReview.icStar}
@@ -140,27 +201,17 @@ export default ListReview
 
 const Item = ({ userId, content, time, rate }) => {
   const [userName, setUserName] = useState();
+  const [userAva, setUserAva] = useState();
   const { onGetUserById, user } = useContext(UserContext);
-  // const getUserName = async (idUser) => {
-  //   try {
-  //     const userResponse = await onGetUserById(idUser);
-  //     const usedatar = userResponse;
-  //     setUserName(usedatar.name);
-  //     console.log(userName);
-  //     return userName;
-  //   } catch (error) {
-  //     console.log('Error user:', error);
-  //   }
-  // };
-  // console.log(name);
-  // const id = getUserName(name);
-  // console.log(id);
+
   useEffect(() => {
     const getUserName = async () => {
       try {
         const user = await onGetUserById(userId);
         const userName = user.name;
+        const userAva = user.avatar;
         setUserName(userName);
+        setUserAva(userAva);
       } catch (error) {
         console.log('Error getting user name:', error);
       }
@@ -169,26 +220,29 @@ const Item = ({ userId, content, time, rate }) => {
   }, [userId]);
   return (
     <View style={styleReview.BoxReview}>
-      <Image
-        style={styleReview.icImg}
-        source={require('../../../../assets/images/avataruser.png')}
-      />
-      <View style={styleReview.RName}>
-        <Text>{userName}</Text>
-        <Text>{time}</Text>
-      </View>
-      <View style={styleReview.RatingStar}>
+      <View style={{}}>
         <Image
-          style={styleReview.icStar01}
-          source={require('../../../../assets/images/star.png')}
+          style={styleReview.icImg}
+          source={userAva ? { uri: userAva } : require('../../../../assets/images/avataruser.png')}
         />
-        <Text>{rate}</Text>
-      </View>
+        <View style={styleReview.RName}>
+          <Text style={{ fontSize: 15, fontWeight: 'bold'}} >{userName}</Text>
+          <Text>{time}</Text>
+        </View>
+        <View style={styleReview.RatingStar}>
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Text>  {rate}</Text>
+        </View>
 
-      <View style={styleReview.comment}>
-        <Text>{content}</Text>
+        <View style={styleReview.comment}>
+          <Text>{content}</Text>
+        </View>
       </View>
     </View>
+
   );
 };
 
@@ -232,11 +286,12 @@ const styleReview = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 10,
-    alignSelf:'center',
+    alignSelf: 'center',
   },
 
   txtheader: {
-    width: '70%'
+    width: '70%',
+   
   },
 
   //Star Point
@@ -246,8 +301,8 @@ const styleReview = StyleSheet.create({
   },
 
   icStar: {
-    width: 30,
-    height: 30
+    width: 24,
+    height: 24
   },
 
   txtStar: {
@@ -258,15 +313,16 @@ const styleReview = StyleSheet.create({
   //Review
   BoxReview: {
     width: '90%',
-    height: 160,
+    height: 100,
     marginLeft: 20,
     marginTop: 40,
     paddingVertical: 10,
     paddingHorizontal: 20,
+    paddingBottom: 35,
     backgroundColor: '#F1F1F1',
     borderRadius: 10,
     justifyContent: 'center'
-    
+
   },
 
   icAva: {
@@ -305,7 +361,8 @@ const styleReview = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 20,
-    borderRadius: 8,
+    borderRadius: 30,
+    marginBottom: 20,
   },
 
   btnText: {
