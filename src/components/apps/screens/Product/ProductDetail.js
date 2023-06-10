@@ -35,9 +35,12 @@ const ProductDetail = ({ route, navigation }) => {
 
     const getSubProducts = async () => {
       try {
+
+        // lấy sub-product theo idProduct
         const response = await onGetSubProductsByIdProduct(route.params.idProduct);
         const products = response.data;
         setItem(products);
+        // lấy review theo idProduct
         const tempReview = await onGetReviewsByIdProduct(route.params.idProduct);
         const reviews = tempReview.data;
 
@@ -52,12 +55,13 @@ const ProductDetail = ({ route, navigation }) => {
           totalRating += review.rating;
         });
 
-        const averageRating = totalRating / reviewCount; // Tính trung bình cộng của rate
+        const averageRating = reviewCount > 0 ? totalRating / reviewCount : 0; // Tính trung bình cộng của rate
         setStar(averageRating);
         console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
 
         if (products.length > 0) {
           const productId = products[0]._id; // Giả sử bạn muốn lấy hình ảnh dựa trên _id của sản phẩm đầu tiên
+          // lấy id của sub-product
           const imagesResponse = await onGetPicturesByIdProduct(productId);
           const images = imagesResponse.data;
 
@@ -135,6 +139,7 @@ const ProductDetail = ({ route, navigation }) => {
   };
 
   const selectColor = async (item) => {
+    // item trả về data sub-product
     for (let i = 0; i < product.detail.length; i++) {
       if (item.id === product.detail[i].id) {
         setSelectedIndex(i);
@@ -245,10 +250,10 @@ const ProductDetail = ({ route, navigation }) => {
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10, }}>
           <Image style={styles.button} source={require('../../../../assets/images/star.png')} />
           {/* Star */}
-          <Text style={{ marginLeft: 10, fontSize: 24, fontWeight: "bold", color: "black" }}>{star}</Text>
+          <Text style={{ marginLeft: 10, fontSize: 24, fontWeight: "bold", color: "black" }}>{star ?? 0}</Text>
           {/* So luong reviews */}
           <TouchableOpacity onPress={() => navigation.navigate('ListReview', { idProduct: route.params.idProduct })}>
-            <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }}>{review} Reviews</Text>
+            <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }}>({review} Reviews)</Text>
           </TouchableOpacity>
 
         </View>
