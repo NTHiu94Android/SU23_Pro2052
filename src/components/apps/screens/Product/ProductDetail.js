@@ -151,17 +151,17 @@ const ProductDetail = ({ route, navigation }) => {
     setListImage(list);
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <ProgressDialog
-          visible={isLoading}
-          loaderColor="black"
-          label="Please wait..."
-        />
-      </View>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <View style={styles.container}>
+  //       <ProgressDialog
+  //         visible={isLoading}
+  //         loaderColor="black"
+  //         label="Please wait..."
+  //       />
+  //     </View>
+  //   );
+  // }
 
   return (
     <View style={styles.container}>

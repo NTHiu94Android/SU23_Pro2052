@@ -73,6 +73,12 @@ export const deleteAddress = async(_id) => {
     return res;
 };
 
+//------------------------------------Review------------------------------------
+export const getReviewsById = async (idProduct) => {
+    const response = await CustomAxios().get(`reviews/api/get-review-by-idProduct/${idProduct}`);
+    return response;
+}
+
 
 
 

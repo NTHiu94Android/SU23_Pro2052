@@ -13,7 +13,7 @@ import {
   //OrderDetail
   addOrderDetail, getOrderDetailsByIdOrder,
   //Review
-  getReviews,
+  getReviews, getReviewsById,
   //Address
   getAddressByIdUser, addAddress, updateAddress, deleteAddress,
 
@@ -150,6 +150,16 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //-------------------------------------------------Reviews-------------------------------------------------
+  const onGetReviewsByIdProduct = async (idProduct) => {
+    try {
+      const res = await getReviewsById(idProduct);
+      return res;
+    } catch (error) {
+      console.log('onGetReviewsByIdProduct error: ', error);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       //Category & Brand
@@ -162,6 +172,8 @@ export const AppContextProvider = (props) => {
       onGetPicturesByIdProduct,
       //Address
       onAddAddress, onGetAddressByIdUser, onUpdateAddress, onDeleteAddress,
+      //Review
+      onGetReviewsByIdProduct,
 
       //State
       countAddress, setCountAddress,
