@@ -14,7 +14,7 @@ const ProductDetail = ({ route, navigation }) => {
   // console.log(route); 
   const { idProduct } = route.params;
 
-  const {onGetProductById, onGetProducts, onGetSubProducts, onGetPicturesByIdProduct, countOrderDetail, onGetSubProductsByIdProduct, onGetReviewsByIdProduct
+  const { onGetProductById, onGetProducts, onGetSubProducts, onGetPicturesByIdProduct, countOrderDetail, onGetSubProductsByIdProduct, onGetReviewsByIdProduct
   } = useContext(AppContext);
   const { user } = useContext(UserContext);
   const [listImage, setListImage] = useState([]);
@@ -25,7 +25,7 @@ const ProductDetail = ({ route, navigation }) => {
   const [review, setReview] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [product, setProduct] = useState({});
-
+  const [item, setItem] = useState([]);
   back(navigation);
 
 
@@ -37,11 +37,11 @@ const ProductDetail = ({ route, navigation }) => {
       try {
         const response = await onGetSubProductsByIdProduct(route.params.idProduct);
         const products = response.data;
-
+        setItem(products);
         const tempReview = await onGetReviewsByIdProduct(route.params.idProduct);
         const reviews = tempReview.data;
 
-        console.log(reviews); // Kiểm tra dữ liệu reviews trong console
+        console.log(response); // Kiểm tra dữ liệu reviews trong console
 
         const reviewCount = reviews.length; // Lấy số lượng reviews
         console.log(reviewCount); // Kiểm tra số lượng reviews trong console
@@ -83,22 +83,22 @@ const ProductDetail = ({ route, navigation }) => {
 
   useEffect(() => {
     setIsLoading(true);
-  
+
     const getData = async (_idProduct) => {
       try {
         const resProduct = await onGetProducts();
         const resSubProduct = await onGetSubProducts();
-  
+
         if (!resProduct || !resSubProduct) {
           setIsLoading(false);
           return;
         }
         //lấy sản phẩm theo id
         const product = await onGetProductById(_idProduct);
-  
+
         //lấy tất cả sản phẩm chi tiết theo id sản phẩm
         const subProduct = await onGetSubProductsByIdProducts(product._id, resSubProduct);
-  
+
         //gộp những dự liệu cần thiết từ subProduct vào product
         const detail = await subProduct.map((item) => ({
           id: item._id,
@@ -108,7 +108,7 @@ const ProductDetail = ({ route, navigation }) => {
           description: item.description,
         }));
         product.detail = detail;
-  
+
         setProduct(product);
         setProductDetail(product.detail[0]);
       } catch (error) {
@@ -117,7 +117,7 @@ const ProductDetail = ({ route, navigation }) => {
       }
       setIsLoading(false);
     };
-  
+
     getData(idProduct);
   }, [countOrderDetail]);
 
@@ -132,15 +132,23 @@ const ProductDetail = ({ route, navigation }) => {
     } catch (error) {
       console.log('onGetSubProductsByIdProduct error: ', error);
     }
-  };  
+  };
 
-  const selectColor = (item) => {
+  const selectColor = async (item) => {
     for (let i = 0; i < product.detail.length; i++) {
       if (item.id === product.detail[i].id) {
         setSelectedIndex(i);
         setProductDetail(product.detail[i]);
       }
     }
+    const imagesResponse = await onGetPicturesByIdProduct(item.id);
+    const images = imagesResponse.data;
+
+    let list = [];
+    for (let i = 0; i < images.length; i++) {
+      list.push(images[i].url);
+    }
+    setListImage(list);
   };
 
   if (isLoading) {
@@ -158,7 +166,7 @@ const ProductDetail = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <View style={{ marginBottom: 20 }}>
+        <View style={{ marginBottom: 20 }}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Image style={styles.icon} source={require('../../../../assets/images/ic_back.png')} />
           </TouchableOpacity>
@@ -190,26 +198,26 @@ const ProductDetail = ({ route, navigation }) => {
         </View>
       </View>
       <View style={styles.body}>
-      <View style={styles.colorProduct}>
-      <FlatList
-          horizontal
-          data={product.detail}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              style={{
-                backgroundColor: item.color,
-                width: 30,
-                height: 30,
-                margin: 3,
-                borderRadius: 10,
-                borderWidth: index === selectedIndex ? 2 : 0,
-                borderColor: index === selectedIndex ? 'red' : 'transparent',
-              }}
-              onPress={() => selectColor(item)}
-            ></TouchableOpacity>
-          )}
-        />
+        <View style={styles.colorProduct}>
+          <FlatList
+            horizontal
+            data={product.detail}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: item.color,
+                  width: 30,
+                  height: 30,
+                  margin: 3,
+                  borderRadius: 10,
+                  borderWidth: index === selectedIndex ? 2 : 0,
+                  borderColor: index === selectedIndex ? 'red' : 'transparent',
+                }}
+                onPress={() => selectColor(item)}
+              ></TouchableOpacity>
+            )}
+          />
         </View>
         {/* Name product */}
         <Text style={styles.nameProduct}>{product.name}</Text>
@@ -217,12 +225,12 @@ const ProductDetail = ({ route, navigation }) => {
           <View style={{ width: "60%" }}>
             {/* Price product */}
             <Text style={styles.pricProduct}>
-          {productDetail?.price - (productDetail?.price * productDetail?.sale) / 100}$
-        </Text>
-                    <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5, }}>
+              {productDetail?.price - (productDetail?.price * productDetail?.sale) / 100}$
+            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5, }}>
               {/* Sale */}
               <View style={styles.sale}>
-              <Text style={{ color: 'white' }}>{productDetail?.sale}%</Text>
+                <Text style={{ color: 'white' }}>{productDetail?.sale}%</Text>
               </View>
               <Text style={{ color: 'black', textDecorationLine: 'line-through', marginLeft: 5 }}>{productDetail?.price}$</Text>
             </View>
@@ -248,7 +256,7 @@ const ProductDetail = ({ route, navigation }) => {
         {/* Mo ta san pham */}
         <View style={{ flex: 0.8, }}>
           <Text>
-          {productDetail?.description}
+            {productDetail?.description}
           </Text>
         </View>
       </View>
