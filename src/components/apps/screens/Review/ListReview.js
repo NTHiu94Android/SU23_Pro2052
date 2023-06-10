@@ -1,15 +1,137 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, FlatList } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
+import { AppContext } from '../../AppContext';
+import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
+import { useRoute } from '@react-navigation/native';
 
 const ListReview = (props) => {
   const { navigation } = props;
-  back(navigation);
+  const route = useRoute();
+  const { idProduct } = route.params;
+
+  const [star, setStar] = useState([]);
+  const [listImage, setListImage] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [review, setReview] = useState([]);
+  const [listReview, setListReview] = useState([]);
+  const [productDetail, setProductDetail] = useState();
+  const [listPrice, setPrice] = useState([]);
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [product, setProduct] = useState({});
+  const { onGetPicturesByIdProduct, onGetSubProductsByIdProduct, onGetReviewsByIdProduct, onGetProductById, onGetProducts, onGetSubProducts, countOrderDetail
+  } = useContext(AppContext);
+
+
+  useEffect(() => {
+    setIsLoading(false);
+
+    const getSubProducts = async () => {
+      try {
+        const response = await onGetSubProductsByIdProduct(route.params.idProduct);
+        const products = response.data;
+
+        const tempReview = await onGetReviewsByIdProduct(route.params.idProduct);
+        const reviews = tempReview.data;
+        setListReview(reviews);
+        // Kiểm tra dữ liệu reviews trong console
+
+        const reviewCount = reviews.length; // Lấy số lượng reviews
+        console.log(reviewCount); // Kiểm tra số lượng reviews trong console
+        setReview(reviewCount);
+        // Tính tổng rating
+        let totalRating = 0;
+        reviews.forEach(review => {
+          totalRating += review.rating;
+        });
+
+        const averageRating = totalRating / reviewCount; // Tính trung bình cộng của rate
+        setStar(averageRating);
+        console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
+
+        if (products.length > 0) {
+          const productId = products[0]._id; // Giả sử bạn muốn lấy hình ảnh dựa trên _id của sản phẩm đầu tiên
+          const imagesResponse = await onGetPicturesByIdProduct(productId);
+          const images = imagesResponse.data;
+
+          let list = [];
+          for (let i = 0; i < images.length; i++) {
+            list.push(images[i].url);
+          }
+          setListImage(list);
+
+        }
+
+        setIsLoading(true);
+      } catch (error) {
+        console.log("Error fetching sub-products: ", error);
+      }
+    };
+
+    getSubProducts();
+
+  }, []);
+  console.log(listReview);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    const getData = async (_idProduct) => {
+      try {
+        const resProduct = await onGetProducts();
+        const resSubProduct = await onGetSubProducts();
+
+        if (!resProduct || !resSubProduct) {
+          setIsLoading(false);
+          return;
+        }
+        //lấy sản phẩm theo id
+        const product = await onGetProductById(_idProduct);
+
+        //lấy tất cả sản phẩm chi tiết theo id sản phẩm
+        const subProduct = await onGetSubProductsByIdProducts(product._id, resSubProduct);
+
+        //gộp những dự liệu cần thiết từ subProduct vào product
+        const detail = await subProduct.map((item) => ({
+          id: item._id,
+          color: item.color,
+          price: item.price,
+          sale: item.sale,
+          description: item.description,
+        }));
+        product.detail = detail;
+
+        setProduct(product);
+        setProductDetail(product.detail[0]);
+      } catch (error) {
+        setIsLoading(false);
+        console.log("Error home screen: ", error);
+      }
+      setIsLoading(false);
+    };
+
+    getData(idProduct);
+  }, [countOrderDetail]);
+
+  const onGetSubProductsByIdProducts = async (idProduct, res) => {
+    try {
+      if (!res.data) {
+        return;
+      } else {
+        const subProduct = res.data.filter((item) => item.idProduct == idProduct);
+        return subProduct;
+      }
+    } catch (error) {
+      console.log('onGetSubProductsByIdProduct error: ', error);
+    }
+  };
+
   return (
     <View style={styleReview.container}>
       <View style={styleReview.header}>
         <View>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.navigate("ProductDetail", { idProduct: route.params.idProduct })}>
             <Image
               style={styleReview.icBack}
               source={require('../../../../assets/images/back.png')}
@@ -26,90 +148,104 @@ const ListReview = (props) => {
             <View>
               <Image
                 style={styleReview.icImg}
-                source={require('../../../../assets/images/s23.jpg')}
+                source={{ uri: listImage[0] }}
               ></Image>
             </View>
             <View style={styleReview.txtheader}>
-              <Text>SamSung S23 Utral</Text>
+              <Text style={{ fontSize: 20, fontWeight: 'bold'}}>{product.name}</Text>
               <View style={styleReview.Star}>
                 <Image
                   style={styleReview.icStar}
                   source={require('../../../../assets/images/star.png')}
                 ></Image>
-                <Text style={styleReview.txtStar}>5.0</Text>
+                <Text style={styleReview.txtStar}>{star}</Text>
               </View>
-              <Text>1 Reviews</Text>
+              <Text>{review} Reviews</Text>
             </View>
           </View>
 
           <View style={styleReview.AllReview}>
+            <FlatList
+              data={listReview}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <Item
+                  // name={item.idUser}
+                  // content={item.content}
+                  // time={item.time}
+                  // rate={item.rating}
+                  userId={item.idUser}
+                  content={item.content}
+                  time={item.time}
+                  rate={item.rating}
+                />
 
-            {/* 1 */}
-            <View style={styleReview.BoxReview}>
-              <Image
-                style={styleReview.icAva}
-                source={require('../../../../assets/images/avataruser.png')}
-              ></Image>
-
-              <View style={styleReview.RName}>
-                <Text style={{ color: 'black', fontWeight: 'bold' }}>CoV Music Offical</Text>
-                <Text style={{ color: 'black', fontWeight: 'bold' }} >26/05/2023</Text>
-              </View>
-              <View style={styleReview.RatingStar}>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Image
-                  style={styleReview.icStar01}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-              </View>
-
-              <View style={styleReview.imgCmt} >
-                <Image
-                  style={styleReview.imgComment}
-                  source={require('../../../../assets/images/Meo.jpg')}
-                ></Image>
-                <Image
-                  style={styleReview.imgComment01}
-                  source={require('../../../../assets/images/Meo.jpg')}
-                ></Image>
-              </View>
-
-              <View style={styleReview.comment}>
-                <Text>Net như Ngọc Trinh :))</Text>
-              </View>
-            </View>
-
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
           </View>
 
         </View>
       </ScrollView>
       {/* WRITE A REVIEW */}
-      {/* <View style={styleReview.btn}>
+      <View style={styleReview.btn}>
         <TouchableOpacity>
           <Text style={styleReview.btnText}>Write a Review</Text>
         </TouchableOpacity>
-      </View> */}
+      </View>
     </View>
 
   )
 }
-
 export default ListReview
+
+const Item = ({ userId, content, time, rate }) => {
+  const [userName, setUserName] = useState();
+  const [userAva, setUserAva] = useState();
+  const { onGetUserById, user } = useContext(UserContext);
+
+  useEffect(() => {
+    const getUserName = async () => {
+      try {
+        const user = await onGetUserById(userId);
+        const userName = user.name;
+        const userAva = user.avatar;
+        setUserName(userName);
+        setUserAva(userAva);
+      } catch (error) {
+        console.log('Error getting user name:', error);
+      }
+    };
+    getUserName();
+  }, [userId]);
+  return (
+    <View style={styleReview.BoxReview}>
+      <View style={{}}>
+        <Image
+          style={styleReview.icImg}
+          source={userAva ? { uri: userAva } : require('../../../../assets/images/avataruser.png')}
+        />
+        <View style={styleReview.RName}>
+          <Text style={{ fontSize: 15, fontWeight: 'bold'}} >{userName}</Text>
+          <Text>{time}</Text>
+        </View>
+        <View style={styleReview.RatingStar}>
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Text>  {rate}</Text>
+        </View>
+
+        <View style={styleReview.comment}>
+          <Text>{content}</Text>
+        </View>
+      </View>
+    </View>
+
+  );
+};
+
 
 const styleReview = StyleSheet.create({
   // container
@@ -147,14 +283,15 @@ const styleReview = StyleSheet.create({
   },
 
   icImg: {
-    width: 100,
-    height: 100,
-    borderRadius: 10
+    width: 70,
+    height: 70,
+    borderRadius: 10,
+    alignSelf: 'center',
   },
 
   txtheader: {
-    paddingHorizontal: 20,
-    width: '70%'
+    width: '70%',
+   
   },
 
   //Star Point
@@ -164,8 +301,8 @@ const styleReview = StyleSheet.create({
   },
 
   icStar: {
-    width: 30,
-    height: 30
+    width: 24,
+    height: 24
   },
 
   txtStar: {
@@ -176,33 +313,34 @@ const styleReview = StyleSheet.create({
   //Review
   BoxReview: {
     width: '90%',
-    height: 160,
+    height: 100,
     marginLeft: 20,
     marginTop: 40,
     paddingVertical: 10,
     paddingHorizontal: 20,
+    paddingBottom: 35,
     backgroundColor: '#F1F1F1',
     borderRadius: 10,
     justifyContent: 'center'
+
   },
 
   icAva: {
-    width: 40,
-    height: 40,
-    bottom: 15,
+    width: 50,
+    height: 50,
+    bottom: 40,
     marginLeft: 130
   },
 
   RName: {
-    marginTop: 10,
     bottom: 30,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
 
   RatingStar: {
-    bottom: 20,
-    flexDirection: 'row',
+    bottom: 25,
+    flexDirection: 'row'
   },
 
   icStar01: {
@@ -210,45 +348,26 @@ const styleReview = StyleSheet.create({
     height: 20
   },
 
-  imgCmt: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-
-  imgComment: {
-    width: 50,
-    height: 50,
-    bottom: 5,
-    borderRadius: 10,
-  },
-
-  imgComment01: {
-    width: 50,
-    height: 50,
-    bottom: 5,
-    borderRadius: 10,
-    marginLeft: 5
-  },
-
   //Comment
   comment: {
-    marginTop: 20,
     bottom: 15,
   },
 
   //Button
-  // btn: {
-  //   backgroundColor: 'black',
-  //   width: '90%',
-  //   height: 55,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   marginHorizontal: 20,
-  //   borderRadius: 8,
-  // },
+  btn: {
+    backgroundColor: 'black',
+    width: '90%',
+    height: 55,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    borderRadius: 30,
+    marginBottom: 20,
+  },
 
-  // btnText: {
-  //   color: 'white',
-  //   fontSize: 20
-  // },
+  btnText: {
+    color: 'white',
+    fontSize: 20
+  },
 })
+

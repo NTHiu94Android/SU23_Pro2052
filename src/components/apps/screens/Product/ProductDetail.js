@@ -1,32 +1,90 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-  SafeAreaView
-} from 'react-native';
-import Swiper from 'react-native-swiper';
-import back from '../../../back/back';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatList, Dimensions } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
 import { AppContext } from '../../AppContext';
-import ProgressDialog from 'react-native-progress-dialog';
+import { UserContext } from '../../../users/UserContext';
 
-const ProductDetail = (props) => {
-  const { navigation, route } = props;
+import Swiper from 'react-native-swiper';
+import ProgressDialog from 'react-native-progress-dialog';
+import back from '../../../back/back';
+
+
+const ProductDetail = ({ route, navigation }) => {
+  // const { item } = route.params.idProduct;
+  // console.log("cua tao");
+  // console.log(route); 
   const { idProduct } = route.params;
-  const [product, setProduct] = useState();
+
+  const { onGetProductById, onGetProducts, onGetSubProducts, onGetPicturesByIdProduct, countOrderDetail, onGetSubProductsByIdProduct, onGetReviewsByIdProduct
+  } = useContext(AppContext);
+  const { user } = useContext(UserContext);
+  const [listImage, setListImage] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [productDetail, setProductDetail] = useState();
-  const [isLoading, setIsLoading] = useState(true);
-  const { onGetProductById, onGetProducts, onGetSubProducts, onGetReviews, countOrderDetail, onGetPicturesByIdProduct } = useContext(AppContext);
+  const [listPrice, setPrice] = useState([]);
+  const [star, setStar] = useState([]);
+  const [review, setReview] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [product, setProduct] = useState({});
+  const [item, setItem] = useState([]);
   back(navigation);
+
+
+  //lay tat ca san pham
+  useEffect(() => {
+    setIsLoading(false);
+
+    const getSubProducts = async () => {
+      try {
+        const response = await onGetSubProductsByIdProduct(route.params.idProduct);
+        const products = response.data;
+        setItem(products);
+        const tempReview = await onGetReviewsByIdProduct(route.params.idProduct);
+        const reviews = tempReview.data;
+
+        console.log(response); // Kiểm tra dữ liệu reviews trong console
+
+        const reviewCount = reviews.length; // Lấy số lượng reviews
+        console.log(reviewCount); // Kiểm tra số lượng reviews trong console
+        setReview(reviewCount);
+        // Tính tổng rating
+        let totalRating = 0;
+        reviews.forEach(review => {
+          totalRating += review.rating;
+        });
+
+        const averageRating = totalRating / reviewCount; // Tính trung bình cộng của rate
+        setStar(averageRating);
+        console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
+
+        if (products.length > 0) {
+          const productId = products[0]._id; // Giả sử bạn muốn lấy hình ảnh dựa trên _id của sản phẩm đầu tiên
+          const imagesResponse = await onGetPicturesByIdProduct(productId);
+          const images = imagesResponse.data;
+
+          let list = [];
+          for (let i = 0; i < images.length; i++) {
+            list.push(images[i].url);
+          }
+          setListImage(list);
+
+          const firstPrice = products[0].price;
+          setPrice(firstPrice);
+        }
+
+        setIsLoading(true);
+      } catch (error) {
+        console.log("Error fetching sub-products: ", error);
+      }
+    };
+
+    getSubProducts();
+
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);
-    const getData = async (_idProduct) => {
 
+    const getData = async (_idProduct) => {
       try {
         const resProduct = await onGetProducts();
         const resSubProduct = await onGetSubProducts();
@@ -39,32 +97,31 @@ const ProductDetail = (props) => {
         const product = await onGetProductById(_idProduct);
 
         //lấy tất cả sản phẩm chi tiết theo id sản phẩm
-        const subProduct = await onGetSubProductsByIdProduct(product._id, resSubProduct);
+        const subProduct = await onGetSubProductsByIdProducts(product._id, resSubProduct);
 
-        const detail = await subProduct.map((item) => (
-          {
-            id: item._id,
-            color: item.color,
-            price: item.price,
-            sale: item.sale,
-            description: item.description,
-          }));
-
+        //gộp những dự liệu cần thiết từ subProduct vào product
+        const detail = await subProduct.map((item) => ({
+          id: item._id,
+          color: item.color,
+          price: item.price,
+          sale: item.sale,
+          description: item.description,
+        }));
         product.detail = detail;
 
         setProduct(product);
         setProductDetail(product.detail[0]);
-        console.log('product: ', product);
       } catch (error) {
         setIsLoading(false);
         console.log("Error home screen: ", error);
       }
       setIsLoading(false);
     };
+
     getData(idProduct);
   }, [countOrderDetail]);
 
-  const onGetSubProductsByIdProduct = async (idProduct, res) => {
+  const onGetSubProductsByIdProducts = async (idProduct, res) => {
     try {
       if (!res.data) {
         return;
@@ -77,26 +134,22 @@ const ProductDetail = (props) => {
     }
   };
 
-  const data = [
-    {
-      _id: '1',
-      url: 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-13-finish-select-202207-6-1inch-pink?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1657641867367'
-    },
-    {
-      _id: '2',
-      url: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg'
-    },
-    {
-      _id: '3',
-      url: 'https://cdn.tgdd.vn/Products/Images/42/223602/iphone-13-blue-1-600x600.jpg'
-    },
-  ];
+  const selectColor = async (item) => {
+    for (let i = 0; i < product.detail.length; i++) {
+      if (item.id === product.detail[i].id) {
+        setSelectedIndex(i);
+        setProductDetail(product.detail[i]);
+      }
+    }
+    const imagesResponse = await onGetPicturesByIdProduct(item.id);
+    const images = imagesResponse.data;
 
-  const mau = [
-    { id: '1', color: 'silver' },
-    { id: '2', color: 'gold' },
-    { id: '3', color: 'green' },
-  ];
+    let list = [];
+    for (let i = 0; i < images.length; i++) {
+      list.push(images[i].url);
+    }
+    setListImage(list);
+  };
 
   if (isLoading) {
     return (
@@ -113,33 +166,35 @@ const ProductDetail = (props) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={{ flex: 1 }}>
+        <View style={{ marginBottom: 20 }}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Image style={styles.icon} source={require('../../../../assets/images/ic_back.png')} />
+          </TouchableOpacity>
+        </View>
+        {/* slideImage */}
+        <View style={{ flex: 1, marginTop: 30 }}>
+
           <Swiper
             style={{ height: 280 }}
             autoplayTimeout={3}
             autoplay={true}
             loop={true}
-            showsPagination={true}
-          >
-            {data.map((item, index) => {
+            showsPagination={true}>
+            {listImage.map((image, index) => {
               return (
                 <Image
                   key={index}
                   style={{ width: '100%', height: 280 }}
                   resizeMode='stretch'
                   source={{
-                    uri: item.url,
-                  }}
-                />
+                    uri: image,
+                  }} />
               );
             })}
           </Swiper>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image
-              style={styles.icon}
-              source={require('../../../../assets/images/ic_back.png')}
-            />
-          </TouchableOpacity>
+
+
+
         </View>
       </View>
       <View style={styles.body}>
@@ -148,7 +203,7 @@ const ProductDetail = (props) => {
             horizontal
             data={product.detail}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <TouchableOpacity
                 style={{
                   backgroundColor: item.color,
@@ -156,46 +211,59 @@ const ProductDetail = (props) => {
                   height: 30,
                   margin: 3,
                   borderRadius: 10,
+                  borderWidth: index === selectedIndex ? 2 : 0,
+                  borderColor: index === selectedIndex ? 'red' : 'transparent',
                 }}
-                onPress={() => nextScreen(item)}
+                onPress={() => selectColor(item)}
               ></TouchableOpacity>
             )}
           />
         </View>
+        {/* Name product */}
         <Text style={styles.nameProduct}>{product.name}</Text>
-        <View style={{ flexDirection: 'row' }}>
-          <View style={{ width: '60%' }}>
-            <Text style={styles.pricProduct}>{productDetail.price - productDetail.price * productDetail.sale / 100}$</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 5 }}>
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ width: "60%" }}>
+            {/* Price product */}
+            <Text style={styles.pricProduct}>
+              {productDetail?.price - (productDetail?.price * productDetail?.sale) / 100}$
+            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5, }}>
+              {/* Sale */}
               <View style={styles.sale}>
-                <Text style={{ color: 'white' }}>{productDetail.sale}%</Text>
+                <Text style={{ color: 'white' }}>{productDetail?.sale}%</Text>
               </View>
-              <Text style={{ color: 'black', textDecorationLine: 'line-through', marginLeft: 5 }}>{productDetail.price}$</Text>
+              <Text style={{ color: 'black', textDecorationLine: 'line-through', marginLeft: 5 }}>{productDetail?.price}$</Text>
             </View>
           </View>
-          <View style={{ width: '40%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ width: "40%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Image style={styles.button} source={require('../../../../assets/images/btn_minus.png')} />
-            <Text style={{ color: 'black', fontSize: 20 }}>01</Text>
+            {/* So luong san pham */}
+            <Text style={{ color: "black", fontSize: 20 }}>01</Text>
             <Image style={styles.button} source={require('../../../../assets/images/btn_plus.png')} />
           </View>
         </View>
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10, }}>
           <Image style={styles.button} source={require('../../../../assets/images/star.png')} />
-          <Text style={{ marginLeft: 10, fontSize: 24, fontWeight: 'bold', color: 'black' }}>{product.rating}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('ListReview')}>
-            <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: 'bold' }}>(321 reviews)</Text>
+          {/* Star */}
+          <Text style={{ marginLeft: 10, fontSize: 24, fontWeight: "bold", color: "black" }}>{star}</Text>
+          {/* So luong reviews */}
+          <TouchableOpacity onPress={() => navigation.navigate('ListReview', { idProduct: route.params.idProduct })}>
+            <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }}>{review} Reviews</Text>
           </TouchableOpacity>
+
         </View>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'black', marginTop: 10 }}>Desciption</Text>
-        <View style={{ flex: 0.8 }}>
+        <Text style={{ fontSize: 20, fontWeight: "bold", color: "black", marginTop: 10 }}>Desciption</Text>
+        {/* Mo ta san pham */}
+        <View style={{ flex: 0.8, }}>
           <Text>
-            {productDetail.description}
+            {productDetail?.description}
           </Text>
         </View>
       </View>
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => navigation.navigate('Favorite')} style={styles.button1}>
-          <Image style={{ width: 24, height: 24 }} source={require('../../../../assets/images/ic_fvr.png')} />
+          <Image style={{ width: 24, height: 24 }}
+            source={require('../../../../assets/images/ic_fvr.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.button2}>
           <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>
@@ -204,29 +272,30 @@ const ProductDetail = (props) => {
         </TouchableOpacity>
       </View>
     </View>
-  );
-};
+  )
+}
 
-export default ProductDetail;
+export default ProductDetail
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   header: {
     flex: 4.5,
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
+
   },
   icon: {
     width: 30,
     height: 30,
     position: 'absolute',
     left: 20,
-    top: 20,
+    top: 20
   },
   button: {
     width: 30,
@@ -235,49 +304,42 @@ const styles = StyleSheet.create({
   body: {
     flex: 4.8,
     margin: 10,
+
   },
   footer: {
     flex: 0.7,
     margin: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   colorProduct: {
     flex: 0.2,
-    justifyContent: 'center',
+    justifyContent: "center"
   },
   nameProduct: {
-    color: 'black',
+    color: "black",
     fontSize: 24,
-    fontFamily: '',
+    fontFamily: ""
   },
   pricProduct: {
-    color: 'red',
+    color: "red",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold"
   },
   sale: {
     width: 40,
     height: 30,
-    backgroundColor: 'red',
+    backgroundColor: "red",
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center"
   },
   button1: {
-    backgroundColor: '#F0F0F0',
-    height: 50,
-    width: 50,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#F0F0F0', height: 50, width: 50,
+    borderRadius: 8, justifyContent: 'center', alignItems: 'center'
   },
   button2: {
-    backgroundColor: '#000',
-    height: 50,
-    width: 280,
-    borderRadius: 8,
-    flexDirection: 'column',
-    justifyContent: 'center',
+    backgroundColor: '#000', height: 50, width: 280,
+    borderRadius: 8, flexDirection: 'column', justifyContent: 'center'
   },
-});
+})
