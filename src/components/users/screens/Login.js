@@ -162,6 +162,11 @@ const Login = (props) => {
             <Text style={{ color: '#ffffff', textAlign: 'center', fontWeight: 'bold' }} >Login By Google</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('PhoneSignIn')}>
+            <Image style={{ width: 20, height: 20, marginRight: 10 }} source={require('../../../assets/images/google.png')}></Image>
+            <Text style={{ color: '#ffffff', textAlign: 'center', fontWeight: 'bold' }} >Login By phone number</Text>
+          </TouchableOpacity>
+
           <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             <Text style={{ color: 'black', fontWeight: '600', textAlign: 'center' }}>Do you have account ? </Text>
             <Text
