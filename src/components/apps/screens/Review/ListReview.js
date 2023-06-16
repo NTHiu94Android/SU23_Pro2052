@@ -8,8 +8,10 @@ import { useRoute } from '@react-navigation/native';
 const ListReview = (props) => {
   const { navigation } = props;
   const route = useRoute();
-  const { idProduct } = route.params;
+  // const { idProduct } = route.params;
+  const idProduct = route.params?.idProduct;
 
+  console.log(route);
   const [star, setStar] = useState([]);
   const [listImage, setListImage] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -142,51 +144,92 @@ const ListReview = (props) => {
         <Text style={styleReview.DetailTxt}>Rating & Review</Text>
       </View>
 
-      <ScrollView showsVertic alScrollIndicator={false}>
-        <View style={styleReview.body}>
-          <View style={styleReview.header}>
-            <View>
-              <Image
-                style={styleReview.icImg}
-                source={{ uri: listImage[0] }}
-              ></Image>
-            </View>
-            <View style={styleReview.txtheader}>
-              <Text style={{ fontSize: 20, fontWeight: 'bold'}}>{product.name}</Text>
-              <View style={styleReview.Star}>
-                <Image
-                  style={styleReview.icStar}
-                  source={require('../../../../assets/images/star.png')}
-                ></Image>
-                <Text style={styleReview.txtStar}>{star}</Text>
-              </View>
-              <Text>{review} Reviews</Text>
-            </View>
+      <View style={styleReview.body}>
+        <View style={styleReview.header}>
+          <View>
+            <Image
+              style={styleReview.icImg}
+              source={{ uri: listImage[0] }}
+            ></Image>
           </View>
-
-          <View style={styleReview.AllReview}>
-            <FlatList
-              data={listReview}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) => (
-                <Item
-                  // name={item.idUser}
-                  // content={item.content}
-                  // time={item.time}
-                  // rate={item.rating}
-                  userId={item.idUser}
-                  content={item.content}
-                  time={item.time}
-                  rate={item.rating}
-                />
-
-              )}
-              keyExtractor={(item, index) => index.toString()}
-            />
+          <View style={styleReview.txtheader}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{product.name}</Text>
+            <View style={styleReview.Star}>
+              <Image
+                style={styleReview.icStar}
+                source={require('../../../../assets/images/star.png')}
+              ></Image>
+              <Text style={styleReview.txtStar}>{star}</Text>
+            </View>
+            <Text>{review} Reviews</Text>
           </View>
 
         </View>
-      </ScrollView>
+
+        <View style={styleReview.viewSeeStart}>
+          <View>
+            <TouchableOpacity>
+              <Image
+                style={styleReview.icSeeAll}
+                source={require('../../../../assets/images/all.png')}
+              ></Image>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styleReview.viewStart}>
+            <TouchableOpacity>
+              <Image
+                style={styleReview.icStar}
+                source={require('../../../../assets/images/star2.png')}
+              ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                style={styleReview.icStar}
+                source={require('../../../../assets/images/star2.png')}
+              ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                style={styleReview.icStar}
+                source={require('../../../../assets/images/star2.png')}
+              ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                style={styleReview.icStar}
+                source={require('../../../../assets/images/star2.png')}
+              ></Image>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <Image
+                style={styleReview.icStar}
+                source={require('../../../../assets/images/star2.png')}
+              ></Image>
+            </TouchableOpacity>
+
+          </View>
+
+        </View>
+
+        <View style={styleReview.AllReview}>
+          <FlatList
+            data={listReview}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => (
+              <Item
+                userId={item.idUser}
+                content={item.content}
+                time={item.time}
+                rate={item.rating}
+              />
+
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </View>
+
+      </View>
       {/* WRITE A REVIEW */}
       <View style={styleReview.btn}>
         <TouchableOpacity>
@@ -226,7 +269,7 @@ const Item = ({ userId, content, time, rate }) => {
           source={userAva ? { uri: userAva } : require('../../../../assets/images/avataruser.png')}
         />
         <View style={styleReview.RName}>
-          <Text style={{ fontSize: 15, fontWeight: 'bold'}} >{userName}</Text>
+          <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{userName}</Text>
           <Text>{time}</Text>
         </View>
         <View style={styleReview.RatingStar}>
@@ -261,7 +304,9 @@ const styleReview = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: 20,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+
+
   },
 
   icBack: {
@@ -291,10 +336,23 @@ const styleReview = StyleSheet.create({
 
   txtheader: {
     width: '70%',
-   
+
   },
 
   //Star Point
+  viewStart: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+  },
+  viewSeeStart: {
+    marginVertical:10,
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+
+  },
   Star: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -302,7 +360,12 @@ const styleReview = StyleSheet.create({
 
   icStar: {
     width: 24,
-    height: 24
+    height: 24,
+    marginHorizontal: 5
+  },
+  icSeeAll: {
+    width: 36,
+    height: 36
   },
 
   txtStar: {
