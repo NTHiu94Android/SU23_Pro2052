@@ -7,7 +7,7 @@ import {
   //Picture
   getPicturesByIdProduct,
   //Cart
-
+  addToCart, get_order_details_by_idOrder, update_order_details, delete_order_details,
   //Favorite
 
   //OrderDetail
@@ -25,7 +25,19 @@ export const AppContext = createContext();
 
 export const AppContextProvider = (props) => {
   const { children } = props;
-
+  const { user } = useContext(UserContext);
+  const [listCart, setListCart] = useState([]);
+  const [listFavorite, setListFavorite] = useState([]);
+  const [listOrder, setListOrder] = useState([]);
+  const [listProcessing, setListProcessing] = useState([]);
+  const [listDelivered, setListDelivered] = useState([]);
+  const [listCanceled, setListCanceled] = useState([]);
+  const [countCart, setCountCart] = useState(0);
+  const [countFavorite, setCountFavorite] = useState(0);
+  const [countOrderDetail, setCountOrderDetail] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [ship, setShip] = useState(5);
+  const [listCmt, setListCmt] = useState([]);
   const [countAddress, setCountAddress] = useState(0);
 
 
@@ -89,6 +101,17 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //Lấy subProduct theo id
+  const onGetSubProductById = async (idSubProduct) => {
+    try {
+      const res = await getSubProducts();
+      const subProduct = res.data.find((item) => item._id === idSubProduct);
+      return subProduct;
+    } catch (error) {
+      console.log('onGetSubProductById error: ', error);
+    }
+  };
+
   //Lay tat ca picture theo idProduct
   const onGetPicturesByIdProduct = async (idSubProduct) => {
     try {
@@ -108,7 +131,55 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //Them san pham vao gio hang
+  const onAddToCart = async (quantity, price, idOrder, idSubProduct) => {
+    try {
+      const respone = await addToCart(quantity, price, idOrder, idSubProduct);
+      //console.log("Add to cart: ", respone.data);
+      //setCountCart(countCart + 1);
+      return respone;
+    } catch (error) {
+      console.log("Add to cart error: ", error);
+    }
+  };
 
+  //Cập nhật sản phẩm trong giỏ hàng
+  const onUpdateOrderDetail = async (_id, quantity, price, isCmt, idOrder, idSubProduct) => {
+    try {
+      const respone = await update_order_details(_id, quantity, price, isCmt, idOrder, idSubProduct);
+      if (!respone) {
+        console.log("Update order detail error: ", respone);
+      }
+      return respone.data;
+    } catch (error) {
+      console.log("Update order detail error: ", error);
+    }
+  };
+
+  //Xóa sản phẩm trong giỏ hàng
+  const onDeleteOrderDetail = async (_id) => {
+    try {
+      const respone = await delete_order_details(_id);
+      if (!respone) {
+        console.log("Delete order detail error");
+      }
+      console.log("Delete order detail success");
+      return true;
+    } catch (error) {
+      console.log("Delete order detail error: ", error);
+    }
+  };
+
+  //Lay danh sach chi tiet don hang theo idOrder
+  const onGetOrderDetailsByIdOrder = async (idOrder) => {
+    try {
+      const orderDetail = await get_order_details_by_idOrder(idOrder);
+      //console.log("OnGetOrderDetailByIdOrder Response: ", orderDetail.data);
+      return orderDetail.data;
+    } catch (error) {
+      console.log("OnGetOrderDetailByIdOrder Error: ", error);
+    }
+  };
   //-------------------------------------------------Address-------------------------------------------------
   //Them address
   const onAddAddress = async (body, status, idUser) => {
@@ -165,7 +236,9 @@ export const AppContextProvider = (props) => {
       //Category & Brand
       onGetCategories, onGetBrandsByIdCategory,
       //Product
-      onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts,
+      onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts, onAddToCart, onGetSubProductById,
+      //Cart
+      onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail,
       //Reviews
       onGetReviews,
       //Picture
@@ -177,6 +250,19 @@ export const AppContextProvider = (props) => {
 
       //State
       countAddress, setCountAddress,
+      user,
+      listCart, setListCart,
+      listOrder, setListOrder,
+      listProcessing, setListProcessing,
+      listDelivered, setListDelivered,
+      listCanceled, setListCanceled,
+      countCart, setCountCart,
+      countFavorite, setCountFavorite,
+      listFavorite, setListFavorite,
+      countOrderDetail, setCountOrderDetail,
+      total, setTotal,
+      ship, setShip,
+      listCmt, setListCmt
     }}>
       {children}
     </AppContext.Provider>
