@@ -6,6 +6,7 @@ import { UserContext } from '../../../users/UserContext';
 import Swiper from 'react-native-swiper';
 import ProgressDialog from 'react-native-progress-dialog';
 import back from '../../../back/back';
+import QuantityDialog from './QuantityDialog';
 
 
 const ProductDetail = ({ route, navigation }) => {
@@ -37,14 +38,29 @@ const ProductDetail = ({ route, navigation }) => {
   const [caonhat, setCaoNhat] = useState(0);
   const [color, setColor] = useState();
   const [id, setId] = useState();
-
+  const [isDialogVisible, setDialogVisible] = useState(false);
 
   back(navigation);
+
+  const openDialog = () => {
+    setDialogVisible(true);
+  };
+
+  const closeDialog = () => {
+    setDialogVisible(false);
+  };
+
+  const handleConfirm = value => {
+    setQuantity(parseInt(value));
+    console.log("so luong", value);
+    setDialogVisible(false);
+  };
+  
 
   const addToCart = async () => {
 
     try {
-      const totalPrice = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100) * quantity;
+      const totalPrice = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
       const amount = quantity;
       const idOrder = user.idCart;
       
@@ -65,16 +81,17 @@ const ProductDetail = ({ route, navigation }) => {
         setTotal(total + totalPrice);
         setQuantity(1);
       } else {
-        const up_amount = quantity + listCart[i].quantity;
+        const up_amount = quantity + parseInt(listCart[i].quantity);
         const up_idOdert = listCart[i].idOrder;
-        const up_price = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100) * up_amount + listCart[i].price;
+        const up_price = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
+        console.log("Price",  quantity)
         const up_listID = listCart[i]._id;
         const update_deait = await onUpdateOrderDetail(up_listID, up_amount,up_price,'false',up_idOdert, productDetail.id );
         console.log("updateeeeeeeeeeee", update_deait);
         setListCart(current => [...current.slice(0, i), update_deait, ...current.slice(i + 1)]);
         setCountCart(countCart + 1);
         setTotal(total + totalPrice);
-        setQuantity(1);
+        setQuantity(up_amount);
       }
      
 
@@ -112,7 +129,6 @@ const ProductDetail = ({ route, navigation }) => {
         }
         //lấy sản phẩm theo id
         const product = await onGetProductById(_idProduct);
-
         //lấy tất cả sản phẩm chi tiết theo id sản phẩm
         const subProduct = await onGetSubProductsByIdProducts(product._id, resSubProduct);
 
@@ -123,6 +139,7 @@ const ProductDetail = ({ route, navigation }) => {
           price: item.price,
           sale: item.sale,
           description: item.description,
+          inStock: item.quantity,
         }));
         product.detail = detail;
 
@@ -146,7 +163,7 @@ const ProductDetail = ({ route, navigation }) => {
       try {
         let tempId = idProduct !== undefined ? idProduct : idPro;
         setId(tempId);
-        console.log("id", tempId);
+        // console.log("id", tempId);
         // lấy sub-product theo idProduct
         const response = await onGetSubProductsByIdProduct(tempId);
         const products = response.data;
@@ -155,12 +172,12 @@ const ProductDetail = ({ route, navigation }) => {
         const tempReview = await onGetReviewsByIdProduct(tempId);
         const reviews = tempReview.data;
         const soluong = products.length;
-        console.log(products);
-        // console.log("products: ", response); // Kiểm tra dữ liệu reviews trong console
+        // console.log(products);
+        console.log("products: ", response); // Kiểm tra dữ liệu reviews trong console
         setCaoNhat(products[0].quantity);
-        console.log(caonhat);
+        // console.log(caonhat);
         const reviewCount = reviews.length; // Lấy số lượng reviews
-        console.log(reviewCount); // Kiểm tra số lượng reviews trong console
+        // console.log(reviewCount); // Kiểm tra số lượng reviews trong console
         setReview(reviewCount);
         // Tính tổng rating
         let totalRating = 0;
@@ -174,12 +191,12 @@ const ProductDetail = ({ route, navigation }) => {
 
         if (idSubPro !== undefined) {
           const subProduct = await onGetSubProductById(idSubPro);
-          console.log("Sub", subProduct);
+          // console.log("Sub", subProduct);
           setColor(subProduct._id);
           setSelectedColor(subProduct.color);
           const imagesResponse = await onGetPicturesByIdProduct(subProduct._id);
           const images = imagesResponse.data;
-          console.log("detail", product);
+          // console.log("detail", product);
 
           for (let i = 0; i < soluong; i++) {
             if (subProduct._id === products[i]._id) {
@@ -337,7 +354,16 @@ const ProductDetail = ({ route, navigation }) => {
 
             </TouchableOpacity>
             {/* So luong san pham */}
-            <Text style={{ color: "black", fontSize: 20 }}>{quantity}</Text>
+            <View>
+      <TouchableOpacity onPress={openDialog} style={{paddingHorizontal: 30,}}>
+        <Text style={{fontSize: 20, fontWeight: "bold" }}>{quantity}</Text>
+      </TouchableOpacity>
+      <QuantityDialog
+        visible={isDialogVisible}
+        onClose={closeDialog}
+        onConfirm={handleConfirm}
+      />
+    </View>
             <TouchableOpacity onPress={() => handleCountPlus()}>
               <Image style={styles.button} source={require('../../../../assets/images/btn_plus.png')} />
 
@@ -352,7 +378,9 @@ const ProductDetail = ({ route, navigation }) => {
           <TouchableOpacity onPress={() => navigation.navigate('ListReview', { idProduct: id })}>
             <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }}>({review} Reviews)</Text>
           </TouchableOpacity>
-
+          <View style={{ marginLeft: 50, }}>
+            <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }}>In Stock: {productDetail?.inStock}</Text>
+          </View>
         </View>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "black", marginTop: 10 }}>Desciption</Text>
         {/* Mo ta san pham */}
