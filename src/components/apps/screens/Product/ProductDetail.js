@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatList, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Image, ToastAndroid, TouchableOpacity, FlatList, Dimensions } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
 import { AppContext } from '../../AppContext';
 import { UserContext } from '../../../users/UserContext';
@@ -10,9 +10,6 @@ import QuantityDialog from './QuantityDialog';
 
 
 const ProductDetail = ({ route, navigation }) => {
-  // const { item } = route.params.idProduct;
-  // console.log("cua tao");
-  // console.log(route); 
   const { idProduct } = route.params;
   const { idSubPro, idPro } = route.params;
 
@@ -52,10 +49,14 @@ const ProductDetail = ({ route, navigation }) => {
 
   const handleConfirm = value => {
     setQuantity(parseInt(value));
-    console.log("so luong", value);
-    setDialogVisible(false);
+    if (value < caonhat) {
+      console.log("so luong", value);
+      setDialogVisible(false);
+    }else{
+      ToastAndroid.show('Số lượng quá lớn', ToastAndroid.SHORT);
+    }
   };
-  
+
 
   const addToCart = async () => {
 
@@ -63,7 +64,7 @@ const ProductDetail = ({ route, navigation }) => {
       const totalPrice = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
       const amount = quantity;
       const idOrder = user.idCart;
-      
+
       let found = false;
       let i;
       for (i = 0; i < listCart.length; i++) {
@@ -80,22 +81,26 @@ const ProductDetail = ({ route, navigation }) => {
         setCountCart(countCart + 1);
         setTotal(total + totalPrice);
         setQuantity(1);
+        navigation.navigate('Cart');
       } else {
         const up_amount = quantity + parseInt(listCart[i].quantity);
-        const up_idOdert = listCart[i].idOrder;
-        const up_price = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
-        console.log("Price",  quantity)
-        const up_listID = listCart[i]._id;
-        const update_deait = await onUpdateOrderDetail(up_listID, up_amount,up_price,'false',up_idOdert, productDetail.id );
-        console.log("updateeeeeeeeeeee", update_deait);
-        setListCart(current => [...current.slice(0, i), update_deait, ...current.slice(i + 1)]);
-        setCountCart(countCart + 1);
-        setTotal(total + totalPrice);
-        setQuantity(up_amount);
+        if(up_amount < caonhat){
+          const up_idOdert = listCart[i].idOrder;
+          const up_price = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
+          console.log("Price", quantity)
+          const up_listID = listCart[i]._id;
+          const update_deait = await onUpdateOrderDetail(up_listID, up_amount, up_price, 'false', up_idOdert, productDetail.id);
+          console.log("updateeeeeeeeeeee", update_deait);
+          setListCart(current => [...current.slice(0, i), update_deait, ...current.slice(i + 1)]);
+          setCountCart(countCart + 1);
+          setTotal(total + totalPrice);
+          setQuantity(up_amount);
+          navigation.navigate('Cart');
+        }else{
+          ToastAndroid.show('Số lượng ko đủ', ToastAndroid.SHORT);
+        }
+        
       }
-     
-
-      navigation.navigate('Cart');
     } catch (error) {
       console.log("Add to cart error: ", error);
     }
@@ -355,15 +360,15 @@ const ProductDetail = ({ route, navigation }) => {
             </TouchableOpacity>
             {/* So luong san pham */}
             <View>
-      <TouchableOpacity onPress={openDialog} style={{paddingHorizontal: 30,}}>
-        <Text style={{fontSize: 20, fontWeight: "bold" }}>{quantity}</Text>
-      </TouchableOpacity>
-      <QuantityDialog
-        visible={isDialogVisible}
-        onClose={closeDialog}
-        onConfirm={handleConfirm}
-      />
-    </View>
+              <TouchableOpacity onPress={openDialog} style={{ paddingHorizontal: 30, }}>
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>{quantity}</Text>
+              </TouchableOpacity>
+              <QuantityDialog
+                visible={isDialogVisible}
+                onClose={closeDialog}
+                onConfirm={handleConfirm}
+              />
+            </View>
             <TouchableOpacity onPress={() => handleCountPlus()}>
               <Image style={styles.button} source={require('../../../../assets/images/btn_plus.png')} />
 

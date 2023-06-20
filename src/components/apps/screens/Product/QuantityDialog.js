@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Modal, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, TextInput, Modal, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const QuantityDialog = ({ visible, onClose, onConfirm }) => {
   const [quantity, setQuantity] = useState('');
 
   const handleConfirm = () => {
-    if (quantity) {
+    if (quantity > 0) {
       onConfirm(quantity);
+    } else {
+      console.log("nhập số lượng lớn hơn 1")
     }
   };
 
@@ -22,14 +24,14 @@ const QuantityDialog = ({ visible, onClose, onConfirm }) => {
             value={quantity}
             onChangeText={text => setQuantity(text)}
           />
-                    <View style={styles.buttonContainer}>
-         <TouchableOpacity style={[styles.cancel]} onPress={onClose}>
-              <Text style={{color: 'black'}}>Cancel</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={[styles.cancel]} onPress={onClose}>
+              <Text style={{ color: 'black' }}>Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.confirm} onPress={handleConfirm}>
-              <Text style={{color: 'white'}}>Confirm</Text>
+              <Text style={{ color: 'white' }}>Confirm</Text>
             </TouchableOpacity>
-            </View>
+          </View>
 
         </View>
       </View>
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-   
+
   },
   dialog: {
     backgroundColor: 'white',
@@ -65,7 +67,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    
+
   },
   title: {
     fontSize: 20,
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
     margin: 5,
     backgroundColor: "white",
   },
-  confirm:{
+  confirm: {
     borderRadius: 30,
     borderWidth: 2,
     borderColor: "black",
