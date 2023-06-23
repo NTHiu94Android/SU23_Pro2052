@@ -24,7 +24,7 @@ export const UserContextProvider = (props) => {
         await AsyncStorage.setItem('token', token);
         const res = await onUpdateFcmToken(response.data._id, fcmToken);
         setUser(res.data);
-        // console.log('AccessToken onLogin UserContext: ', token);
+        console.log('AccessToken onLogin UserContext: ', token);
         return res.data;
       }
       return null;

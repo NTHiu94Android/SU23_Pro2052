@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, FlatList, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Image, ToastAndroid, TouchableOpacity, FlatList, Dimensions } from 'react-native'
 import React, { useState, useContext, useEffect } from 'react'
 import { AppContext } from '../../AppContext';
 import { UserContext } from '../../../users/UserContext';
@@ -6,16 +6,20 @@ import { UserContext } from '../../../users/UserContext';
 import Swiper from 'react-native-swiper';
 import ProgressDialog from 'react-native-progress-dialog';
 import back from '../../../back/back';
+import QuantityDialog from './QuantityDialog';
 
 
 const ProductDetail = ({ route, navigation }) => {
-  // const { item } = route.params.idProduct;
-  // console.log("cua tao");
-  // console.log(route); 
   const { idProduct } = route.params;
+  const { idSubPro, idPro } = route.params;
 
-  const { onGetProductById, onGetProducts, onGetSubProducts, onGetPicturesByIdProduct, countOrderDetail, onGetSubProductsByIdProduct, onGetReviewsByIdProduct
+
+  const { onGetProductById, onGetProducts, onGetSubProducts, onGetPicturesByIdProduct, countOrderDetail, onGetSubProductsByIdProduct, onGetReviewsByIdProduct, onGetSubProductById,
+    onAddToCart, onAddToFavorite,
+    setListFavorite, setCountCart, countCart, setListCmt,
+    total, setTotal, onGetImagesByIdProduct, onGetCommentsByIdProduct, onUpdateOrderDetail, onGetOrderDetailsByIdOrder
   } = useContext(AppContext);
+
   const { user } = useContext(UserContext);
   const [listImage, setListImage] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,28 +30,160 @@ const ProductDetail = ({ route, navigation }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [product, setProduct] = useState({});
   const [item, setItem] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedColor, setSelectedColor] = useState('');
+  const [caonhat, setCaoNhat] = useState(0);
+  const [color, setColor] = useState();
+  const [id, setId] = useState();
+  const [isDialogVisible, setDialogVisible] = useState(false);
+  const [listOrderDetail, setListOrderDetail] = useState([]);
+
   back(navigation);
 
+  const openDialog = () => {
+    setDialogVisible(true);
+  };
 
+  const closeDialog = () => {
+    setDialogVisible(false);
+  };
+
+  const handleConfirm = value => {
+    setQuantity(parseInt(value));
+    if (value < caonhat) {
+      console.log("so luong", value);
+      setDialogVisible(false);
+    } else {
+      ToastAndroid.show('Số lượng quá lớn', ToastAndroid.SHORT);
+    }
+  };
+
+
+  const addToCart = async () => {
+
+    try {
+      const amount = quantity;
+      const idOrder = user.idCart;
+      const price = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
+      let found = false;
+      let i;
+      for (i = 0; i < listOrderDetail.length; i++) {
+        if (productDetail.id === listOrderDetail[i].idSubProduct) {
+          console.log("Sản phẩm đã có trong giỏ hàng");
+          found = true;
+          break;
+        }
+      }
+      if (found === false) {
+        const order_detail = await onAddToCart(amount, price, idOrder, productDetail.id);
+        console.log("Add to cart: ", order_detail);
+        navigation.navigate('Cart');
+      } else {
+        const up_amount = quantity + parseInt(listOrderDetail[i].quantity);
+        console.log("up_amount", up_amount);
+        if (up_amount < caonhat) {
+          const up_idOdert = listOrderDetail[i].idOrder;
+          const up_price = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
+          console.log("Price1:", quantity)
+          const up_listID = listOrderDetail[i]._id;
+          const update_deait = await onUpdateOrderDetail(up_listID, up_amount, up_price, 'false', up_idOdert, productDetail.id);
+          console.log("updateeeeeeeeeeee", update_deait);
+          // setlistOrderDetail(current => [...current.slice(0, i), update_deait, ...current.slice(i + 1)]);
+          setCountCart(countCart + 1);
+          setQuantity(up_amount);
+          navigation.navigate('Cart');
+        } else {
+          ToastAndroid.show('Số lượng ko đủ', ToastAndroid.SHORT);
+        }
+
+      }
+    } catch (error) {
+      console.log("Add to cart error: ", error);
+    }
+  };
+
+  const handleCountPlus = () => {
+    if (quantity < caonhat) {
+      setQuantity(quantity + 1);
+    }
+  };
+  const handleCountMinus = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+
+
+  useEffect(() => {
+    setIsLoading(true);
+    let tempId = idProduct !== undefined ? idProduct : idPro;
+
+    const getData = async (_idProduct) => {
+      try {
+        const resProduct = await onGetProducts();
+        const resSubProduct = await onGetSubProducts();
+
+        //Lấy danh sách order detail theo id order
+        const resOrderDetail = await onGetOrderDetailsByIdOrder(user.idCart);
+
+
+        if (!resProduct || !resSubProduct) {
+          setIsLoading(false);
+          return;
+        }
+        //lấy sản phẩm theo id
+        const product = await onGetProductById(_idProduct);
+        //lấy tất cả sản phẩm chi tiết theo id sản phẩm
+        const subProduct = await onGetSubProductsByIdProducts(product._id, resSubProduct);
+
+        //gộp những dự liệu cần thiết từ subProduct vào product
+        const detail = await subProduct.map((item) => ({
+          id: item._id,
+          color: item.color,
+          price: item.price,
+          sale: item.sale,
+          description: item.description,
+          inStock: item.quantity,
+        }));
+        product.detail = detail;
+        console.log("detail999:", detail);
+        setProduct(product);
+        setProductDetail(product.detail[0]);
+        setListOrderDetail(resOrderDetail);
+      } catch (error) {
+        setIsLoading(false);
+        console.log("Error home screen: ", error);
+      }
+      setIsLoading(false);
+    };
+
+    getData(tempId);
+  }, [countOrderDetail]);
   //lay tat ca san pham
   useEffect(() => {
     setIsLoading(false);
 
+
     const getSubProducts = async () => {
       try {
-
+        let tempId = idProduct !== undefined ? idProduct : idPro;
+        setId(tempId);
+        // console.log("id", tempId);
         // lấy sub-product theo idProduct
-        const response = await onGetSubProductsByIdProduct(route.params.idProduct);
+        const response = await onGetSubProductsByIdProduct(tempId);
         const products = response.data;
         setItem(products);
         // lấy review theo idProduct
-        const tempReview = await onGetReviewsByIdProduct(route.params.idProduct);
+        const tempReview = await onGetReviewsByIdProduct(tempId);
         const reviews = tempReview.data;
-
-        console.log(response); // Kiểm tra dữ liệu reviews trong console
-
+        const soluong = products.length;
+        // console.log(products);
+        console.log("products: ", response); // Kiểm tra dữ liệu reviews trong console
+        setCaoNhat(products[0].quantity);
+        // console.log(caonhat);
         const reviewCount = reviews.length; // Lấy số lượng reviews
-        console.log(reviewCount); // Kiểm tra số lượng reviews trong console
+        // console.log(reviewCount); // Kiểm tra số lượng reviews trong console
         setReview(reviewCount);
         // Tính tổng rating
         let totalRating = 0;
@@ -59,20 +195,45 @@ const ProductDetail = ({ route, navigation }) => {
         setStar(averageRating);
         console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
 
-        if (products.length > 0) {
-          const productId = products[0]._id; // Giả sử bạn muốn lấy hình ảnh dựa trên _id của sản phẩm đầu tiên
-          // lấy id của sub-product
-          const imagesResponse = await onGetPicturesByIdProduct(productId);
+        if (idSubPro !== undefined) {
+          const subProduct = await onGetSubProductById(idSubPro);
+          // console.log("Sub", subProduct);
+          setColor(subProduct._id);
+          setSelectedColor(subProduct.color);
+          const imagesResponse = await onGetPicturesByIdProduct(subProduct._id);
           const images = imagesResponse.data;
+          // console.log("detail", product);
+
+          for (let i = 0; i < soluong; i++) {
+            if (subProduct._id === products[i]._id) {
+              setSelectedIndex(i);
+              break; // Nếu chỉ cần lấy vị trí đầu tiên tìm thấy, có thể dùng break để kết thúc vòng lặp
+
+            }
+          }
 
           let list = [];
           for (let i = 0; i < images.length; i++) {
             list.push(images[i].url);
           }
           setListImage(list);
+        }
+        else {
+          if (products.length > 0) {
+            const productId = products[0]._id; // Giả sử bạn muốn lấy hình ảnh dựa trên _id của sản phẩm đầu tiên
+            // lấy id của sub-product
+            const imagesResponse = await onGetPicturesByIdProduct(productId);
+            const images = imagesResponse.data;
 
-          const firstPrice = products[0].price;
-          setPrice(firstPrice);
+            let list = [];
+            for (let i = 0; i < images.length; i++) {
+              list.push(images[i].url);
+            }
+            setListImage(list);
+
+            const firstPrice = products[0].price;
+            setPrice(firstPrice);
+          }
         }
 
         setIsLoading(true);
@@ -84,47 +245,6 @@ const ProductDetail = ({ route, navigation }) => {
     getSubProducts();
 
   }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    const getData = async (_idProduct) => {
-      try {
-        const resProduct = await onGetProducts();
-        const resSubProduct = await onGetSubProducts();
-
-        if (!resProduct || !resSubProduct) {
-          setIsLoading(false);
-          return;
-        }
-        //lấy sản phẩm theo id
-        const product = await onGetProductById(_idProduct);
-
-        //lấy tất cả sản phẩm chi tiết theo id sản phẩm
-        const subProduct = await onGetSubProductsByIdProducts(product._id, resSubProduct);
-
-        //gộp những dự liệu cần thiết từ subProduct vào product
-        const detail = await subProduct.map((item) => ({
-          id: item._id,
-          color: item.color,
-          price: item.price,
-          sale: item.sale,
-          description: item.description,
-        }));
-        product.detail = detail;
-
-        setProduct(product);
-        setProductDetail(product.detail[0]);
-      } catch (error) {
-        setIsLoading(false);
-        console.log("Error home screen: ", error);
-      }
-      setIsLoading(false);
-    };
-
-    getData(idProduct);
-  }, [countOrderDetail]);
-
   const onGetSubProductsByIdProducts = async (idProduct, res) => {
     try {
       if (!res.data) {
@@ -139,6 +259,9 @@ const ProductDetail = ({ route, navigation }) => {
   };
 
   const selectColor = async (item) => {
+
+    console.log(item);
+    console.log("product color", product);
     // item trả về data sub-product
     for (let i = 0; i < product.detail.length; i++) {
       if (item.id === product.detail[i].id) {
@@ -146,6 +269,9 @@ const ProductDetail = ({ route, navigation }) => {
         setProductDetail(product.detail[i]);
       }
     }
+    // console.log(item);
+    setColor(item.id);
+    setSelectedColor(item.color);
     const imagesResponse = await onGetPicturesByIdProduct(item.id);
     const images = imagesResponse.data;
 
@@ -155,18 +281,6 @@ const ProductDetail = ({ route, navigation }) => {
     }
     setListImage(list);
   };
-
-  // if (isLoading) {
-  //   return (
-  //     <View style={styles.container}>
-  //       <ProgressDialog
-  //         visible={isLoading}
-  //         loaderColor="black"
-  //         label="Please wait..."
-  //       />
-  //     </View>
-  //   );
-  // }
 
   return (
     <View style={styles.container}>
@@ -241,10 +355,25 @@ const ProductDetail = ({ route, navigation }) => {
             </View>
           </View>
           <View style={{ width: "40%", flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <Image style={styles.button} source={require('../../../../assets/images/btn_minus.png')} />
+            <TouchableOpacity onPress={() => handleCountMinus()} >
+              <Image style={styles.button} source={require('../../../../assets/images/btn_minus.png')} />
+
+            </TouchableOpacity>
             {/* So luong san pham */}
-            <Text style={{ color: "black", fontSize: 20 }}>01</Text>
-            <Image style={styles.button} source={require('../../../../assets/images/btn_plus.png')} />
+            <View>
+              <TouchableOpacity onPress={openDialog} style={{ paddingHorizontal: 30, }}>
+                <Text style={{ fontSize: 20, fontWeight: "bold" }}>{quantity}</Text>
+              </TouchableOpacity>
+              <QuantityDialog
+                visible={isDialogVisible}
+                onClose={closeDialog}
+                onConfirm={handleConfirm}
+              />
+            </View>
+            <TouchableOpacity onPress={() => handleCountPlus()}>
+              <Image style={styles.button} source={require('../../../../assets/images/btn_plus.png')} />
+
+            </TouchableOpacity>
           </View>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10, }}>
@@ -252,10 +381,12 @@ const ProductDetail = ({ route, navigation }) => {
           {/* Star */}
           <Text style={{ marginLeft: 10, fontSize: 24, fontWeight: "bold", color: "black" }}>{star ?? 0}</Text>
           {/* So luong reviews */}
-          <TouchableOpacity onPress={() => navigation.navigate('ListReview', { idProduct: route.params.idProduct })}>
+          <TouchableOpacity onPress={() => navigation.navigate('ListReview', { idProduct: id })}>
             <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }}>({review} Reviews)</Text>
           </TouchableOpacity>
-
+          <View style={{ marginLeft: 50, }}>
+            <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }}>In Stock: {productDetail?.inStock}</Text>
+          </View>
         </View>
         <Text style={{ fontSize: 20, fontWeight: "bold", color: "black", marginTop: 10 }}>Desciption</Text>
         {/* Mo ta san pham */}
@@ -270,7 +401,7 @@ const ProductDetail = ({ route, navigation }) => {
           <Image style={{ width: 24, height: 24 }}
             source={require('../../../../assets/images/ic_fvr.png')} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Cart')} style={styles.button2}>
+        <TouchableOpacity onPress={() => addToCart()} style={styles.button2}>
           <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>
             Add to cart
           </Text>

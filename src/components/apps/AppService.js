@@ -41,6 +41,24 @@ export const getReviews = async () => {
     const response = await CustomAxios().get('reviews/api/get-all-review');
     return response;
 };
+//Them san pham vao gio hang
+export const addToCart = async (quantity, price, idOrder, idSubProduct) => {
+    return await CustomAxios().post("order-details/api/add-order-detail", {quantity, price, idOrder, idSubProduct });
+};
+//Lay order_details theo idOrder
+export const get_order_details_by_idOrder = async (id) => {
+    return await CustomAxios().get("order-details/api/get-order-detail-by-idOrder/" + id);
+};
+
+//Cập nhật sản phẩm trong giỏ hàng
+export const update_order_details = async (_id, quantity, price, isCmt, idOrder, idSubProduct) => {
+    return await CustomAxios().post("order-details/api/update-order-detail", {_id, quantity, price, isCmt, idOrder, idSubProduct});
+};
+
+//Xóa sản phẩm trong giỏ hàng
+export const delete_order_details = async (_id) => {
+    return await CustomAxios().get("order-details/api/delete-order-detail/" + _id);
+};
 
 //---------------------------------Adderss---------------------------------
 //Lay danh sach dia chi theo idUser
