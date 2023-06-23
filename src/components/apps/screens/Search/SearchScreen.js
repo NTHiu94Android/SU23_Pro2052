@@ -9,7 +9,7 @@ const DimensionsW = Dimensions.get('window').width;
 const SearchScreen = (props) => {
   const { navigation } = props;
   const { } = useContext(AppContext);
-    const { onGetProducts, onGetSubProducts, onGetReviews } = useContext(AppContext);
+  const { onGetProducts, onGetSubProducts, onGetReviews } = useContext(AppContext);
   const [listSearch, setListSearch] = useState([]); //list search
   const [listName, setListName] = useState([]); //list name product
   const [name, setName] = useState('');
@@ -90,7 +90,7 @@ const SearchScreen = (props) => {
     const review = res.data;
     for (let i = 0; i < review.length; i++) {
       if (review[i].idProduct == idProduct) {
-count = count + 1;
+        count = count + 1;
         star += review[i].rating;
       }
     }
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#333',
     padding: 10,
-borderRadius: 10,
+    borderRadius: 10,
     paddingRight: 36,
     position: 'relative',
   },
@@ -256,7 +256,7 @@ const Item = ({ item, onPress }) => (
                 {item.subProduct[0].price} $
               </Text>
               <Text style={{ height: 19, color: 'red', fontWeight: '700', fontSize: 14, lineHeight: 19.1, marginStart: 10 }}>
-{item.subProduct[0].price - item.subProduct[0].price * item.subProduct[0].sale / 100} $
+                {item.subProduct[0].price - item.subProduct[0].price * item.subProduct[0].sale / 100} $
               </Text>
             </View> :
             <Text style={{ height: 19, color: 'black', fontWeight: '700', fontSize: 14, lineHeight: 19.1, paddingHorizontal: 8 }}>

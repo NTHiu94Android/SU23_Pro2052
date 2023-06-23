@@ -17,6 +17,11 @@ const ListReview = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [review, setReview] = useState([]);
   const [listReview, setListReview] = useState([]);
+  
+  const [filteredReviews, setFilteredReviews] = useState([]);
+  const [showAllReviews, setShowAllReviews] = useState(false);
+
+
   const [productDetail, setProductDetail] = useState();
   const [listPrice, setPrice] = useState([]);
 
@@ -24,6 +29,7 @@ const ListReview = (props) => {
   const [product, setProduct] = useState({});
   const { onGetPicturesByIdProduct, onGetSubProductsByIdProduct, onGetReviewsByIdProduct, onGetProductById, onGetProducts, onGetSubProducts, countOrderDetail
   } = useContext(AppContext);
+
 
 
   useEffect(() => {
@@ -129,6 +135,19 @@ const ListReview = (props) => {
     }
   };
 
+  // hiện thị review theo số sao
+  const showReviewsForStar = (rating) => {
+    // Filter the listReview based on the selected star rating
+    const filtered = listReview.filter((review) => review.rating === rating);
+    setFilteredReviews(filtered);
+  };
+
+  // hiển thị tất cả review
+  const toggleShowAllReviews = () => {
+    setShowAllReviews
+    setShowAllReviews(!showAllReviews);
+  };
+
   return (
     <View style={styleReview.container}>
       <View style={styleReview.header}>
@@ -168,7 +187,8 @@ const ListReview = (props) => {
 
         <View style={styleReview.viewSeeStart}>
           <View>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={toggleShowAllReviews}>
               <Image
                 style={styleReview.icSeeAll}
                 source={require('../../../../assets/images/all.png')}
@@ -177,31 +197,45 @@ const ListReview = (props) => {
           </View>
 
           <View style={styleReview.viewStart}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => showReviewsForStar(1)}
+            >
               <Image
                 style={styleReview.icStar}
                 source={require('../../../../assets/images/star2.png')}
               ></Image>
             </TouchableOpacity>
-            <TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => showReviewsForStar(2)}
+            >
               <Image
                 style={styleReview.icStar}
                 source={require('../../../../assets/images/star2.png')}
               ></Image>
             </TouchableOpacity>
-            <TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => showReviewsForStar(3)}
+            >
               <Image
                 style={styleReview.icStar}
                 source={require('../../../../assets/images/star2.png')}
               ></Image>
             </TouchableOpacity>
-            <TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => showReviewsForStar(4)}
+            >
               <Image
                 style={styleReview.icStar}
                 source={require('../../../../assets/images/star2.png')}
               ></Image>
             </TouchableOpacity>
-            <TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => showReviewsForStar(5)}
+            >
               <Image
                 style={styleReview.icStar}
                 source={require('../../../../assets/images/star2.png')}
@@ -214,7 +248,7 @@ const ListReview = (props) => {
 
         <View style={styleReview.AllReview}>
           <FlatList
-            data={listReview}
+            data={showAllReviews ? listReview : filteredReviews}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) => (
               <Item
@@ -223,10 +257,10 @@ const ListReview = (props) => {
                 time={item.time}
                 rate={item.rating}
               />
-
             )}
             keyExtractor={(item, index) => index.toString()}
           />
+
         </View>
 
       </View>
@@ -348,7 +382,7 @@ const styleReview = StyleSheet.create({
 
   },
   viewSeeStart: {
-    marginVertical:10,
+    marginVertical: 10,
     flexDirection: 'row',
     paddingHorizontal: 20,
 
