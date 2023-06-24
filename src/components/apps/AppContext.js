@@ -135,8 +135,13 @@ export const AppContextProvider = (props) => {
   const onAddToCart = async (quantity, price, idOrder, idSubProduct) => {
     try {
       const respone = await addToCart(quantity, price, idOrder, idSubProduct);
-      //console.log("Add to cart: ", respone.data);
-      //setCountCart(countCart + 1);
+      console.log("Add to cart: ", respone.data);
+      if (countCart == 0) {
+        setCountCart(1);
+      }
+      else {
+        setCountCart(0);
+      }
       return respone;
     } catch (error) {
       console.log("Add to cart error: ", error);
@@ -174,7 +179,7 @@ export const AppContextProvider = (props) => {
   const onGetOrderDetailsByIdOrder = async (idOrder) => {
     try {
       const orderDetail = await get_order_details_by_idOrder(idOrder);
-      //console.log("OnGetOrderDetailByIdOrder Response: ", orderDetail.data);
+      console.log("OnGetOrderDetailByIdOrder Response: ", orderDetail.data);
       return orderDetail.data;
     } catch (error) {
       console.log("OnGetOrderDetailByIdOrder Error: ", error);

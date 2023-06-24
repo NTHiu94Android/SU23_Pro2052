@@ -15,9 +15,9 @@ const ProductDetail = ({ route, navigation }) => {
 
 
   const { onGetProductById, onGetProducts, onGetSubProducts, onGetPicturesByIdProduct, countOrderDetail, onGetSubProductsByIdProduct, onGetReviewsByIdProduct, onGetSubProductById,
-    onAddToCart, onAddToFavorite, setListCart,
-    setListFavorite, setCountCart, countCart, setListCmt, listCart,
-    total, setTotal, onGetImagesByIdProduct, onGetCommentsByIdProduct, onUpdateOrderDetail
+    onAddToCart, onAddToFavorite,
+    setListFavorite, setCountCart, countCart, setListCmt,
+    total, setTotal, onGetImagesByIdProduct, onGetCommentsByIdProduct, onUpdateOrderDetail, onGetOrderDetailsByIdOrder
   } = useContext(AppContext);
 
   const { user } = useContext(UserContext);
@@ -36,6 +36,7 @@ const ProductDetail = ({ route, navigation }) => {
   const [color, setColor] = useState();
   const [id, setId] = useState();
   const [isDialogVisible, setDialogVisible] = useState(false);
+  const [listOrderDetail, setListOrderDetail] = useState([]);
 
   back(navigation);
 
@@ -52,7 +53,7 @@ const ProductDetail = ({ route, navigation }) => {
     if (value < caonhat) {
       console.log("so luong", value);
       setDialogVisible(false);
-    }else{
+    } else {
       ToastAndroid.show('Số lượng quá lớn', ToastAndroid.SHORT);
     }
   };
@@ -61,45 +62,40 @@ const ProductDetail = ({ route, navigation }) => {
   const addToCart = async () => {
 
     try {
-      const totalPrice = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
       const amount = quantity;
       const idOrder = user.idCart;
-
+      const price = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
       let found = false;
       let i;
-      for (i = 0; i < listCart.length; i++) {
-        console.log('log_listcart', listCart[i]);
-        if (productDetail.id === listCart[i].idSubProduct) {
+      for (i = 0; i < listOrderDetail.length; i++) {
+        if (productDetail.id === listOrderDetail[i].idSubProduct) {
+          console.log("Sản phẩm đã có trong giỏ hàng");
           found = true;
           break;
         }
       }
       if (found === false) {
-        const order_detail = await onAddToCart(amount, totalPrice, idOrder, productDetail.id);
+        const order_detail = await onAddToCart(amount, price, idOrder, productDetail.id);
         console.log("Add to cart: ", order_detail);
-        setListCart(current => [...current, order_detail]);
-        setCountCart(countCart + 1);
-        setTotal(total + totalPrice);
-        setQuantity(1);
         navigation.navigate('Cart');
       } else {
-        const up_amount = quantity + parseInt(listCart[i].quantity);
-        if(up_amount < caonhat){
-          const up_idOdert = listCart[i].idOrder;
+        const up_amount = quantity + parseInt(listOrderDetail[i].quantity);
+        console.log("up_amount", up_amount);
+        if (up_amount < caonhat) {
+          const up_idOdert = listOrderDetail[i].idOrder;
           const up_price = (productDetail?.price - (productDetail?.price * productDetail?.sale) / 100);
-          console.log("Price", quantity)
-          const up_listID = listCart[i]._id;
+          console.log("Price1:", quantity)
+          const up_listID = listOrderDetail[i]._id;
           const update_deait = await onUpdateOrderDetail(up_listID, up_amount, up_price, 'false', up_idOdert, productDetail.id);
           console.log("updateeeeeeeeeeee", update_deait);
-          setListCart(current => [...current.slice(0, i), update_deait, ...current.slice(i + 1)]);
+          // setlistOrderDetail(current => [...current.slice(0, i), update_deait, ...current.slice(i + 1)]);
           setCountCart(countCart + 1);
-          setTotal(total + totalPrice);
           setQuantity(up_amount);
           navigation.navigate('Cart');
-        }else{
+        } else {
           ToastAndroid.show('Số lượng ko đủ', ToastAndroid.SHORT);
         }
-        
+
       }
     } catch (error) {
       console.log("Add to cart error: ", error);
@@ -128,6 +124,10 @@ const ProductDetail = ({ route, navigation }) => {
         const resProduct = await onGetProducts();
         const resSubProduct = await onGetSubProducts();
 
+        //Lấy danh sách order detail theo id order
+        const resOrderDetail = await onGetOrderDetailsByIdOrder(user.idCart);
+
+
         if (!resProduct || !resSubProduct) {
           setIsLoading(false);
           return;
@@ -147,9 +147,10 @@ const ProductDetail = ({ route, navigation }) => {
           inStock: item.quantity,
         }));
         product.detail = detail;
-
+        console.log("detail999:", detail);
         setProduct(product);
         setProductDetail(product.detail[0]);
+        setListOrderDetail(resOrderDetail);
       } catch (error) {
         setIsLoading(false);
         console.log("Error home screen: ", error);
