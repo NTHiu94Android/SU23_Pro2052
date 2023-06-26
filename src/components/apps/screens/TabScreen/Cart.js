@@ -5,16 +5,15 @@ import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
 import ProgressDialog from 'react-native-progress-dialog';
 import CircleCheckBox from 'react-native-circle-checkbox';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 const Cart = (props) => {
   const { navigation } = props;
-  const [cartList, setCartList] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [disabled, setDisabled] = useState(true);
   const { user } = useContext(UserContext);
   const {
     onGetOrderDetailsByIdOrder, listCart, setListCart, onGetProductById,
     countCart, onUpdateOrderDetail, onDeleteOrderDetail, onGetSubProductById,
-    total, setTotal
+    total, setTotal, onReloadCart,
   } = useContext(AppContext);
   back(navigation);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,12 +49,13 @@ const Cart = (props) => {
           item.idSubProduct = subProduct._id;
           item.idProduct = product._id;
           item.isCmt = response[i].isCmt;
+          item.isSelected = false;
           item.idOrder = response[i].idOrder;
-          item.checked = false;
           listItem.push(item);
         }
-        setCartList(listItem);
-        calculateTotalPrice(listItem);
+        setListCart(listItem);
+        setTotalPrice(0);
+        setDisabled(true);
         console.log("listItem", listItem);
         setIsLoading(false);
 
@@ -64,92 +64,112 @@ const Cart = (props) => {
       }
     };
     getListCart();
-  }, [totalPrice, countCart]);
+  }, [countCart]);
 
   const goToProductDetail = (idSubPro, idPro) => {
     navigation.navigate('ProductDetail', { idSubPro: idSubPro, idPro: idPro });
   };
 
-  const calculateTotalPrice = (items) => {
-    const totalPrice = items.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const calculateTotalPrice = async (items) => {
+    console.log("items", items);
+    let totalPrice = 0;
+    items.forEach((item) => {
+      if (item.isSelected) {
+        totalPrice += item.price * item.quantity;
+      }
+    });
     setTotalPrice(totalPrice);
   };
 
-  const updateQuantityOnServer = async (_id, quantity) => {
+  const handleQuantityChange = (_id, _quantity, _isSelected) => {
     try {
       let newItem = {};
-      for (let i = 0; i < cartList.length; i++) {
-        if (cartList[i].id === _id) {
-          newItem._id = cartList[i].id;
-          newItem.quantity = quantity;
-          newItem.price = cartList[i].price;
-          newItem.isCmt = cartList[i].isCmt;
-          newItem.idOrder = cartList[i].idOrder;
-          newItem.idSubProduct = cartList[i].idSubProduct;
+      for (let i = 0; i < listCart.length; i++) {
+        if (listCart[i].id === _id) {
+          newItem._id = listCart[i].id;
+          newItem.quantity = _quantity;
+          newItem.price = listCart[i].price;
+          newItem.isCmt = listCart[i].isCmt;
+          newItem.idOrder = listCart[i].idOrder;
+          newItem.idSubProduct = listCart[i].idSubProduct;
           break;
         }
       }
-      const response = await onUpdateOrderDetail(newItem._id, newItem.quantity, newItem.price, newItem.isCmt, newItem.idOrder, newItem.idSubProduct);
-      if (response) {
-        const updatedItems = cartList.map(item => {
-          if (item.id === _id) {
-            return { ...item, quantity: response.quantity };
-          }
-          return item;
-        });
-        setCartList(updatedItems);
+
+      const updatedItems = listCart.map((item) => {
+        if (item.id === _id) {
+          return { ...item, quantity: _quantity };
+        }
+        return item;
+      });
+      const response = onUpdateOrderDetail(newItem._id, newItem.quantity, newItem.price, newItem.isCmt, newItem.idOrder, newItem.idSubProduct);
+      setListCart(updatedItems);
+
+      if (_isSelected) {
         calculateTotalPrice(updatedItems);
-      };
+      }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleQuantityChange = async (_id, quantity) => {
-    setTotalPrice(-1);
-    await updateQuantityOnServer(_id, quantity);
+  const deleteItem = (_id) => {
+    onDeleteOrderDetail(_id);
+    for (let i = 0; i < listCart.length; i++) {
+      if (listCart[i].id === _id) {
+        listCart.splice(i, 1);
+        break;
+      }
+    }
+    setListCart([...listCart]);
+    calculateTotalPrice(listCart);
+    handleSelectedList(listCart);
   };
 
-  const deleteItem = async (_id) => {
-    setTotalPrice(-1);
-    await onDeleteOrderDetail(_id);
-  };
-
-  const handleCheckBox = async (_id, checked) => {
+  const handleCheckBox = async () => {
     try {
-        for (let i = 0; i < cartList.length; i++) {
-          if (cartList[i].id === _id) {
-            cartList[i].checked = !checked;
-            console.log("checkedList: ", cartList[i].checked);
-            break;
-          }
-        }
-      
+      calculateTotalPrice(listCart);
+      handleSelectedList(listCart);
     }
     catch (error) {
       console.log("Error handleCheckBox: ", error);
     }
   };
 
-
-  const deleteAllItems = async () => {
+  const deleteSelectedItem = async () => {
     try {
-      if (cartList.length !== 0) {
-        for (let i = 0; i < cartList.length; i++) {
-          if (cartList[i].checked === true){
-            await onDeleteOrderDetail(cartList[i].id);
-          }
+      for (let i = 0; i < listCart.length; i++) {
+        if (listCart[i].isSelected) {
+          await onDeleteOrderDetail(listCart[i].id);
         }
-        setTotalPrice(-1);
-      } else {
-        console.log("Delete all items successfully");
       }
+      const updateCartList = listCart.filter((item) => {
+        return !item.isSelected;
+      });
+      console.log("updateCartList", updateCartList);
+      setListCart(updateCartList);
+      handleSelectedList(updateCartList);
+      calculateTotalPrice(updateCartList);
     } catch (error) {
       console.log("Delete all items error: ", error);
     }
   };
 
-
+  const handleSelectedList = async (_list) => {
+    try {
+      setDisabled(() => {
+        const list = _list;
+        for (let i = 0; i < list.length; i++) {
+          if (list[i].isSelected === true) {
+            return false;
+          }
+        }
+        return true;
+      })
+    } catch (error) {
+      console.log("Error handleSelectedList: ", error);
+    }
+  };
   return (
     <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 20, backgroundColor: 'white' }}>
       <ProgressDialog
@@ -161,9 +181,9 @@ const Cart = (props) => {
           <Image style={styles.icon} source={require('../../../../assets/images/back.png')} />
         </TouchableOpacity>
         <Text style={{ flex: 1, textAlign: 'center', fontSize: 18, fontWeight: '800', marginTop: 18, marginBottom: 20, color: 'black' }}>My cart</Text>
-        <TouchableOpacity onPress={() => deleteAllItems()}>
+        <TouchableOpacity onPress={() => deleteSelectedItem()}>
           <Image
-            style={{ width: 22, height: 22 }}
+            style={{ width: 22, height: 22, display: disabled ? 'none' : 'flex' }}
             resizeMode='cover'
             source={require('../../../../assets/images/delete.png')} />
         </TouchableOpacity>
@@ -171,17 +191,17 @@ const Cart = (props) => {
 
       <SafeAreaView style={styles.container}>
         <FlatList
-          data={cartList}
+          data={listCart}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <Item
               key={item.id}
               deleteItem={() => deleteItem(item.id)}
-              plus={() => handleQuantityChange(item.id, item.quantity + 1,)}
-              minus={() => handleQuantityChange(item.id, item.quantity > 1 ? item.quantity - 1 : 1)}
+              plus={() => handleQuantityChange(item.id, item.quantity + 1, item.isSelected)}
+              minus={() => handleQuantityChange(item.id, item.quantity > 1 ? item.quantity - 1 : 1, item.isSelected)}
               item={item}
               nav={() => goToProductDetail(item.idSubProduct, item.idProduct)}
-              onCheckedItem={(checked) => handleCheckBox(item.id, checked)}
+              onCheckedItem={() => handleCheckBox()}
             />
           )}
           keyExtractor={item => item.id}
@@ -190,29 +210,15 @@ const Cart = (props) => {
 
       </SafeAreaView>
 
-      {cartList.length !== 0 ? (
-        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: 20 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: 20 }}>Total:</Text>
-            <Text style={{ fontSize: 20, color: "red" }}>${totalPrice}</Text>
-          </View>
-          <TouchableOpacity onPress={() => navigation.navigate("CheckOut")} style={{ backgroundColor: '#000', height: 60, borderRadius: 30, flexDirection: 'column', justifyContent: 'center', marginTop: 20 }}>
-            <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>Check out</Text>
-          </TouchableOpacity>
+      <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: 20 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 }}>
+          <Text style={{ fontSize: 20 }}>Total:</Text>
+          <Text style={{ fontSize: 20, color: "red" }}>${totalPrice}</Text>
         </View>
-      ) : (
-        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: 20 }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 }}>
-            <Text style={{ fontSize: 20 }}>Total:</Text>
-            <Text style={{ fontSize: 20, color: "red" }}>${totalPrice}</Text>
-          </View>
-          <View style={{ backgroundColor: '#BBB', height: 60, borderRadius: 30, flexDirection: 'column', justifyContent: 'center' }}>
-            <TouchableOpacity>
-              <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>Check out</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+        <TouchableOpacity disabled={disabled} onPress={() => navigation.navigate("CheckOut")} style={[styles.checkOutButton, disabled && styles.checkOutButtonDisable]}>
+          <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>Check out</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -222,17 +228,18 @@ export default Cart;
 
 
 const Item = ({ item, plus, minus, deleteItem, nav, onCheckedItem }) => {
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(item.isSelected);
   const onChangeCheckStatus = async () => {
-    setChecked(!checked);
-    onCheckedItem(checked);
+    // setChecked(!checked);
+    item.isSelected = !item.isSelected;
+    onCheckedItem();
   };
 
   return (
     <TouchableOpacity onPress={nav}>
       <View style={styles.item}>
         <CircleCheckBox
-          checked={checked}
+          checked={item.isSelected}
           onToggle={() => onChangeCheckStatus()}
         />
         <View style={{ flexDirection: 'row' }}>
@@ -295,5 +302,16 @@ const styles = StyleSheet.create({
     width: 100,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  checkOutButton: {
+    backgroundColor: '#000',
+    height: 60,
+    borderRadius: 30,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  checkOutButtonDisable: {
+    backgroundColor: '#cccccc',
   },
 });

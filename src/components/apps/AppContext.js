@@ -135,13 +135,7 @@ export const AppContextProvider = (props) => {
   const onAddToCart = async (quantity, price, idOrder, idSubProduct) => {
     try {
       const respone = await addToCart(quantity, price, idOrder, idSubProduct);
-      console.log("Add to cart: ", respone.data);
-      if (countCart == 0) {
-        setCountCart(1);
-      }
-      else {
-        setCountCart(0);
-      }
+      onReloadCart();
       return respone;
     } catch (error) {
       console.log("Add to cart error: ", error);
@@ -236,6 +230,16 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //Reload giỏ hàng
+  const onReloadCart = () => {
+    if (countCart == 0) {
+      setCountCart(1);
+    }
+    else {
+      setCountCart(0);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       //Category & Brand
@@ -243,7 +247,7 @@ export const AppContextProvider = (props) => {
       //Product
       onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts, onAddToCart, onGetSubProductById,
       //Cart
-      onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail,
+      onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail, onReloadCart,
       //Reviews
       onGetReviews,
       //Picture
