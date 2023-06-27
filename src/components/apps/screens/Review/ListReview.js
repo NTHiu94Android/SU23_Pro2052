@@ -80,7 +80,7 @@ const ListReview = (props) => {
     getSubProducts();
 
   }, []);
-  console.log(listReview);
+  // console.log(listReview);
 
   useEffect(() => {
     setIsLoading(true);
@@ -137,6 +137,7 @@ const ListReview = (props) => {
 
   // hiện thị review theo số sao
   const showReviewsForStar = (rating) => {
+    setShowAllReviews(false)
     // Filter the listReview based on the selected star rating
     const filtered = listReview.filter((review) => review.rating === rating);
     setFilteredReviews(filtered);
@@ -144,9 +145,12 @@ const ListReview = (props) => {
 
   // hiển thị tất cả review
   const toggleShowAllReviews = () => {
-    setShowAllReviews
-    setShowAllReviews(!showAllReviews);
+    setShowAllReviews(true);
   };
+
+  useEffect(() => {
+    toggleShowAllReviews()
+  },[])
 
   return (
     <View style={styleReview.container}>
@@ -330,7 +334,7 @@ const styleReview = StyleSheet.create({
     display: 'flex',
     backgroundColor: 'white',
     width: '100%',
-    height: '100%',
+    height: '100%'
   },
 
   header: {
