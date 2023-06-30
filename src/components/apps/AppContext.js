@@ -240,12 +240,22 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //Reload danh sách sản phẩm yêu thích
+  const onReloadFavorite = () => {
+    if (countFavorite == 0) {
+      setCountFavorite(1);
+    }
+    else {
+      setCountFavorite(0);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       //Category & Brand
       onGetCategories, onGetBrandsByIdCategory,
       //Product
-      onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts, onAddToCart, onGetSubProductById,
+      onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts, onAddToCart, onGetSubProductById, onReloadFavorite,
       //Cart
       onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail, onReloadCart,
       //Reviews

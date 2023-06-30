@@ -1,21 +1,99 @@
 import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContext } from '../../AppContext';
+import { UserContext } from '../../../users/UserContext';
 
 const Favorite = (props) => {
-  const [data,setData] = useState([
-    { id: '1', name: 'Item 1', price: '50.00', imageurl: require('../../../../assets/images/Iphone14.png') },
-    { id: '2', name: 'Item 2', price: '50.00', imageurl: require('../../../../assets/images/Iphone14.png') },
-    { id: '3', name: 'Item 3', price: '40.00', imageurl: require('../../../../assets/images/Iphone14.png') },
-    { id: '4', name: 'Item 4', price: '30.00', imageurl: require('../../../../assets/images/Iphone14.png') },
-    { id: '5', name: 'Item 5', price: '60.00', imageurl: require('../../../../assets/images/Iphone14.png') },
-    { id: '6', name: 'Item 6', price: '50.00', imageurl: require('../../../../assets/images/Iphone14.png') },
+  const [data, setData] = useState([
+    { id: '1', name: 'Item 1', price: '50.00', color: 'red', imageurl: require('../../../../assets/images/Iphone14.png') },
     // more items
   ]);
   const { navigation } = props;
+  const { onGetOrderDetailsByIdOrder, listFavorite, setListFavorite, onGetSubProductById, onGetProductById, countFavorite, onDeleteOrderDetail } = useContext(AppContext);
+  const { user } = useContext(UserContext);
 
-  const deleteItem = (id) => {
-    const updatedList = data.filter(item => item.id !== id);
-    setData(updatedList);
+  //Lấy danh sách yêu thích
+  const getFavoriteList = async () => {
+    try {
+      const resFav = await onGetOrderDetailsByIdOrder(user.idFavorite);
+      if (resFav) return resFav;
+    }
+    catch (error) {
+      console.log('getFavoriteList error: ', error);
+    }
+  }
+
+  const getSubProducts = async (resFav) => {
+    const subProducts = [];
+    try {
+      if (!resFav) return;
+      for (const item of resFav) {
+        const resSub = await onGetSubProductById(item.idSubProduct);
+        subProducts.push(resSub);
+      }
+    } catch (error) {
+      console.log('getSubProducts error: ', error);
+    }
+    return subProducts;
+  }
+
+  const getProducts = async (resSubProducts) => {
+    const products = [];
+    try {
+      if (!resSubProducts) return;
+      for (const item of resSubProducts) {
+        const resProduct = await onGetProductById(item.idProduct);
+        products.push(resProduct);
+      }
+    } catch (error) {
+      console.log('getProducts error: ', error);
+    }
+    return products;
+  }
+
+  const getDatas = async (favItem, subItem, prodItem) => {
+    const datas = [];
+    try {
+      for (const fav of favItem) {
+        const sub = subItem.find((item) => item._id === fav.idSubProduct);
+        if (sub) {
+          const prod = prodItem.find((item) => item._id === sub.idProduct);
+          if (prod) {
+            const data = {
+              id: fav._id,
+              name: prod.name,
+              price: sub.price,
+              color: sub.color,
+              imageUrl: prod.image,
+            }
+            datas.push(data);
+          }
+        }
+      }
+    } catch (error) {
+      console.log('getDatas error: ', error);
+    }
+    return datas;
+  }
+
+  useEffect(() => {
+    const loadData = async () => {
+      const favItem = await getFavoriteList();
+      const subItem = await getSubProducts(favItem);
+      const prodItem = await getProducts(subItem);
+
+      getDatas(favItem, subItem, prodItem).then((res) => {
+        setListFavorite(res);
+        console.log('res123: ', res);
+      });
+    }
+    loadData();
+  }, [countFavorite]);
+  const deleteItem = async (id) => {
+    console.log("favoriteId: ", id);
+    await onDeleteOrderDetail(id);
+    const updatedList = listFavorite.filter(item => item.id !== id);
+    setListFavorite(updatedList);
   };
 
   return (
@@ -39,26 +117,26 @@ const Favorite = (props) => {
         </TouchableOpacity>
       </View>
       <FlatList
-        data={data}
+        data={listFavorite}
         renderItem={({ item }) =>
           <Item item={item}
-          deleteFavoriteItem={() => deleteItem(item.id)} />
+            deleteFavoriteItem={() => deleteItem(item.id)} />
         }
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item.id} // Use the "id" as the key prop
       />
       {
-        data.length !== 0 ?
-        <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.button}>
-          <Text style={styles.buttonText}>Add all to my cart</Text>
-        </TouchableOpacity> :
-        <View style={[styles.button, { backgroundColor: '#BBB' }]}>
-          <Text style={styles.buttonText}>Add all to my cart</Text>
-        </View>
+        listFavorite.length !== 0 ?
+          <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.button}>
+            <Text style={styles.buttonText}>Add all to my cart</Text>
+          </TouchableOpacity> :
+          <View style={[styles.button, { backgroundColor: '#BBB' }]}>
+            <Text style={styles.buttonText}>Add all to my cart</Text>
+          </View>
       }
     </View>
 
-    
+
   );
 }
 
@@ -142,9 +220,10 @@ const styles = StyleSheet.create({
 const Item = ({ item, deleteFavoriteItem }) => {
   return (
     <View style={styles.listItem}>
-      <Image source={item.imageurl} style={styles.imgLst} />
+      <Image source={{ uri: item.imageUrl }} style={styles.imgLst} />
       <View style={styles.listItemName}>
         <Text style={styles.TextlstName}>{item.name}</Text>
+        <Text style={styles.TextlstPrice}>{item.color}</Text>
         <Text style={styles.TextlstPrice}>$ {item.price}</Text>
       </View>
       <View style={styles.listItemIcon}>

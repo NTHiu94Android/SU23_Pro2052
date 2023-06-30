@@ -16,8 +16,8 @@ const ProductDetail = ({ route, navigation }) => {
 
   const { onGetProductById, onGetProducts, onGetSubProducts, onGetPicturesByIdProduct, countOrderDetail, onGetSubProductsByIdProduct, onGetReviewsByIdProduct, onGetSubProductById,
     onAddToCart, onAddToFavorite,
-    setListFavorite, setCountCart, countCart, setListCmt,
-    total, setTotal, onGetImagesByIdProduct, onGetCommentsByIdProduct, onUpdateOrderDetail, onGetOrderDetailsByIdOrder
+    setListFavorite, setCountCart, countCart, setListCmt, onReloadFavorite, countFavorite,
+    total, setTotal, onGetImagesByIdProduct, onGetCommentsByIdProduct, onUpdateOrderDetail, onGetOrderDetailsByIdOrder, onDeleteOrderDetail
   } = useContext(AppContext);
 
   const { user } = useContext(UserContext);
@@ -37,6 +37,8 @@ const ProductDetail = ({ route, navigation }) => {
   const [id, setId] = useState();
   const [isDialogVisible, setDialogVisible] = useState(false);
   const [listOrderDetail, setListOrderDetail] = useState([]);
+  const [like, setLike] = useState(false);
+  const [favoriteId, setFavoriteId] = useState('');
 
   back(navigation);
 
@@ -55,6 +57,43 @@ const ProductDetail = ({ route, navigation }) => {
       setDialogVisible(false);
     } else {
       ToastAndroid.show('Số lượng quá lớn', ToastAndroid.SHORT);
+    }
+  };
+
+  //Thêm vào danh sách yêu thích
+  const addToFavorite = async () => {
+    try {
+      const favQuantity = 1;
+      if(like == true){
+        setLike(false);
+        console.log("favoriteId: ", favoriteId);
+        await onDeleteOrderDetail(favoriteId);
+      }else{
+        const favorite = await onAddToCart(favQuantity, productDetail.price, user.idFavorite, productDetail.id);
+        if (favorite) {
+          setLike(true);
+        }
+      }
+      onReloadFavorite();
+    } catch (error) {
+      console.log("Add to favorite error: ", error);
+    }
+  };
+
+  //Kiểm tra danh sách yêu thích
+  const checkFavorite = async (_idSubProduct) => {
+    try {
+      const resFavorite = await onGetOrderDetailsByIdOrder(user.idFavorite);
+      for (const item of resFavorite) {
+        console.log('item: ', item);
+        if (item.idSubProduct === _idSubProduct) {
+          setLike(true);
+          setFavoriteId(item._id);
+          break;
+        }
+      }
+    } catch (error) {
+      console.log("Check favorite error: ", error);
     }
   };
 
@@ -127,7 +166,6 @@ const ProductDetail = ({ route, navigation }) => {
         //Lấy danh sách order detail theo id order
         const resOrderDetail = await onGetOrderDetailsByIdOrder(user.idCart);
 
-
         if (!resProduct || !resSubProduct) {
           setIsLoading(false);
           return;
@@ -147,9 +185,9 @@ const ProductDetail = ({ route, navigation }) => {
           inStock: item.quantity,
         }));
         product.detail = detail;
-        console.log("detail999:", detail);
         setProduct(product);
         setProductDetail(product.detail[0]);
+        checkFavorite(detail[0].id);
         setListOrderDetail(resOrderDetail);
       } catch (error) {
         setIsLoading(false);
@@ -159,7 +197,7 @@ const ProductDetail = ({ route, navigation }) => {
     };
 
     getData(tempId);
-  }, [countOrderDetail]);
+  }, [countOrderDetail, countFavorite]);
   //lay tat ca san pham
   useEffect(() => {
     setIsLoading(false);
@@ -397,9 +435,9 @@ const ProductDetail = ({ route, navigation }) => {
         </View>
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Favorite')} style={styles.button1}>
-          <Image style={{ width: 24, height: 24 }}
-            source={require('../../../../assets/images/ic_fvr.png')} />
+        <TouchableOpacity onPress={() => addToFavorite()} style={styles.button1}>
+          <Image style={{ width: 24, height: 24, }}
+            source={like? require('../../../../assets/images/ic_fvr1.png') : require('../../../../assets/images/ic_fvr.png')} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => addToCart()} style={styles.button2}>
           <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>
