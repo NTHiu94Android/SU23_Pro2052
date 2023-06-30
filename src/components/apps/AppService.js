@@ -90,6 +90,12 @@ export const deleteAddress = async(_id) => {
     const res = await CustomAxios().get(`/address/api/delete-address/${_id}`);
     return res;
 };
+//------------------------------------Order------------------------------------
+//Lay danh sach don hang theo idUser
+export const getOrdersByIdUser = async(idUser) => {
+    const res = await CustomAxios().get(`/orders/api/get-orders-by-idUser/${idUser}`);
+    return res;
+}
 
 //------------------------------------Review------------------------------------
 export const getReviewsById = async (idProduct) => {

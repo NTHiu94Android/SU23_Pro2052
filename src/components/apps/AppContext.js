@@ -8,6 +8,8 @@ import {
   getPicturesByIdProduct,
   //Cart
   addToCart, get_order_details_by_idOrder, update_order_details, delete_order_details,
+  //Order
+  getOrdersByIdUser,
   //Favorite
 
   //OrderDetail
@@ -39,6 +41,7 @@ export const AppContextProvider = (props) => {
   const [ship, setShip] = useState(5);
   const [listCmt, setListCmt] = useState([]);
   const [countAddress, setCountAddress] = useState(0);
+  const [countOrder, setCountOrder] = useState(0);
 
 
 
@@ -169,6 +172,8 @@ export const AppContextProvider = (props) => {
     }
   };
 
+
+
   //Lay danh sach chi tiet don hang theo idOrder
   const onGetOrderDetailsByIdOrder = async (idOrder) => {
     try {
@@ -177,6 +182,17 @@ export const AppContextProvider = (props) => {
       return orderDetail.data;
     } catch (error) {
       console.log("OnGetOrderDetailByIdOrder Error: ", error);
+    }
+  };
+
+  //-------------------------------------------------Order-------------------------------------------------
+  //Lay danh sach order by idUser
+  const onGetOrdersByIdUser = async (idUser) => {
+    try {
+      const res = await getOrdersByIdUser(idUser);
+      return res;
+    } catch (error) {
+      console.log('onGetOrdersByIdUser error: ', error);
     }
   };
   //-------------------------------------------------Address-------------------------------------------------
@@ -248,6 +264,8 @@ export const AppContextProvider = (props) => {
       onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts, onAddToCart, onGetSubProductById,
       //Cart
       onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail, onReloadCart,
+      //Order
+      onGetOrdersByIdUser,
       //Reviews
       onGetReviews,
       //Picture
@@ -271,7 +289,8 @@ export const AppContextProvider = (props) => {
       countOrderDetail, setCountOrderDetail,
       total, setTotal,
       ship, setShip,
-      listCmt, setListCmt
+      listCmt, setListCmt,
+      countOrder, setCountOrder,
     }}>
       {children}
     </AppContext.Provider>

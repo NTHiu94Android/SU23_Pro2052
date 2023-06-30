@@ -1,18 +1,51 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 
-const Canceled = () => {
-  const data = [
-    { id: 'Order No238562311', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
-    { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
-    { id: 'Order No238562313', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
-    { id: 'Order No238562314', time: '20/03/2020', quantity: '03', totalAmount: '$150', status:'Canceled' },
-  ];
-  const renderItem = ({ item }) => (
+import { AppContext } from '../../../AppContext';
+import { UserContext } from '../../../../users/UserContext';
+
+const Canceled = (props) => {
+  const { navigation } = props;
+  const { user } = useContext(UserContext);
+  const { onGetOrdersByIdUser, countOrder, onGetOrderDetailsByIdOrder } = useContext(AppContext);
+  const [listCanceled, setListCanceled] = useState([]);
+
+  useEffect(() => {
+    const getOrderByIdUserAndStatus = async () => {
+      try {
+        const resOrders = await onGetOrdersByIdUser(user._id);
+        const orders = resOrders.data;
+        //console.log(orders);
+        //Lay tat ca hoa don tru idCart va idFavorite
+        let list = [];
+        for (let i = 0; i < orders.length; i++) {
+          if (orders[i].status == 'Canceled') {
+            const resOrderDetails = await onGetOrderDetailsByIdOrder(orders[i]._id);
+            //const orderDetails = resOrderDetails.data;
+            //console.log("orderDetails: ",orderDetails);
+            let sum = 0;
+            for (let j = 0; j < resOrderDetails.length; j++) {
+              sum += resOrderDetails[j].quantity;
+            }
+            orders[i].quantity = sum;
+            orders[i].resOrderDetails = resOrderDetails;
+            list.push(orders[i]);
+          }
+        }
+        setListCanceled(list);
+      } catch (error) {
+        console.log("Error getOrders", error);
+      }
+    };
+    getOrderByIdUserAndStatus();
+  }, [countOrder]);
+
+
+  const Item = ({ item, onpress }) => (
     <View style={{ height: 172, justifyContent: 'space-between', marginTop: 25 }}>
       <View style={[styles.functionBox, { borderTopRightRadius: 8, height: 47 }]}>
-        <Text style={[styles.text1, { color: '#242424' }]}>{item.id}</Text>
-        <Text style={[styles.text2, { color: '#808080' }]}>{item.time}</Text>
+        <Text style={[styles.text1, { color: '#242424' }]}>{item._id}</Text>
+        <Text style={[styles.text2, { color: '#808080' }]}>{item.dateCreate}</Text>
       </View>
       <View style={{ backgroundColor: '#F0F0F0', height: 1, width: '100%' }}></View>
       <View style={[styles.functionBox, { flexDirection: 'column', alignItems: 'flex-start', borderBottomRightRadius: 8 }]}>
@@ -23,12 +56,12 @@ const Canceled = () => {
           </View>
           <View style={{ flexDirection: 'row' }}>
             <Text style={[styles.text1, { color: '#808080' }]}>Total Amount: </Text>
-            <Text style={[styles.text3, { color: '#242424' }]}>{item.totalAmount}</Text>
+            <Text style={[styles.text3, { color: '#242424' }]}>{item.totalPrice}</Text>
           </View>
         </View>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between',alignItems:'center', width: '100%', marginTop: 30 }}>
-          <TouchableOpacity style={[styles.detailButton, { marginBottom: 20 }]}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 30 }}>
+          <TouchableOpacity onPress={onpress} style={[styles.detailButton, { marginBottom: 20 }]}>
             <Text style={[styles.text1, { color: '#fff' }]}>Detail</Text>
           </TouchableOpacity>
           <Text style={[styles.text1, { color: 'red' }]}>{item.status}</Text>
@@ -36,14 +69,26 @@ const Canceled = () => {
       </View>
     </View>
   );
+
+  const gotoOrderDetail = (item) => {
+    navigation.navigate('OrderDetail', { item });
+  };
+
   return (
+    <ScrollView>
     <View style={styles.container}>
-      <FlatList
+      {/* <FlatList
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-      />
+      /> */}
+
+      {
+        listCanceled.length > 0 &&
+        listCanceled.map((item) => <Item key={item._id} item={item} onpress={() => gotoOrderDetail(item)} />)
+      }
     </View>
+    </ScrollView>
   )
 }
 
