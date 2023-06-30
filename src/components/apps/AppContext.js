@@ -6,12 +6,14 @@ import {
   getProducts, getSubProductsByIdProduct, getSubProducts,
   //Picture
   getPicturesByIdProduct,
+  //Order
+  addOrder, getOrdersByIdUser, updateOrder,
+
   //Cart
   addToCart, get_order_details_by_idOrder, update_order_details, delete_order_details,
-  //Favorite
 
   //OrderDetail
-  addOrderDetail, getOrderDetailsByIdOrder,
+  getOrderDetailsByIdOrder, getOrderDetails,
   //Review
   getReviews, getReviewsById,
   //Address
@@ -34,6 +36,7 @@ export const AppContextProvider = (props) => {
   const [listCanceled, setListCanceled] = useState([]);
   const [countCart, setCountCart] = useState(0);
   const [countFavorite, setCountFavorite] = useState(0);
+  const [countOrder, setCountOrder] = useState(0);
   const [countOrderDetail, setCountOrderDetail] = useState(0);
   const [total, setTotal] = useState(0);
   const [ship, setShip] = useState(5);
@@ -220,6 +223,57 @@ export const AppContextProvider = (props) => {
     }
   };
 
+   //Lay danh sach order detail by idOrder
+   const onGetOrderDetailByIdOrder = async (idOrder) => {
+    try {
+      const res = await getOrderDetailsByIdOrder(idOrder);
+      return res;
+    } catch (error) {
+      console.log("onGetOrderDetailByIdOrder", error);
+    }
+  }
+
+  //Lay danh sach order detail
+  const onGetOrderDetails = async () => {
+    try {
+      const res = await getOrderDetails();
+      return res;
+    } catch (error) {
+      console.log("onGetOrderDetails", error);
+    }
+  };
+
+  //-------------------------------------------------Order-------------------------------------------------
+  //Them order
+  const onAddOrder = async (dateCreate, datePayment, totalPrice, status, paymentMethod, address, idUser) => {
+    try {
+      const res = await addOrder(dateCreate, datePayment, totalPrice, status, paymentMethod, address, idUser);
+      return res;
+    } catch (error) {
+      console.log('onAddOrder error: ', error);
+    }
+  };
+
+  //Lay danh sach order by idUser
+  const onGetOrdersByIdUser = async (idUser) => {
+    try {
+      const res = await getOrdersByIdUser(idUser);
+      return res;
+    } catch (error) {
+      console.log('onGetOrdersByIdUser error: ', error);
+    }
+  };
+
+  //Cap nhat order
+  const onUpdateOrder = async (_id, datePayment, status) => {
+    try {
+      const res = await updateOrder(_id, datePayment, status);
+      return res;
+    } catch (error) {
+      console.log('onUpdateOrder error: ', error);
+    }
+  };
+
   //-------------------------------------------------Reviews-------------------------------------------------
   const onGetReviewsByIdProduct = async (idProduct) => {
     try {
@@ -252,6 +306,11 @@ export const AppContextProvider = (props) => {
       onGetReviews,
       //Picture
       onGetPicturesByIdProduct,
+      //OrderDetail
+      onGetOrderDetailByIdOrder,
+      onDeleteOrderDetail, onUpdateOrderDetail, onGetOrderDetails,
+      //Order
+      onAddOrder, onGetOrdersByIdUser, onUpdateOrder,
       //Address
       onAddAddress, onGetAddressByIdUser, onUpdateAddress, onDeleteAddress,
       //Review
@@ -268,6 +327,7 @@ export const AppContextProvider = (props) => {
       countCart, setCountCart,
       countFavorite, setCountFavorite,
       listFavorite, setListFavorite,
+      countOrder, setCountOrder,
       countOrderDetail, setCountOrderDetail,
       total, setTotal,
       ship, setShip,

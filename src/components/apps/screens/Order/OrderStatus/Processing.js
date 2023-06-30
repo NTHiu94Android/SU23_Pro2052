@@ -1,52 +1,84 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContext } from '../../../AppContext';
+import { UserContext } from '../../../../users/UserContext';
+
+import ProgressDialog from 'react-native-progress-dialog';
 
 const Processing = (props) => {
-
   const { navigation } = props;
+  const { 
+    onGetOrdersByIdUser, onGetOrderDetailByIdOrder, onUpdateOrder,
+    countOrder, setCountOrder,
+   } = useContext(AppContext);
+  const { user } = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [listProcessing, setListProcessing] = useState([]);
 
-  const data = [
-    { id: 'Order No238562312', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
-    { id: 'Order No238562313', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
-    { id: 'Order No238562314', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
-    { id: 'Order No238562315', time: '20/03/2020', quantity: '03', totalAmount: '$150', status: 'Delivered' },
-  ];
-  const renderItem = ({ item }) => (
-    <View style={{ height: 172, justifyContent: 'space-between', marginTop: 25 }}>
-      <View style={[styles.functionBox, { borderTopRightRadius: 8, height: 47 }]}>
-        <Text style={[styles.text1, { color: '#242424' }]}>{item.id}</Text>
-        <Text style={[styles.text2, { color: '#808080' }]}>{item.time}</Text>
-      </View>
-      <View style={{ backgroundColor: '#F0F0F0', height: 1, width: '100%' }}></View>
-      <View style={[styles.functionBox, { flexDirection: 'column', alignItems: 'flex-start', borderBottomRightRadius: 8 }]}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginTop: 15 }}>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.text1, { color: '#808080' }]}>Quantity: </Text>
-            <Text style={[styles.text3, { color: '#303030' }]}>{item.quantity}</Text>
-          </View>
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={[styles.text1, { color: '#808080' }]}>Total Amount: </Text>
-            <Text style={[styles.text3, { color: '#242424' }]}>{item.totalAmount}</Text>
-          </View>
-        </View>
+  useEffect(() => {
+    const getOrderByIdUserAndStatus = async () => {
+      try {
+        setIsLoading(true);
+        const resOrders = await onGetOrdersByIdUser(user._id);
+        const orders = resOrders.data;
+        //Lay tat ca hoa don tru idCart va idFavorite
+        let list = [];
+        for (let i = 0; i < orders.length; i++) {
+          if (orders[i].status == 'Processing' || orders[i].status == 'Confirmed') {
+            const resOrderDetails = await onGetOrderDetailByIdOrder(orders[i]._id);
+            const orderDetails = resOrderDetails.data;
+            let sum = 0;
+            for (let j = 0; j < orderDetails.length; j++) {
+              sum += orderDetails[j].quantity;
+            }
+            orders[i].quantity = sum;
+            orders[i].orderDetails = orderDetails;
+            list.push(orders[i]);
+          }
+        }
+        setListProcessing(list);
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        console.log("Error getOrders", error);
+      }
+    };
+    getOrderByIdUserAndStatus();
+  }, [countOrder]);
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 30 }}>
-          <TouchableOpacity style={[styles.detailButton, { marginBottom: 20 }]} onPress={()=>navigation.navigate('OrderDetail')}>
-            <Text style={[styles.text1, { color: '#fff' }]}>Detail</Text>
-          </TouchableOpacity>
-          <Text style={[styles.text1, { color: '#27AE60' }]}>{item.status}</Text>
-        </View>
-      </View>
-    </View>
-  );
+  const gotoOrderDetail = (item) => {
+    navigation.navigate('OrderDetail', { item });
+  };
+
+  const cancelOrder = async (item) => {
+    try {
+      setIsLoading(true);
+      await onUpdateOrder(item._id, item.datePayment, 'Canceled');
+      setCountOrder(countOrder+1);
+    } catch (error) {
+      console.log('Error cancel order: ', error);
+    }
+  }
+
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+    <ScrollView style={{ flex: 1, backgroundColor: 'white' }}>
+      <ProgressDialog
+        visible={isLoading}
+        loaderColor="black"
+        lable="Please wait..."
       />
-    </View>
+      <View style={styles.container}>
+        {
+          listProcessing.length > 0 &&
+          listProcessing.map((item) =>
+            <Item
+              key={item._id}
+              item={item}
+              cancel={() => cancelOrder(item)}
+              onpress={() => gotoOrderDetail(item)} />)
+        }
+      </View>
+    </ScrollView>
   )
 }
 
@@ -55,44 +87,89 @@ export default Processing
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 12,
     backgroundColor: 'white',
-    paddingHorizontal: 20,
   },
-  functionBox: {
-    backgroundColor: '#fff',
-    width: '100%',
-    paddingHorizontal: 20,
+  containerItem: {
+    flexDirection: 'column',
+    padding: 12,
+    backgroundColor: 'white',
+    shadowColor: 'grey',
+    borderRadius: 4,
+    elevation: 5,
+    shadowOffset: {
+      width: 1,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 0.3,
+    marginBottom: 6
+  },
+  rowItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 5,
-      height: 5,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-    elevation: 1,
+    alignItems: 'center'
   },
-  text1: {
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  text2: {
-    fontWeight: '400',
-    fontSize: 14,
-  },
-  text3: {
-    fontWeight: '700',
-    fontSize: 16,
-  },
-  detailButton: {
+  buttonDetail: {
+    backgroundColor: 'black',
     width: 100,
     height: 36,
-    backgroundColor: '#242424',
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopRightRadius: 4,
-    borderBottomRightRadius: 4,
+    borderRadius: 30,
+    marginTop: 10,
+    marginBottom: 10,
   },
-})
+  textDetail: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  }
+});
+
+const Item = ({ item, onpress, cancel }) => (
+  <View style={styles.containerItem}>
+    <View style={styles.rowItem}>
+      <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>Order {item._id}</Text>
+      <Text style={{ fontSize: 16, fontWeight: '400' }}>{item.dateCreate}</Text>
+    </View>
+    <View style={{ borderBottomWidth: 1, borderBottomColor: 'black', marginVertical: 10 }}></View>
+    <View style={{ flexDirection: 'column' }}>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>Quantity: </Text>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.quantity}</Text>
+      </View>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>Total Amount: </Text>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.totalPrice}</Text>
+      </View>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>Date create: </Text>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.dateCreate}</Text>
+      </View>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>Payment method: </Text>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.paymentMethod}</Text>
+      </View>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>Status: </Text>
+        {
+          item.status == 'Processing' && <Text style={{ fontSize: 16, fontWeight: '600', color: '#FFD700' }}>{item.status}</Text>
+        }
+        {
+          item.status == 'Confirmed' && <Text style={{ fontSize: 16, fontWeight: '600', color: '#27AE60' }}>{item.status}</Text>
+        }
+      </View>
+    </View>
+    <View style={[styles.rowItem, { marginTop: 16 }]}>
+      <TouchableOpacity onPress={onpress} style={styles.buttonDetail}>
+        <Text style={styles.textDetail}>Detail</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={cancel} style={[styles.buttonDetail, { backgroundColor: 'red' }]}>
+        <Text style={styles.textDetail}>Cancel</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+);
+

@@ -96,6 +96,61 @@ export const getReviewsById = async (idProduct) => {
     const response = await CustomAxios().get(`reviews/api/get-review-by-idProduct/${idProduct}`);
     return response;
 }
+//Them don hang
+export const addOrder = async (dateCreate, datePayment, totalPrice, status, paymentMethod, address, idUser) => {
+    const data = {
+        dateCreate, datePayment, totalPrice, status, paymentMethod, address, idUser
+    };
+    const response = await CustomAxios().post(`/orders/api/add-order`, data);
+    return response;
+}
+
+//Lay danh sach don hang theo idUser
+export const getOrdersByIdUser = async(idUser) => {
+    const res = await CustomAxios().get(`/orders/api/get-orders-by-idUser/${idUser}`);
+    return res;
+}
+
+//Cap nhat don hang
+export const updateOrder = async(_id, datePayment, status) => {
+    const data = {
+        _id, datePayment, status
+    }
+    const res = await CustomAxios().post(`/orders/api/update-order`, data);
+    return res;
+};
+//Them san pham yeu thich / gio hang
+export const addOrderDetail = async (quantity, price, idOrder, idSubProduct) => {
+    const response = await CustomAxios().post(`/order-details/api/add-order-detail`, { quantity, price, idOrder, idSubProduct });
+    return response;
+};
+
+//Lay danh sach san pham yeu thich/gio hang theo idOrder
+export const getOrderDetailsByIdOrder = async(idOrder) => {
+    const res = await CustomAxios().get(`/order-details/api/get-order-detail-by-idOrder/${idOrder}`);
+    return res;
+}
+
+//Lay tat ca san pham yeu thich/gio hang
+export const getOrderDetails = async() => {
+    const res = await CustomAxios().get(`/order-details/api/get-all-order-detail`);
+    return res;
+};
+
+//Xoa san pham yeu thich/gio hang
+export const deleteOrderDetail = async(id) => {
+    const res = await CustomAxios().get(`/order-details/api/delete-order-detail/${id}`);
+    return res;
+};
+
+//Cap nhat san pham yeu thich/gio hang
+export const updateOrderDetail = async(_id, quantity, price, isCmt, idOrder, idSubProduct) => {
+    const data = {
+        _id, quantity, price, isCmt, idOrder, idSubProduct
+    }
+    const res = await CustomAxios().post(`/order-details/api/update-order-detail`, data);
+    return res;
+};
 
 
 
