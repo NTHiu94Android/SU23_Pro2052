@@ -13,7 +13,8 @@ const Cart = (props) => {
   const {
     onGetOrderDetailsByIdOrder, listCart, setListCart, onGetProductById,
     countCart, onUpdateOrderDetail, onDeleteOrderDetail, onGetSubProductById,
-    total, setTotal, onReloadCart,
+    total, setTotal, onReloadCart,tempIdProduct, setTempIdProduct,
+    tempIdSubProduct, setTempIdSubProduct
   } = useContext(AppContext);
   back(navigation);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +69,8 @@ const Cart = (props) => {
 
   const goToProductDetail = (idSubPro, idPro) => {
     navigation.navigate('ProductDetail', { idSubPro: idSubPro, idPro: idPro });
+    setTempIdProduct(idPro);
+    setTempIdSubProduct(idSubPro);
   };
 
   const calculateTotalPrice = async (items) => {

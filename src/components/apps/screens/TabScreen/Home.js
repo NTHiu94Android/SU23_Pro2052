@@ -9,7 +9,8 @@ import ProgressDialog from 'react-native-progress-dialog';
 const Home = (props) => {
     const { navigation } = props;
     const { } = useContext(UserContext);
-    const { onGetCategories, onGetProducts, onGetSubProducts, onGetReviews, countOrderDetail } = useContext(AppContext);
+    const { onGetCategories, onGetProducts, onGetSubProducts, onGetReviews, countOrderDetail, tempIdProduct, setTempIdProduct,
+        tempIdSubProduct, setTempIdSubProduct } = useContext(AppContext);
 
     const [listCategory, setListCategory] = useState([]);
 
@@ -116,6 +117,8 @@ const Home = (props) => {
 
     const goToProductDetail = (idProduct) => {
         navigation.navigate('ProductDetail', { idProduct });
+        setTempIdProduct(idProduct);
+        setTempIdSubProduct(undefined);
     };
 
     return (

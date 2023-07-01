@@ -42,7 +42,8 @@ export const AppContextProvider = (props) => {
   const [ship, setShip] = useState(5);
   const [listCmt, setListCmt] = useState([]);
   const [countAddress, setCountAddress] = useState(0);
-
+  const [tempIdProduct, setTempIdProduct] = useState();
+  const [tempIdSubProduct, setTempIdSubProduct] = useState();
 
 
   const onGetCategories = async () => {
@@ -294,12 +295,22 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //Reload danh sách sản phẩm yêu thích
+  const onReloadFavorite = () => {
+    if (countFavorite == 0) {
+      setCountFavorite(1);
+    }
+    else {
+      setCountFavorite(0);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       //Category & Brand
       onGetCategories, onGetBrandsByIdCategory,
       //Product
-      onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts, onAddToCart, onGetSubProductById,
+      onGetProducts, onGetProductById, onGetSubProductsByIdProduct, onGetSubProducts, onAddToCart, onGetSubProductById, onReloadFavorite,
       //Cart
       onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail, onReloadCart,
       //Reviews
@@ -331,7 +342,9 @@ export const AppContextProvider = (props) => {
       countOrderDetail, setCountOrderDetail,
       total, setTotal,
       ship, setShip,
-      listCmt, setListCmt
+      listCmt, setListCmt,
+      tempIdProduct, setTempIdProduct,
+      tempIdSubProduct, setTempIdSubProduct
     }}>
       {children}
     </AppContext.Provider>
