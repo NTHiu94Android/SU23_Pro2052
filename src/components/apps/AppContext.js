@@ -39,7 +39,8 @@ export const AppContextProvider = (props) => {
   const [ship, setShip] = useState(5);
   const [listCmt, setListCmt] = useState([]);
   const [countAddress, setCountAddress] = useState(0);
-
+  const [tempIdProduct, setTempIdProduct] = useState();
+  const [tempIdSubProduct, setTempIdSubProduct] = useState();
 
 
   const onGetCategories = async () => {
@@ -281,7 +282,9 @@ export const AppContextProvider = (props) => {
       countOrderDetail, setCountOrderDetail,
       total, setTotal,
       ship, setShip,
-      listCmt, setListCmt
+      listCmt, setListCmt,
+      tempIdProduct, setTempIdProduct,
+      tempIdSubProduct, setTempIdSubProduct
     }}>
       {children}
     </AppContext.Provider>

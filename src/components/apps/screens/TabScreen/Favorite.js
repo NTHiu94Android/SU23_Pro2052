@@ -9,7 +9,8 @@ const Favorite = (props) => {
     // more items
   ]);
   const { navigation } = props;
-  const { onGetOrderDetailsByIdOrder, listFavorite, setListFavorite, onGetSubProductById, onGetProductById, countFavorite, onDeleteOrderDetail } = useContext(AppContext);
+  const { onGetOrderDetailsByIdOrder, listFavorite, setListFavorite, onGetSubProductById, onGetProductById, countFavorite, onDeleteOrderDetail, tempIdProduct, setTempIdProduct,
+    tempIdSubProduct, setTempIdSubProduct } = useContext(AppContext);
   const { user } = useContext(UserContext);
 
   //Lấy danh sách yêu thích
@@ -65,6 +66,8 @@ const Favorite = (props) => {
               price: sub.price,
               color: sub.color,
               imageUrl: prod.image,
+              idPro: sub.idProduct,
+              idSubPro: fav.idSubProduct,
             }
             datas.push(data);
           }
@@ -75,11 +78,16 @@ const Favorite = (props) => {
     }
     return datas;
   }
-
+  const goToProductDetail = (idSubPro, idPro) => {
+    navigation.navigate('ProductDetail', { idSubPro: idSubPro, idPro: idPro });
+    setTempIdProduct(idPro);
+    setTempIdSubProduct(idSubPro);
+  };
   useEffect(() => {
     const loadData = async () => {
       const favItem = await getFavoriteList();
       const subItem = await getSubProducts(favItem);
+
       const prodItem = await getProducts(subItem);
 
       getDatas(favItem, subItem, prodItem).then((res) => {
@@ -120,7 +128,8 @@ const Favorite = (props) => {
         data={listFavorite}
         renderItem={({ item }) =>
           <Item item={item}
-            deleteFavoriteItem={() => deleteItem(item.id)} />
+            deleteFavoriteItem={() => deleteItem(item.id)}
+            nav={() => goToProductDetail(item.idSubPro, item.idPro)} />
         }
         showsVerticalScrollIndicator={false}
         keyExtractor={item => item.id} // Use the "id" as the key prop
@@ -217,8 +226,10 @@ const styles = StyleSheet.create({
 
 })
 
-const Item = ({ item, deleteFavoriteItem }) => {
+const Item = ({ item, deleteFavoriteItem, nav }) => {
   return (
+    <TouchableOpacity onPress={nav}>
+
     <View style={styles.listItem}>
       <Image source={{ uri: item.imageUrl }} style={styles.imgLst} />
       <View style={styles.listItemName}>
@@ -239,7 +250,7 @@ const Item = ({ item, deleteFavoriteItem }) => {
         </TouchableOpacity>
       </View>
     </View>
-
+</TouchableOpacity>
   );
 };
 

@@ -17,7 +17,8 @@ const ProductDetail = ({ route, navigation }) => {
   const { onGetProductById, onGetProducts, onGetSubProducts, onGetPicturesByIdProduct, countOrderDetail, onGetSubProductsByIdProduct, onGetReviewsByIdProduct, onGetSubProductById,
     onAddToCart, onAddToFavorite,
     setListFavorite, setCountCart, countCart, setListCmt, onReloadFavorite, countFavorite,
-    total, setTotal, onGetImagesByIdProduct, onGetCommentsByIdProduct, onUpdateOrderDetail, onGetOrderDetailsByIdOrder, onDeleteOrderDetail
+    total, setTotal, onGetImagesByIdProduct, onGetCommentsByIdProduct, onUpdateOrderDetail, onGetOrderDetailsByIdOrder, onDeleteOrderDetail, tempIdProduct, setTempIdProduct,
+    tempIdSubProduct, setTempIdSubProduct
   } = useContext(AppContext);
 
   const { user } = useContext(UserContext);
@@ -156,8 +157,8 @@ const ProductDetail = ({ route, navigation }) => {
 
   useEffect(() => {
     setIsLoading(true);
-    let tempId = idProduct !== undefined ? idProduct : idPro;
-
+    let tempId = idProduct !== undefined ? idProduct : tempIdProduct;
+    console.log("cheackIDDDDDDDDDDDDDDDDDDDDDDDD: ", tempIdProduct);
     const getData = async (_idProduct) => {
       try {
         const resProduct = await onGetProducts();
@@ -205,7 +206,7 @@ const ProductDetail = ({ route, navigation }) => {
 
     const getSubProducts = async () => {
       try {
-        let tempId = idProduct !== undefined ? idProduct : idPro;
+        let tempId = idProduct !== undefined ? idProduct : tempIdProduct;
         setId(tempId);
         // console.log("id", tempId);
         // lấy sub-product theo idProduct
@@ -233,8 +234,8 @@ const ProductDetail = ({ route, navigation }) => {
         setStar(averageRating);
         console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
 
-        if (idSubPro !== undefined) {
-          const subProduct = await onGetSubProductById(idSubPro);
+        if (tempIdSubProduct !== undefined) {
+          const subProduct = await onGetSubProductById(tempIdSubProduct);
           // console.log("Sub", subProduct);
           setColor(subProduct._id);
           setSelectedColor(subProduct.color);
