@@ -17,7 +17,7 @@ const ListReview = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [review, setReview] = useState([]);
   const [listReview, setListReview] = useState([]);
-  
+
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [showAllReviews, setShowAllReviews] = useState(false);
 
@@ -150,7 +150,7 @@ const ListReview = (props) => {
 
   useEffect(() => {
     toggleShowAllReviews()
-  },[])
+  }, [])
 
   return (
     <View style={styleReview.container}>
@@ -170,10 +170,17 @@ const ListReview = (props) => {
       <View style={styleReview.body}>
         <View style={styleReview.header}>
           <View>
-            <Image
+            {/* <Image
               style={styleReview.icImg}
-              source={{ uri: listImage[0] }}
-            ></Image>
+              source={ listImage == [] ? {uri: 'https://static-images.vnncdn.net/files/publish/2022/8/8/iphone-14-pro-93.jpg'} : {uri: listImage[0]} }
+            /> */}
+            {
+              listImage.length > 0 ?
+                <Image
+                  style={styleReview.icImg}
+                  source={{ uri: listImage[0] }}
+                /> : null
+            }
           </View>
           <View style={styleReview.txtheader}>
             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{product.name}</Text>

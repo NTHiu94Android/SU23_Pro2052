@@ -111,12 +111,6 @@ export const addOrder = async (dateCreate, datePayment, totalPrice, status, paym
     return response;
 }
 
-//Lay danh sach don hang theo idUser
-export const getOrdersByIdUser = async(idUser) => {
-    const res = await CustomAxios().get(`/orders/api/get-orders-by-idUser/${idUser}`);
-    return res;
-}
-
 //Cap nhat don hang
 export const updateOrder = async(_id, datePayment, status) => {
     const data = {
