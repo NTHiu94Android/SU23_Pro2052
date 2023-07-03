@@ -42,25 +42,33 @@ const Canceled = (props) => {
 
 
   const Item = ({ item, onpress }) => (
-    <View style={{ height: 172, justifyContent: 'space-between', marginTop: 25 }}>
+    <View style={{ height: 200, justifyContent: 'space-between', marginTop: 25 }}>
       <View style={[styles.functionBox, {  height: 47 }]}>
         <Text style={[styles.text1, { color: '#242424' }]}>{item._id}</Text>
         <Text style={[styles.text2, { color: '#808080' }]}>{item.dateCreate}</Text>
       </View>
       <View style={{ backgroundColor: 'black', height: 1, width: '100%' }}></View>
       <View style={[styles.functionBox, { flexDirection: 'column', alignItems: 'flex-start',}]}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginTop: 15 }}>
-          <View style={{ flexDirection: 'row' }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '100%', marginTop: 15,}}>
+          <View style={{ flexDirection: 'row' , justifyContent: 'space-between' }}>
             <Text style={[styles.text1, { color: '#808080' }]}>Quantity: </Text>
             <Text style={[styles.text3, { color: '#303030' }]}>{item.quantity}</Text>
           </View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{ flexDirection: 'row' , justifyContent: 'space-between' }}>
             <Text style={[styles.text1, { color: '#808080' }]}>Total Amount: </Text>
             <Text style={[styles.text3, { color: '#242424' }]}>{item.totalPrice}</Text>
           </View>
+          <View style={{ flexDirection: 'row' , justifyContent: 'space-between'}}>
+            <Text style={[styles.text1, { color: '#808080' }]}>Date Create: </Text>
+            <Text style={[styles.text3, { color: '#242424' }]}>{item.dateCreate}</Text>
+          </View>
+          <View style={{ flexDirection: 'row' , justifyContent: 'space-between'}}>
+            <Text style={[styles.text1, { color: '#808080' }]}>Payment method: </Text>
+            <Text style={[styles.text3, { color: '#242424' }]}>{item.paymentMethod}</Text>
+          </View>
         </View>
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 30 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 20 }}>
           <TouchableOpacity onPress={onpress} style={[styles.detailButton, { marginBottom: 20 }]}>
             <Text style={[styles.text1, { color: '#fff' }]}>Detail</Text>
           </TouchableOpacity>
@@ -109,8 +117,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
-      width: 5,
-      height: 5,
+      width: 15,
+      height: 15,
     },
     shadowOpacity: 0.5,
     shadowRadius: 5,
