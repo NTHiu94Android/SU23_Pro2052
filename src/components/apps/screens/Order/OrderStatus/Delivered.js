@@ -9,7 +9,7 @@ const Item = ({ item, onpress }) => (
   <View style={styles.containerItem}>
     <View style={styles.rowItem}>
       <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>Order {item._id}</Text>
-      <Text style={{ fontSize: 16, fontWeight: '400' }}>{item.orderDate}</Text>
+      <Text style={{ fontSize: 16, fontWeight: '400' }}>{item.dateCreate}</Text>
     </View>
     <View style={{ borderBottomWidth: 1, borderBottomColor: 'black', marginVertical: 10 }}></View>
     <View style={styles.rowItem}>
