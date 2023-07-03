@@ -43,12 +43,12 @@ const Canceled = (props) => {
 
   const Item = ({ item, onpress }) => (
     <View style={{ height: 172, justifyContent: 'space-between', marginTop: 25 }}>
-      <View style={[styles.functionBox, { borderTopRightRadius: 8, height: 47 }]}>
+      <View style={[styles.functionBox, {  height: 47 }]}>
         <Text style={[styles.text1, { color: '#242424' }]}>{item._id}</Text>
         <Text style={[styles.text2, { color: '#808080' }]}>{item.dateCreate}</Text>
       </View>
-      <View style={{ backgroundColor: '#F0F0F0', height: 1, width: '100%' }}></View>
-      <View style={[styles.functionBox, { flexDirection: 'column', alignItems: 'flex-start', borderBottomRightRadius: 8 }]}>
+      <View style={{ backgroundColor: 'black', height: 1, width: '100%' }}></View>
+      <View style={[styles.functionBox, { flexDirection: 'column', alignItems: 'flex-start',}]}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginTop: 15 }}>
           <View style={{ flexDirection: 'row' }}>
             <Text style={[styles.text1, { color: '#808080' }]}>Quantity: </Text>
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 5,
     elevation: 1,
+    borderRadius: 5
   },
   text1: {
     fontWeight: '600',
@@ -134,7 +135,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#242424',
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopRightRadius: 4,
-    borderBottomRightRadius: 4,
+    borderRadius: 25
   },
 })
