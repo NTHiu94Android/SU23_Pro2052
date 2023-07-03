@@ -5,14 +5,14 @@ import { UserContext } from '../../../../users/UserContext';
 
 import ProgressDialog from 'react-native-progress-dialog';
 
-const Item = ({ item, onpress }) => (
+const Item = ({ item, onpress, cancel }) => (
   <View style={styles.containerItem}>
     <View style={styles.rowItem}>
       <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>Order {item._id}</Text>
       <Text style={{ fontSize: 16, fontWeight: '400' }}>{item.dateCreate}</Text>
     </View>
     <View style={{ borderBottomWidth: 1, borderBottomColor: 'black', marginVertical: 10 }}></View>
-    <View style={styles.rowItem}>
+    <View style={{ flexDirection: 'column' }}>
       <View style={styles.rowItem}>
         <Text style={{ fontSize: 16, fontWeight: '400' }}>Quantity: </Text>
         <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.quantity}</Text>
@@ -21,12 +21,31 @@ const Item = ({ item, onpress }) => (
         <Text style={{ fontSize: 16, fontWeight: '400' }}>Total Amount: </Text>
         <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.totalPrice}</Text>
       </View>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>Date create: </Text>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.dateCreate}</Text>
+      </View>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>Payment method: </Text>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.paymentMethod}</Text>
+      </View>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>Status: </Text>
+        {
+          item.status == 'Processing' && <Text style={{ fontSize: 16, fontWeight: '600', color: '#FFD700' }}>{item.status}</Text>
+        }
+        {
+          item.status == 'Delivered' && <Text style={{ fontSize: 16, fontWeight: '600', color: '#27AE60' }}>{item.status}</Text>
+        }
+      </View>
     </View>
     <View style={[styles.rowItem, { marginTop: 16 }]}>
       <TouchableOpacity onPress={onpress} style={styles.buttonDetail}>
         <Text style={styles.textDetail}>Detail</Text>
       </TouchableOpacity>
-      <Text style={{ fontSize: 16, fontWeight: '600', color: '#27AE60' }}>{item.status}</Text>
+      <TouchableOpacity onPress={cancel} style={[styles.buttonDetail, { backgroundColor: 'red' }]}>
+        <Text style={styles.textDetail}>Cancel</Text>
+      </TouchableOpacity>
     </View>
   </View>
 );
