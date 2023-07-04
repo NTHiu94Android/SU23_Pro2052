@@ -158,7 +158,7 @@ const Item = ({ item, onpress, cancel }) => (
           item.status == 'Processing' && <Text style={{ fontSize: 16, fontWeight: '600', color: '#FFD700' }}>{item.status}</Text>
         }
         {
-          item.status == 'Confirmed' && <Text style={{ fontSize: 16, fontWeight: '600', color: '#27AE60' }}>{item.status}</Text>
+          item.status == 'Delivered' && <Text style={{ fontSize: 16, fontWeight: '600', color: '#27AE60' }}>{item.status}</Text>
         }
       </View>
     </View>
