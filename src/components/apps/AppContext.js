@@ -138,6 +138,28 @@ export const AppContextProvider = (props) => {
   //Them san pham vao gio hang
   const onAddToCart = async (quantity, price, idOrder, idSubProduct) => {
     try {
+      let _listCart = [];
+      const resOrderDetail = await getOrderDetailsByIdOrder(idOrder);
+      if(resOrderDetail){
+        _listCart = resOrderDetail.data;
+        console.log('_listCart: ', _listCart);
+      }
+
+      for (const item of _listCart) {
+        if (item.idSubProduct === idSubProduct) {
+          console.log("Sản phẩm đã có trong giỏ hàng");
+          const isCmt = 'false'
+          const newQuantity = item.quantity + quantity;
+          const respone = await update_order_details(item._id, newQuantity, price, isCmt, idOrder, idSubProduct);
+          if (respone) {
+            console.log("Đã cập nhật sản phẩm trong giỏ hàng của bạn, vui lòng kiểm tra lại");
+          } else {
+            console.log("Cập nhật sản phẩm trong giỏ hàng thất bại");
+          }
+          onReloadCart();
+          return respone;
+        }
+      }
       const respone = await addToCart(quantity, price, idOrder, idSubProduct);
       onReloadCart();
       return respone;
@@ -224,8 +246,8 @@ export const AppContextProvider = (props) => {
     }
   };
 
-   //Lay danh sach order detail by idOrder
-   const onGetOrderDetailByIdOrder = async (idOrder) => {
+  //Lay danh sach order detail by idOrder
+  const onGetOrderDetailByIdOrder = async (idOrder) => {
     try {
       const res = await getOrderDetailsByIdOrder(idOrder);
       return res;
