@@ -6,7 +6,7 @@ import { AppContext } from '../../AppContext';
 import { UserContext } from '../../../users/UserContext';
 
 import ProgressDialog from 'react-native-progress-dialog';
-// import * as ImagePicker from 'react-native-image-picker';
+import * as ImagePicker from 'react-native-image-picker';
 
 const AddReview = (props) => {
   const { navigation } = props;
@@ -42,6 +42,7 @@ const AddReview = (props) => {
 
       //Add review:   content, rating, idUser, idProduct
       const resReview = await onAddReview(dayNow, text, star, user._id, item.product._id);
+      console.log("resReview",resReview)
       await onUpdateOrderDetail(item._id, item.quantity, item.price, true, item.idOrder, item.idSubProduct);
 
       if (images.length != 0) {
@@ -60,6 +61,7 @@ const AddReview = (props) => {
           }
           //Add picture:   url, idSubProduct, idReview
           await onAddPicture(resPicture.data, item.product._id, resReview.data._id);
+          console.log(resPicture.data);
           
         }
       }
@@ -68,8 +70,8 @@ const AddReview = (props) => {
       navigation.goBack();
       setIsLoading(false);
 
-    } catch (error) {
-      console.log("Error send review: ", error);
+    } catch (err) {
+      console.log("Error send review: ", err);
     }
     setIsLoading(false);
   }

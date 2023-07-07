@@ -330,6 +330,16 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //Them review moi
+  const onAddReview = async (time, content, rating, idUser, idProduct) => {
+    try {
+      const res = await addReview(time, content, rating, idUser, idProduct);
+      return res;
+    } catch (error) {
+      console.log('onAddReview error: ', error);
+    }
+  }
+
   //Reload giỏ hàng
   const onReloadCart = () => {
     if (countCart == 0) {
@@ -359,7 +369,7 @@ export const AppContextProvider = (props) => {
       //Cart
       onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail, onReloadCart,
       //Reviews
-      onGetReviews,
+      onGetReviews, onAddReview,
       //Picture
       onGetPicturesByIdProduct, onGetPictures, onUploadPicture, onAddPicture, onGetPicturesByIdReview,
       //OrderDetail
