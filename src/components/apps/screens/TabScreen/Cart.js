@@ -23,7 +23,7 @@ const Cart = (props) => {
     const getListCart = async () => {
       try {
         setIsLoading(true);
-        // console.log("list", list);
+
         let listItem = [];
         const response = await onGetOrderDetailsByIdOrder(user.idCart);
         if (!response) return;
@@ -56,6 +56,7 @@ const Cart = (props) => {
         }
         setListCart(listItem);
         setTotalPrice(0);
+        setTotal(0);
         setDisabled(true);
         console.log("listItem", listItem);
         setIsLoading(false);
@@ -82,6 +83,7 @@ const Cart = (props) => {
       }
     });
     setTotalPrice(totalPrice);
+    setTotal(totalPrice);
   };
 
   const handleQuantityChange = (_id, _quantity, _isSelected) => {

@@ -1,11 +1,38 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import back from '../../../back/back';
+import { UserContext } from '../../../users/UserContext';
+import { AppContext } from '../../AppContext';
 
 const CheckOut = (props) => {
-
+  const {user} = useContext(UserContext);
+  const {
+    onGetAddressByIdUser, total
+} = useContext(AppContext);
   const { navigation } = props;
   back(navigation);
+  const [address, setAddress] = useState();
+  const [tempAddress, setTempAddress] = useState([]);
+  useEffect(() => {
+    const getListAddress = async () => {
+        try {
+            const res = await onGetAddressByIdUser(user._id);
+            console.log("getAddress", res.data);
+            const address = res.data;
+            setTempAddress(address);
+            address.forEach((item) => {
+              if (item.status === true) {
+                setAddress(item.body);
+                console.log('Selected address:', item.body);
+              }
+            });
+            
+        } catch (error) {
+            console.log('getListAddress error: ', error);
+        }
+    };
+    getListAddress();
+}, []);
 
   return (
     <View style={{ flex: 1 }}>
@@ -25,8 +52,8 @@ const CheckOut = (props) => {
               <Image source={require('../../../../assets/images/edit2.png')} style={{ width: 28, height: 28 }} />
             </View>
             <View style={[styles.box, { backgroundColor: '#fff', borderRadius: 8, paddingVertical: 10 }]}>
-              <Text style={{ fontSize: 18, fontWeight: 'bold', borderBottomWidth: 0.5, borderBottomColor: 'grey', padding: 10 }}>Bruno Fernandes</Text>
-              <Text style={{ fontSize: 14, lineHeight: 25, padding: 10 }}>Tp.Hồ Chí Minh</Text>
+              <Text style={{ fontSize: 18, fontWeight: 'bold', borderBottomWidth: 0.5, borderBottomColor: 'grey', padding: 10 }}>{user.name}</Text>
+              <Text style={{ fontSize: 14, lineHeight: 25, padding: 10 }}>{address}</Text>
             </View>
           </View>
 
@@ -54,7 +81,7 @@ const CheckOut = (props) => {
           <View style={[styles.box, { padding: 10, borderRadius: 8, height: 125, justifyContent: 'space-between', marginTop: 30, marginBottom: 30 }]}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 18 }}>Order:</Text>
-              <Text style={{ fontSize: 18, fontWeight: '300' }}>$95.00</Text>
+              <Text style={{ fontSize: 18, fontWeight: '300' }}>${total}</Text>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 18 }}>Delivery:</Text>
@@ -62,7 +89,7 @@ const CheckOut = (props) => {
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 18 }}>Total:</Text>
-              <Text style={{ fontSize: 18, fontWeight: '300' }}>$100.00</Text>
+              <Text style={{ fontSize: 18, fontWeight: '300' }}>${total - 5.00}</Text>
             </View>
           </View>
         </ScrollView>
@@ -70,9 +97,22 @@ const CheckOut = (props) => {
 
       {/* Submit */}
       <View style={{ backgroundColor: 'black', margin: 10, borderRadius: 10 }}>
-        <TouchableOpacity onPress={() => navigation.navigate("Success")} style={{ backgroundColor: '#000', height: 60, borderRadius: 8, justifyContent: 'center' }}>
+        <TouchableOpacity
+          onPress={() => {
+            if (tempAddress.length === 0) {
+              Alert.alert('No address', 'Please add an address', [
+                {
+                  text: 'OK',
+                  onPress: () => navigation.navigate('ShippingAddress')
+                }
+              ]);
+            } else {
+              navigation.navigate('Success');
+            }
+          }}
+          style={{ backgroundColor: '#000', height: 60, borderRadius: 8, justifyContent: 'center' }}
+        >
           <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>SUBMIT ORDER</Text>
-          {/* Bấm đây nhảy qua success */}
         </TouchableOpacity>
       </View>
     </View>

@@ -8,7 +8,7 @@ const Profile = (props) => {
   const handleSettingPress = () => {
     navigation.navigate('Setting');
   };
-
+  console.log('user: ', user)
   return (
     <View style={styles.container}>
       <View style={styles.profileTextBox}>
