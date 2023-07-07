@@ -90,6 +90,23 @@ export const deleteAddress = async(_id) => {
     const res = await CustomAxios().get(`/address/api/delete-address/${_id}`);
     return res;
 };
+//Lay tat ca picture 
+export const getPictures = async () => {
+    const response = await CustomAxios().get('/pictures/api/get-all-picture');
+    return response;
+};
+
+//Them hinh anh
+export const addPicture = async (url, idSubProduct, idReview) => {
+    const response = await CustomAxios().post('/pictures/api/add-picture', { url, idSubProduct, idReview });
+    return response;
+}
+
+//Upload hinh anh
+export const uploadPicture = async (picture) => {
+    const response = await CustomAxios('multipart/form-data').post('/pictures/api/upload-picture', picture);
+    return response;
+}
 //------------------------------------Order------------------------------------
 //Lay danh sach don hang theo idUser
 export const getOrdersByIdUser = async(idUser) => {

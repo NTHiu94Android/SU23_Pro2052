@@ -5,7 +5,7 @@ import {
   //Product, subProduct
   getProducts, getSubProductsByIdProduct, getSubProducts,
   //Picture
-  getPicturesByIdProduct,
+  getPicturesByIdProduct, getPictures, uploadPicture, addPicture,
   //Order
   addOrder, getOrdersByIdUser, updateOrder,
 
@@ -116,16 +116,6 @@ export const AppContextProvider = (props) => {
     }
   };
 
-  //Lay tat ca picture theo idProduct
-  const onGetPicturesByIdProduct = async (idSubProduct) => {
-    try {
-      const res = await getPicturesByIdProduct(idSubProduct);
-      return res;
-    } catch (error) {
-      console.log('onGetPicturesByIdProduct error: ', error);
-    }
-  };
-
   const onGetReviews = async () => {
     try {
       const res = await getReviews();
@@ -223,7 +213,7 @@ export const AppContextProvider = (props) => {
       console.log('onDeleteAddress error: ', error);
     }
   };
-
+  
    //Lay danh sach order detail by idOrder
    const onGetOrderDetailByIdOrder = async (idOrder) => {
     try {
@@ -241,6 +231,61 @@ export const AppContextProvider = (props) => {
       return res;
     } catch (error) {
       console.log("onGetOrderDetails", error);
+    }
+  };
+
+  //-------------------------------------------------Picture-------------------------------------------------
+  //Lay tat ca picture theo idProduct
+  const onGetPicturesByIdProduct = async (idSubProduct) => {
+    try {
+      const res = await getPicturesByIdProduct(idSubProduct);
+      return res;
+    } catch (error) {
+      console.log('onGetPicturesByIdProduct error: ', error);
+    }
+  };
+
+  //Lay tat ca picture
+  const onGetPictures = async () => {
+    try {
+      const res = await getPictures();
+      return res;
+    } catch (error) {
+      console.log('onGetPictures error: ', error);
+    }
+  };
+
+  //Lay hinh anh theo idReview
+  const onGetPicturesByIdReview = async (idReview) => {
+    try {
+      const res = await onGetPictures();
+      const listPictures = res.data.filter((item) => item.idReview === idReview);
+      return listPictures;
+    } catch (error) {
+      console.log('onGetPicturesByIdReview error: ', error);
+    }
+  };
+
+  //Them hinh anh moi
+  const onAddPicture = async (url, idSubProduct, idReview) => {
+    try {
+      const res = await addPicture(url, idSubProduct, idReview);
+      return res;
+    } catch (error) {
+      console.log('onAddPicture error: ', error);
+    }
+  }
+
+  //Upload hinh anh
+  const onUploadPicture = async (image) => {
+    try {
+      const response = await uploadPicture(image);
+      if (response.data != null || response.data != undefined) {
+        return response;
+      }
+      return null;
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -316,7 +361,7 @@ export const AppContextProvider = (props) => {
       //Reviews
       onGetReviews,
       //Picture
-      onGetPicturesByIdProduct,
+      onGetPicturesByIdProduct, onGetPictures, onUploadPicture, onAddPicture, onGetPicturesByIdReview,
       //OrderDetail
       onGetOrderDetailByIdOrder,
       onDeleteOrderDetail, onUpdateOrderDetail, onGetOrderDetails,
