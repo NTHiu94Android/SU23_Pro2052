@@ -41,39 +41,39 @@ const Canceled = (props) => {
   }, [countOrder]);
 
 
-  const Item = ({ item, onpress }) => (
-    <View style={{ height: 200, justifyContent: 'space-between', marginTop: 25 }}>
-      <View style={[styles.functionBox, {  height: 47 }]}>
-        <Text style={[styles.text1, { color: '#242424' }]}>{item._id}</Text>
-        <Text style={[styles.text2, { color: '#808080' }]}>{item.dateCreate}</Text>
+  const Item = ({ item, onpress, cancel }) => (
+    <View style={styles.containerItem}>
+      <View style={styles.rowItem}>
+        <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>Order {item._id}</Text>
+        <Text style={{ fontSize: 16, fontWeight: '400' }}>{item.dateCreate}</Text>
       </View>
-      <View style={{ backgroundColor: 'black', height: 1, width: '100%' }}></View>
-      <View style={[styles.functionBox, { flexDirection: 'column', alignItems: 'flex-start',}]}>
-        <View style={{ flexDirection: 'column', justifyContent: 'space-between', width: '100%', marginTop: 15,}}>
-          <View style={{ flexDirection: 'row' , justifyContent: 'space-between' }}>
-            <Text style={[styles.text1, { color: '#808080' }]}>Quantity: </Text>
-            <Text style={[styles.text3, { color: '#303030' }]}>{item.quantity}</Text>
-          </View>
-          <View style={{ flexDirection: 'row' , justifyContent: 'space-between' }}>
-            <Text style={[styles.text1, { color: '#808080' }]}>Total Amount: </Text>
-            <Text style={[styles.text3, { color: '#242424' }]}>{item.totalPrice}</Text>
-          </View>
-          <View style={{ flexDirection: 'row' , justifyContent: 'space-between'}}>
-            <Text style={[styles.text1, { color: '#808080' }]}>Date Create: </Text>
-            <Text style={[styles.text3, { color: '#242424' }]}>{item.dateCreate}</Text>
-          </View>
-          <View style={{ flexDirection: 'row' , justifyContent: 'space-between'}}>
-            <Text style={[styles.text1, { color: '#808080' }]}>Payment method: </Text>
-            <Text style={[styles.text3, { color: '#242424' }]}>{item.paymentMethod}</Text>
-          </View>
+      <View style={{ borderBottomWidth: 1, borderBottomColor: 'black', marginVertical: 10 }}></View>
+      <View style={{ flexDirection: 'column' }}>
+        <View style={styles.rowItem}>
+          <Text style={{ fontSize: 16, fontWeight: '400' }}>Quantity: </Text>
+          <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.quantity}</Text>
         </View>
-
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginTop: 20 }}>
-          <TouchableOpacity onPress={onpress} style={[styles.detailButton, { marginBottom: 20 }]}>
-            <Text style={[styles.text1, { color: '#fff' }]}>Detail</Text>
-          </TouchableOpacity>
-          <Text style={[styles.text1, { color: 'red' }]}>{item.status}</Text>
+        <View style={styles.rowItem}>
+          <Text style={{ fontSize: 16, fontWeight: '400' }}>Total Amount: </Text>
+          <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.totalPrice}</Text>
         </View>
+        <View style={styles.rowItem}>
+          <Text style={{ fontSize: 16, fontWeight: '400' }}>Date create: </Text>
+          <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.dateCreate}</Text>
+        </View>
+        <View style={styles.rowItem}>
+          <Text style={{ fontSize: 16, fontWeight: '400' }}>Payment method: </Text>
+          <Text style={{ fontSize: 16, fontWeight: '600', color: 'black' }}>{item.paymentMethod}</Text>
+        </View>
+        <View style={styles.rowItem}>
+          <Text style={{ fontSize: 16, fontWeight: '400' }}>Status: </Text>
+          <Text style={{ fontSize: 16, fontWeight: '600', color: 'red' }}>{item.status}</Text>
+        </View>
+      </View>
+      <View style={[styles.rowItem, { marginTop: 16 }]}>
+        <TouchableOpacity onPress={onpress} style={styles.buttonDetail}>
+          <Text style={styles.textDetail}>Detail</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -84,18 +84,18 @@ const Canceled = (props) => {
 
   return (
     <ScrollView>
-    <View style={styles.container}>
-      {/* <FlatList
+      <View style={styles.container}>
+        {/* <FlatList
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       /> */}
 
-      {
-        listCanceled.length > 0 &&
-        listCanceled.map((item) => <Item key={item._id} item={item} onpress={() => gotoOrderDetail(item)} />)
-      }
-    </View>
+        {
+          listCanceled.length > 0 &&
+          listCanceled.map((item) => <Item key={item._id} item={item} onpress={() => gotoOrderDetail(item)} />)
+        }
+      </View>
     </ScrollView>
   )
 }
@@ -145,4 +145,40 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 25
   },
+  containerItem: {
+    flexDirection: 'column',
+    padding: 12,
+    backgroundColor: 'white',
+    shadowColor: 'grey',
+    borderRadius: 4,
+    elevation: 5,
+    shadowOffset: {
+      width: 1,
+      height: 3
+    },
+    shadowRadius: 5,
+    shadowOpacity: 0.3,
+    marginBottom: 6
+  },
+  rowItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  buttonDetail: {
+    backgroundColor: 'black',
+    width: 100,
+    height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  textDetail: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  }
 })

@@ -138,11 +138,11 @@ const CheckOut = (props) => {
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 18 }}>Delivery:</Text>
-              <Text style={{ fontSize: 18, fontWeight: '300' }}>$5.00</Text>
+              <Text style={{ fontSize: 18, fontWeight: '300' }}>0</Text>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 18 }}>Total:</Text>
-              <Text style={{ fontSize: 18, fontWeight: '300' }}>${total - 5.00}</Text>
+              <Text style={{ fontSize: 18, fontWeight: '300' }}>${total}</Text>
             </View>
           </View>
         </ScrollView>

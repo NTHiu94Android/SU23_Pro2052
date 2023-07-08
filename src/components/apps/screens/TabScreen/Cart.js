@@ -63,6 +63,7 @@ const Cart = (props) => {
         setIsLoading(false);
 
       } catch (error) {
+        setIsLoading(false);
         console.log("Get list cart error: ", error);
       }
     };

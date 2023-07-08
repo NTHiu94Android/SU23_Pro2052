@@ -43,9 +43,6 @@ const Item = ({ item, onpress, cancel }) => (
       <TouchableOpacity onPress={onpress} style={styles.buttonDetail}>
         <Text style={styles.textDetail}>Detail</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={cancel} style={[styles.buttonDetail, { backgroundColor: 'red' }]}>
-        <Text style={styles.textDetail}>Cancel</Text>
-      </TouchableOpacity>
     </View>
   </View>
 );
