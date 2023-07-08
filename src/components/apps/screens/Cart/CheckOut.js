@@ -14,22 +14,10 @@ const CheckOut = (props) => {
   back(navigation);
   const [address, setAddress] = useState();
   const [tempAddress, setTempAddress] = useState([]);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("paypal");
+  const [tempPayment, setTempPayment] = useState("paypal");
 
-  const gotoSuccess = async () => {
-    const date = new Date();
-    const day = date.getDate();
-    const month = date.getMonth();
-    const year = date.getFullYear();
 
-    const idUser = user._id;
-    const totalPrice = total;
-    const orderDate = `${day}/${month}/${year}`;
-    const status = "Processing";
-    const paymentMethod = "paypal";
-    const order = await onAddOrder(orderDate, orderDate, totalPrice, status, paymentMethod, address, idUser);
-    console.log("Add order: ", order);
-    navigation.navigate("Success");
-  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -52,6 +40,22 @@ const CheckOut = (props) => {
       getListAddress();
     }, [])
   );
+
+  const gotoSuccess = async (paymentMethod) => {
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+
+    const idUser = user._id;
+    const totalPrice = total;
+    const orderDate = `${day}/${month}/${year}`;
+    const status = "Processing";
+    const order = await onAddOrder(orderDate, orderDate, totalPrice, status, paymentMethod, address, idUser);
+    console.log("Add order: ", order);
+    navigation.navigate("Success");
+  };
+
   return (
     <View style={{ backgroundColor: 'white', flex: 1 }}>
       <View style={{ marginTop: 10, padding: 5, flex: 1 }}>
@@ -62,11 +66,11 @@ const CheckOut = (props) => {
           </TouchableOpacity>
           <Text style={{ fontSize: 20, fontWeight: 'bold', flex: 1, textAlign: 'center', alignItems: 'center', color: "black", marginTop: 6, marginEnd: 20 }}>Check out</Text>
         </View>
-        <ScrollView  style={{ marginHorizontal: 6 }}>
+        <ScrollView style={{ marginHorizontal: 6 }}>
           {/* Address */}
           <View style={{ justifyContent: 'space-between', marginTop: 30 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
-              <Text  style={{ fontSize: 20, fontWeight: 'bold', flex: 1, color: "black", marginTop: 6 }}>Shipping Address</Text>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', flex: 1, color: "black", marginTop: 6 }}>Shipping Address</Text>
               <Image source={require('../../../../assets/images/edit2.png')} style={{ width: 28, height: 28 }} />
             </View>
             <View style={[styles.box, { backgroundColor: '#fff', borderRadius: 8, paddingVertical: 10 }]}>
@@ -82,12 +86,24 @@ const CheckOut = (props) => {
               <Image source={require('../../../../assets/images/edit2.png')} style={{ width: 28 }} />
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
-              <TouchableOpacity style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', padding: 32 }]}>
+              <TouchableOpacity
+                style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', padding: 32, backgroundColor: selectedPaymentMethod === 'paypal' ? 'lightblue' : 'white' }]}
+                onPress={() => {
+                  setSelectedPaymentMethod('paypal');
+                  setTempPayment('paypal');
+                }}
+              >
                 <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png' }}
                   style={{ height: 20, width: 90, margin: 10 }} />
                 <Text style={{ margin: 10, fontSize: 14, fontWeight: 'bold' }}>Fast (2-3 days)</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', padding: 32 }]}>
+              <TouchableOpacity
+                style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', padding: 32, backgroundColor: selectedPaymentMethod === 'fastShipping' ? 'lightblue' : 'white' }]}
+                onPress={() => {
+                  setSelectedPaymentMethod('fastShipping');
+                  setTempPayment('fastShipping');
+                }}
+              >
                 <Image source={{ uri: 'https://theme.hstatic.net/200000472237/1000829412/14/logo.png?v=584' }}
                   style={{ height: 20, width: 90, margin: 10 }} />
                 <Text style={{ margin: 10, fontSize: 14, fontWeight: 'bold' }}>Fast (2-3 days)</Text>
@@ -96,23 +112,23 @@ const CheckOut = (props) => {
           </View>
 
 
-          <View style={{display: 'flex', flexDirection: 'row'}}>
-          <TextInput
-          
-            style={{flex: 5, borderRadius: 10, borderWidth: 2, borderColor: "black", paddingStart: 10}}
-            keyboardType='password'
-            placeholder="Enter code promotion"
-            placeholderTextColor="gray"
+
+          <View style={{ display: 'flex', flexDirection: 'row', marginTop: 30, }}>
+            <TextInput
+
+              style={{ flex: 5, borderRadius: 10, borderWidth: 2, borderColor: "black", paddingStart: 10 }}
+              placeholder="Enter code promotion"
+              placeholderTextColor="gray"
             ></TextInput>
-            <TouchableOpacity style={{flex: 1, alignContent: 'center', alignItems: 'center', alignSelf:'center', padding: 10, backgroundColor:'black', marginHorizontal: 5, borderRadius: 10, paddingVertical: 15}}>
-              <Text style={{fontWeight: 'bold', color: 'white'}}>Check</Text>
+            <TouchableOpacity style={{ flex: 1, alignContent: 'center', alignItems: 'center', alignSelf: 'center', padding: 10, backgroundColor: 'black', marginHorizontal: 5, borderRadius: 10, paddingVertical: 15 }}>
+              <Text style={{ fontWeight: 'bold', color: 'white' }}>Check</Text>
             </TouchableOpacity>
           </View>
           {/* Total price */}
 
-          <View style={[styles.box, { padding: 10, borderRadius: 8, height: 125, justifyContent: 'space-between', marginTop: 30, marginBottom: 30 }]}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: "black", marginTop: 6 }}>Infomation and Order</Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={[styles.box, { padding: 10, borderRadius: 8, height: 160, justifyContent: 'space-between', marginTop: 10, marginBottom: 30 }]}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: "black", marginTop: 6 }}>Infomation and Order</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 18 }}>Number of products:</Text>
               <Text style={{ fontSize: 18, fontWeight: '300' }}>{quantity}</Text>
             </View>
@@ -133,7 +149,7 @@ const CheckOut = (props) => {
       </View>
 
       {/* Submit */}
-      <View style={{ backgroundColor: 'black', margin: 10, borderRadius: 20 }}>
+      <View style={{ backgroundColor: 'black', margin: 10, borderRadius: 30 }}>
         <TouchableOpacity
           onPress={() => {
             if (tempAddress.length === 0) {
@@ -144,10 +160,10 @@ const CheckOut = (props) => {
                 }
               ]);
             } else {
-              gotoSuccess();
+              gotoSuccess(tempPayment);
             }
           }}
-          style={{ backgroundColor: '#000', height: 60, borderRadius: 8, justifyContent: 'center' }}
+          style={{ backgroundColor: '#000', height: 60, borderRadius: 30, justifyContent: 'center' }}
         >
           <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>SUBMIT ORDER</Text>
         </TouchableOpacity>
