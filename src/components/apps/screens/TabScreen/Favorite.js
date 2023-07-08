@@ -10,7 +10,7 @@ const Favorite = (props) => {
   ]);
   const { navigation } = props;
   const { onGetOrderDetailsByIdOrder, listFavorite, setListFavorite, onGetSubProductById, onGetProductById, countFavorite, onDeleteOrderDetail, tempIdProduct, setTempIdProduct,
-    tempIdSubProduct, setTempIdSubProduct, onAddToCart } = useContext(AppContext);
+    tempIdSubProduct, setTempIdSubProduct, onAddToCart, onReloadFavorite} = useContext(AppContext);
   const { user } = useContext(UserContext);
 
   //Lấy danh sách yêu thích
@@ -99,18 +99,20 @@ const Favorite = (props) => {
     }
     loadData();
   }, [countFavorite]);
+
   const deleteItem = async (id) => {
     console.log("favoriteId: ", id);
     await onDeleteOrderDetail(id);
     const updatedList = listFavorite.filter(item => item.id !== id);
     setListFavorite(updatedList);
+    onReloadFavorite();
   };
 
   //Thêm sản phẩm vào giỏ hàng
   const addToCart = async (item) => {
     try {
       const _quantity = 1;
-      console.log('StockQuantity: ', item.stockQuantity);
+      deleteItem(item.id);
       const _price = item.price - (item.price * item.sale) / 100
       const resAddToCart = await onAddToCart(_quantity, _price, user.idCart, item.idSubPro);
       if (resAddToCart) console.log('Đã thêm một ' + item.name + ' vào giỏ hàng');
