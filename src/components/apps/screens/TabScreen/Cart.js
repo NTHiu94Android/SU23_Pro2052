@@ -36,7 +36,6 @@ const Cart = (props) => {
           //Lấy subproduct theo id
           const subProduct = await onGetSubProductById(response[i].idSubProduct);
 
-          // console.log('subProduct: ', subProduct);
           //Lấy product theo idProduct
           const product = await onGetProductById(subProduct.idProduct);
 
@@ -55,13 +54,14 @@ const Cart = (props) => {
           listItem.push(item);
         }
         setListCart(listItem);
+       
         setTotalPrice(0);
+        
         setTotal(0);
+        
         setQuantity(0);
         setDisabled(true);
-        console.log("listItem", listItem);
         setIsLoading(false);
-
       } catch (error) {
         console.log("Get list cart error: ", error);
       }
