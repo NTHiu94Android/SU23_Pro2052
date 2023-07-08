@@ -53,7 +53,7 @@ const ProductDetail = ({ route, navigation }) => {
 
   const handleConfirm = value => {
     setQuantity(parseInt(value));
-    if (value < caonhat) {
+    if (value <= caonhat) {
       console.log("so luong", value);
       setDialogVisible(false);
     } else {
