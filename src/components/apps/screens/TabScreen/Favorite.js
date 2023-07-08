@@ -69,6 +69,7 @@ const Favorite = (props) => {
               imageUrl: prod.image,
               idPro: sub.idProduct,
               idSubPro: fav.idSubProduct,
+              stockQuantity: sub.quantity,
             }
             datas.push(data);
           }
@@ -109,6 +110,7 @@ const Favorite = (props) => {
   const addToCart = async (item) => {
     try {
       const _quantity = 1;
+      console.log('StockQuantity: ', item.stockQuantity);
       const _price = item.price - (item.price * item.sale) / 100
       const resAddToCart = await onAddToCart(_quantity, _price, user.idCart, item.idSubPro);
       if (resAddToCart) console.log('Đã thêm một ' + item.name + ' vào giỏ hàng');

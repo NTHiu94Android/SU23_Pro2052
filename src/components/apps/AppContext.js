@@ -44,6 +44,7 @@ export const AppContextProvider = (props) => {
   const [countAddress, setCountAddress] = useState(0);
   const [tempIdProduct, setTempIdProduct] = useState();
   const [tempIdSubProduct, setTempIdSubProduct] = useState();
+  const [quantity, setQuantity] = useState(0);
 
 
   const onGetCategories = async () => {
@@ -140,7 +141,8 @@ export const AppContextProvider = (props) => {
     try {
       let _listCart = [];
       const resOrderDetail = await getOrderDetailsByIdOrder(idOrder);
-      if(resOrderDetail){
+      const resSubProduct = await onGetSubProductById(idSubProduct);
+      if (resOrderDetail) {
         _listCart = resOrderDetail.data;
         console.log('_listCart: ', _listCart);
       }
@@ -149,7 +151,10 @@ export const AppContextProvider = (props) => {
         if (item.idSubProduct === idSubProduct) {
           console.log("Sản phẩm đã có trong giỏ hàng");
           const isCmt = 'false'
-          const newQuantity = item.quantity + quantity;
+          const newQuantity = item.quantity + quantity < 300 ? item.quantity + quantity : 300;
+          if (newQuantity === 300) {
+            console.log("Số lượng sản phẩm trong giỏ hàng đã đạt tối đa");
+          }
           const respone = await update_order_details(item._id, newQuantity, price, isCmt, idOrder, idSubProduct);
           if (respone) {
             console.log("Đã cập nhật sản phẩm trong giỏ hàng của bạn, vui lòng kiểm tra lại");
@@ -336,7 +341,7 @@ export const AppContextProvider = (props) => {
       //Cart
       onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail, onReloadCart,
       //Reviews
-      onGetReviews,
+      onGetReviews, setQuantity,
       //Picture
       onGetPicturesByIdProduct,
       //OrderDetail
