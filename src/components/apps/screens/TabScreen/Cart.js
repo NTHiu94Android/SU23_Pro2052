@@ -14,7 +14,7 @@ const Cart = (props) => {
     onGetOrderDetailsByIdOrder, listCart, setListCart, onGetProductById,
     countCart, onUpdateOrderDetail, onDeleteOrderDetail, onGetSubProductById,
     total, setTotal, onReloadCart,tempIdProduct, setTempIdProduct,
-    tempIdSubProduct, setTempIdSubProduct
+    tempIdSubProduct, setTempIdSubProduct, setQuantity
   } = useContext(AppContext);
   back(navigation);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,6 +57,7 @@ const Cart = (props) => {
         setListCart(listItem);
         setTotalPrice(0);
         setTotal(0);
+        setQuantity(0);
         setDisabled(true);
         console.log("listItem", listItem);
         setIsLoading(false);
@@ -77,13 +78,16 @@ const Cart = (props) => {
   const calculateTotalPrice = async (items) => {
     console.log("items", items);
     let totalPrice = 0;
+    let quantity = 0;
     items.forEach((item) => {
       if (item.isSelected) {
         totalPrice += item.price * item.quantity;
+        quantity += item.quantity;
       }
     });
     setTotalPrice(totalPrice);
     setTotal(totalPrice);
+    setQuantity(quantity);
   };
 
   const handleQuantityChange = (_id, _quantity, _isSelected) => {

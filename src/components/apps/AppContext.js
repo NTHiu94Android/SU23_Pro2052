@@ -44,7 +44,7 @@ export const AppContextProvider = (props) => {
   const [countAddress, setCountAddress] = useState(0);
   const [tempIdProduct, setTempIdProduct] = useState();
   const [tempIdSubProduct, setTempIdSubProduct] = useState();
-
+  const [quantity, setQuantity] = useState()
 
   const onGetCategories = async () => {
     try {
@@ -344,7 +344,8 @@ export const AppContextProvider = (props) => {
       ship, setShip,
       listCmt, setListCmt,
       tempIdProduct, setTempIdProduct,
-      tempIdSubProduct, setTempIdSubProduct
+      tempIdSubProduct, setTempIdSubProduct,
+      quantity, setQuantity
     }}>
       {children}
     </AppContext.Provider>
