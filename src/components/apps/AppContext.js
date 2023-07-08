@@ -5,7 +5,7 @@ import {
   //Product, subProduct
   getProducts, getSubProductsByIdProduct, getSubProducts,
   //Picture
-  getPicturesByIdProduct, getPictures, uploadPicture, addPicture,
+  getPicturesByIdProduct,
   //Order
   addOrder, getOrdersByIdUser, updateOrder,
 
@@ -44,7 +44,7 @@ export const AppContextProvider = (props) => {
   const [countAddress, setCountAddress] = useState(0);
   const [tempIdProduct, setTempIdProduct] = useState();
   const [tempIdSubProduct, setTempIdSubProduct] = useState();
-  const [quantity, setQuantity] = useState()
+
 
   const onGetCategories = async () => {
     try {
@@ -116,6 +116,16 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //Lay tat ca picture theo idProduct
+  const onGetPicturesByIdProduct = async (idSubProduct) => {
+    try {
+      const res = await getPicturesByIdProduct(idSubProduct);
+      return res;
+    } catch (error) {
+      console.log('onGetPicturesByIdProduct error: ', error);
+    }
+  };
+
   const onGetReviews = async () => {
     try {
       const res = await getReviews();
@@ -128,6 +138,28 @@ export const AppContextProvider = (props) => {
   //Them san pham vao gio hang
   const onAddToCart = async (quantity, price, idOrder, idSubProduct) => {
     try {
+      let _listCart = [];
+      const resOrderDetail = await getOrderDetailsByIdOrder(idOrder);
+      if(resOrderDetail){
+        _listCart = resOrderDetail.data;
+        console.log('_listCart: ', _listCart);
+      }
+
+      for (const item of _listCart) {
+        if (item.idSubProduct === idSubProduct) {
+          console.log("Sản phẩm đã có trong giỏ hàng");
+          const isCmt = 'false'
+          const newQuantity = item.quantity + quantity;
+          const respone = await update_order_details(item._id, newQuantity, price, isCmt, idOrder, idSubProduct);
+          if (respone) {
+            console.log("Đã cập nhật sản phẩm trong giỏ hàng của bạn, vui lòng kiểm tra lại");
+          } else {
+            console.log("Cập nhật sản phẩm trong giỏ hàng thất bại");
+          }
+          onReloadCart();
+          return respone;
+        }
+      }
       const respone = await addToCart(quantity, price, idOrder, idSubProduct);
       onReloadCart();
       return respone;
@@ -213,9 +245,9 @@ export const AppContextProvider = (props) => {
       console.log('onDeleteAddress error: ', error);
     }
   };
-  
-   //Lay danh sach order detail by idOrder
-   const onGetOrderDetailByIdOrder = async (idOrder) => {
+
+  //Lay danh sach order detail by idOrder
+  const onGetOrderDetailByIdOrder = async (idOrder) => {
     try {
       const res = await getOrderDetailsByIdOrder(idOrder);
       return res;
@@ -231,61 +263,6 @@ export const AppContextProvider = (props) => {
       return res;
     } catch (error) {
       console.log("onGetOrderDetails", error);
-    }
-  };
-
-  //-------------------------------------------------Picture-------------------------------------------------
-  //Lay tat ca picture theo idProduct
-  const onGetPicturesByIdProduct = async (idSubProduct) => {
-    try {
-      const res = await getPicturesByIdProduct(idSubProduct);
-      return res;
-    } catch (error) {
-      console.log('onGetPicturesByIdProduct error: ', error);
-    }
-  };
-
-  //Lay tat ca picture
-  const onGetPictures = async () => {
-    try {
-      const res = await getPictures();
-      return res;
-    } catch (error) {
-      console.log('onGetPictures error: ', error);
-    }
-  };
-
-  //Lay hinh anh theo idReview
-  const onGetPicturesByIdReview = async (idReview) => {
-    try {
-      const res = await onGetPictures();
-      const listPictures = res.data.filter((item) => item.idReview === idReview);
-      return listPictures;
-    } catch (error) {
-      console.log('onGetPicturesByIdReview error: ', error);
-    }
-  };
-
-  //Them hinh anh moi
-  const onAddPicture = async (url, idSubProduct, idReview) => {
-    try {
-      const res = await addPicture(url, idSubProduct, idReview);
-      return res;
-    } catch (error) {
-      console.log('onAddPicture error: ', error);
-    }
-  }
-
-  //Upload hinh anh
-  const onUploadPicture = async (image) => {
-    try {
-      const response = await uploadPicture(image);
-      if (response.data != null || response.data != undefined) {
-        return response;
-      }
-      return null;
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -330,16 +307,6 @@ export const AppContextProvider = (props) => {
     }
   };
 
-  //Them review moi
-  const onAddReview = async (time, content, rating, idUser, idProduct) => {
-    try {
-      const res = await addReview(time, content, rating, idUser, idProduct);
-      return res;
-    } catch (error) {
-      console.log('onAddReview error: ', error);
-    }
-  }
-
   //Reload giỏ hàng
   const onReloadCart = () => {
     if (countCart == 0) {
@@ -369,9 +336,9 @@ export const AppContextProvider = (props) => {
       //Cart
       onGetOrderDetailsByIdOrder, onUpdateOrderDetail, onDeleteOrderDetail, onReloadCart,
       //Reviews
-      onGetReviews, onAddReview,
+      onGetReviews,
       //Picture
-      onGetPicturesByIdProduct, onGetPictures, onUploadPicture, onAddPicture, onGetPicturesByIdReview,
+      onGetPicturesByIdProduct,
       //OrderDetail
       onGetOrderDetailByIdOrder,
       onDeleteOrderDetail, onUpdateOrderDetail, onGetOrderDetails,
@@ -399,8 +366,7 @@ export const AppContextProvider = (props) => {
       ship, setShip,
       listCmt, setListCmt,
       tempIdProduct, setTempIdProduct,
-      tempIdSubProduct, setTempIdSubProduct,
-      quantity, setQuantity
+      tempIdSubProduct, setTempIdSubProduct
     }}>
       {children}
     </AppContext.Provider>
