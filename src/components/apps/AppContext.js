@@ -19,9 +19,11 @@ import {
   //Address
   getAddressByIdUser, addAddress, updateAddress, deleteAddress,
 
+  //Promotion
+  getPromotions,
+
 } from './AppService';
 import { UserContext } from '../users/UserContext';
-//import { UserContext } from '../users/UserContext';
 
 export const AppContext = createContext();
 
@@ -224,8 +226,8 @@ export const AppContextProvider = (props) => {
     }
   };
 
-   //Lay danh sach order detail by idOrder
-   const onGetOrderDetailByIdOrder = async (idOrder) => {
+  //Lay danh sach order detail by idOrder
+  const onGetOrderDetailByIdOrder = async (idOrder) => {
     try {
       const res = await getOrderDetailsByIdOrder(idOrder);
       return res;
@@ -305,6 +307,17 @@ export const AppContextProvider = (props) => {
     }
   };
 
+  //-------------------------------------------------Promotion-------------------------------------------------
+  //Lay danh sach promotion
+  const onGetPromotions = async (idUser) => {
+    try {
+      const res = await getPromotions(idUser);
+      return res;
+    } catch (error) {
+      console.log('onGetPromotions error: ', error);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       //Category & Brand
@@ -326,6 +339,8 @@ export const AppContextProvider = (props) => {
       onAddAddress, onGetAddressByIdUser, onUpdateAddress, onDeleteAddress,
       //Review
       onGetReviewsByIdProduct,
+      //Promotion
+      onGetPromotions,
 
       //State
       countAddress, setCountAddress,
