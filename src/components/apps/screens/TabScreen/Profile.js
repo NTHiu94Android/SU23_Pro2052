@@ -31,7 +31,6 @@ const Profile = (props) => {
 
       {/* Chức năng con */}
       <View style={{ flex: 1, marginTop: 30 }}>
-
         {/* Xem danh sách đơn hàng */}
         <TouchableOpacity onPress={() => navigation.navigate('Order')} style={styles.functionBox}>
           <View>
@@ -79,6 +78,20 @@ const Profile = (props) => {
           <View>
             <Text style={styles.functionName}>My reviews</Text>
             <Text style={styles.functionDescription}>Reviews for 5 items</Text>
+          </View>
+          <View style={styles.functionTouchIcon}>
+            <Image
+              style={{ width: '100%', height: '100%', }}
+              source={require('../../../../assets/images/next2.png')}
+            />
+          </View>
+        </TouchableOpacity>
+
+        {/* Xem danh sách voucher */}
+        <TouchableOpacity onPress={() => navigation.navigate('ListVoucher')} style={styles.functionBox}>
+          <View>
+            <Text style={styles.functionName}>Promotions</Text>
+            <Text style={styles.functionDescription}>2 Voucher</Text>
           </View>
           <View style={styles.functionTouchIcon}>
             <Image

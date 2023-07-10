@@ -169,6 +169,14 @@ export const updateOrderDetail = async(_id, quantity, price, isCmt, idOrder, idS
     return res;
 };
 
+//---------------------------------Promotion---------------------------------
+//Lay danh sach khuyen mai
+export const getPromotions = async (idUser) => {
+    const response = await CustomAxios().get(`/promotions/api/get-all-promotion-by-id-user/${idUser}`);
+    return response;
+};
+
+
 
 
 

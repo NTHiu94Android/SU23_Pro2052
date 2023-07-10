@@ -26,6 +26,8 @@ import Order from './screens/Order/Order';
 import OrderDetail from './screens/Order/OrderDetail';
 import ShippingUpdate from './screens/Shipping/ShippingUpdate';
 import ShippingAddress from './screens/Shipping/ShippingAddress';
+import ListVoucher from './screens/Promotions/ListVoucher';
+import ListPromo from './screens/Promotions/ListPromo';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator()
@@ -114,7 +116,8 @@ const AppNavigation = () => {
                 <Stack.Screen options={{ headerShown: false }} name='UpdateProfile' component={UpdateProfile} />
                 <Stack.Screen options={{ headerShown: false }} name='AddReview' component={AddReview} />
                 <Stack.Screen options={{ headerShown: false }} name='ListReview' component={ListReview} />
-
+                <Stack.Screen options={{ headerShown: false }} name='ListVoucher' component={ListVoucher} />
+                <Stack.Screen options={{ headerShown: false }} name='ListPromo' component={ListPromo} />
             </Stack.Navigator>
         </NavigationContainer>
     )
