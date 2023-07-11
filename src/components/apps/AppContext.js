@@ -143,12 +143,9 @@ export const AppContextProvider = (props) => {
     try {
       let _listCart = [];
       const resOrderDetail = await getOrderDetailsByIdOrder(idOrder);
-      const resSubProduct = await onGetSubProductById(idSubProduct);
       if (resOrderDetail) {
         _listCart = resOrderDetail.data;
-        console.log('_listCart: ', _listCart);
       }
-
       for (const item of _listCart) {
         if (item.idSubProduct === idSubProduct) {
           console.log("Sản phẩm đã có trong giỏ hàng");
@@ -206,7 +203,11 @@ export const AppContextProvider = (props) => {
   const onGetOrderDetailsByIdOrder = async (idOrder) => {
     try {
       const orderDetail = await get_order_details_by_idOrder(idOrder);
-      console.log("OnGetOrderDetailByIdOrder Response: ", orderDetail.data);
+      if (!orderDetail) {
+        console.log("Không thể tải dữ liệu giỏ hàng!");
+        return;
+      }
+      console.log("Lấy dữ liệu giỏ hàng thành công!");
       return orderDetail.data;
     } catch (error) {
       console.log("OnGetOrderDetailByIdOrder Error: ", error);

@@ -5,15 +5,17 @@ import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
 import ProgressDialog from 'react-native-progress-dialog';
 import CircleCheckBox from 'react-native-circle-checkbox';
+import QuantityDialog from '../../../dialogs/QuantityDialog';
 const Cart = (props) => {
   const { navigation } = props;
   const [totalPrice, setTotalPrice] = useState(0);
   const [disabled, setDisabled] = useState(true);
+  const [isDialogVisible, setDialogVisible] = useState(false);
   const { user } = useContext(UserContext);
   const {
     onGetOrderDetailsByIdOrder, listCart, setListCart, onGetProductById,
     countCart, onUpdateOrderDetail, onDeleteOrderDetail, onGetSubProductById,
-    total, setTotal, onReloadCart,tempIdProduct, setTempIdProduct,
+    total, setTotal, onReloadCart, tempIdProduct, setTempIdProduct,
     tempIdSubProduct, setTempIdSubProduct, setQuantity
   } = useContext(AppContext);
   back(navigation);
@@ -25,40 +27,41 @@ const Cart = (props) => {
         setIsLoading(true);
 
         let listItem = [];
-        const response = await onGetOrderDetailsByIdOrder(user.idCart);
-        if (!response) return;
-        // console.log("List cart: ", response);
+        const resOrderDetail = await onGetOrderDetailsByIdOrder(user.idCart);
+        if (!resOrderDetail) return;
 
-        for (let i = 0; i < response.length; i++) {
+        for (let i = 0; i < resOrderDetail.length; i++) {
 
           let item = {};
 
           //Lấy subproduct theo id
-          const subProduct = await onGetSubProductById(response[i].idSubProduct);
+          const subProduct = await onGetSubProductById(resOrderDetail[i].idSubProduct);
 
           //Lấy product theo idProduct
           const product = await onGetProductById(subProduct.idProduct);
 
           item.priceBeforeSale = subProduct.price;
-          item.price = response[i].price;
+          item.price = resOrderDetail[i].price;
           item.image = product.image;
           item.color = subProduct.color;
-          item.quantity = response[i].quantity;
+          item.quantity = resOrderDetail[i].quantity;
+          item.inStock = subProduct.quantity;
           item.name = product.name;
-          item.id = response[i]._id;
+          item.id = resOrderDetail[i]._id;
           item.idSubProduct = subProduct._id;
           item.idProduct = product._id;
-          item.isCmt = response[i].isCmt;
+          item.isCmt = resOrderDetail[i].isCmt;
           item.isSelected = false;
-          item.idOrder = response[i].idOrder;
+          item.idOrder = resOrderDetail[i].idOrder;
           listItem.push(item);
+          console.log("item: ", item);
         }
         setListCart(listItem);
-       
+
         setTotalPrice(0);
-        
+
         setTotal(0);
-        
+
         setQuantity(0);
         setDisabled(true);
         setIsLoading(false);
@@ -77,7 +80,6 @@ const Cart = (props) => {
   };
 
   const calculateTotalPrice = async (items) => {
-    console.log("items", items);
     let totalPrice = 0;
     let quantity = 0;
     items.forEach((item) => {
@@ -91,8 +93,12 @@ const Cart = (props) => {
     setQuantity(quantity);
   };
 
-  const handleQuantityChange = (_id, _quantity, _isSelected) => {
+  const handleQuantityChange = (_id, _quantity, _isSelected, _inStock) => {
     try {
+      if (_quantity > _inStock) {
+        ToastAndroid.show("Số lượng sản phẩm trong kho không đủ", ToastAndroid.SHORT);
+        return;
+      }
       let newItem = {};
       for (let i = 0; i < listCart.length; i++) {
         if (listCart[i].id === _id) {
@@ -156,7 +162,6 @@ const Cart = (props) => {
       const updateCartList = listCart.filter((item) => {
         return !item.isSelected;
       });
-      console.log("updateCartList", updateCartList);
       setListCart(updateCartList);
       handleSelectedList(updateCartList);
       calculateTotalPrice(updateCartList);
@@ -180,6 +185,25 @@ const Cart = (props) => {
       console.log("Error handleSelectedList: ", error);
     }
   };
+
+  const openDialog = () => {
+    setDialogVisible(true);
+  };
+
+  const closeDialog = () => {
+    setDialogVisible(false);
+  };
+
+  const handleConfirm = (value, item) => {
+    setQuantity(parseInt(value));
+    if (value <= item.inStock) {
+      handleQuantityChange(item.id, value, item.isSelected, item.inStock);
+      setDialogVisible(false);
+    } else {
+      ToastAndroid.show('Số lượng quá lớn', ToastAndroid.SHORT);
+    }
+  };
+
   return (
     <View style={{ flex: 1, justifyContent: 'center', paddingHorizontal: 20, backgroundColor: 'white' }}>
       <ProgressDialog
@@ -207,11 +231,15 @@ const Cart = (props) => {
             <Item
               key={item.id}
               deleteItem={() => deleteItem(item.id)}
-              plus={() => handleQuantityChange(item.id, item.quantity + 1, item.isSelected)}
-              minus={() => handleQuantityChange(item.id, item.quantity > 1 ? item.quantity - 1 : 1, item.isSelected)}
+              plus={() => handleQuantityChange(item.id, item.quantity + 1, item.isSelected, item.inStock)}
+              minus={() => handleQuantityChange(item.id, item.quantity > 1 ? item.quantity - 1 : 1, item.isSelected, item.inStock)}
               item={item}
               nav={() => goToProductDetail(item.idSubProduct, item.idProduct)}
               onCheckedItem={() => handleCheckBox()}
+              openDialog={() => openDialog()}
+              closeDialog={() => closeDialog()}
+              handleConfirm={(value) => handleConfirm(value, item)}
+              isDialogVisible={isDialogVisible}
             />
           )}
           keyExtractor={item => item.id}
@@ -223,7 +251,7 @@ const Cart = (props) => {
       <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: 20 }}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 20 }}>
           <Text style={{ fontSize: 20 }}>Total:</Text>
-          <Text style={{ fontSize: 20, color: "red" }}>${totalPrice}</Text>
+          <Text style={{ fontSize: 20, color: "red" }}>${(totalPrice).toFixed(2)}</Text>
         </View>
         <TouchableOpacity disabled={disabled} onPress={() => navigation.navigate("CheckOut")} style={[styles.checkOutButton, disabled && styles.checkOutButtonDisable]}>
           <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>Check out</Text>
@@ -237,8 +265,7 @@ export default Cart;
 
 
 
-const Item = ({ item, plus, minus, deleteItem, nav, onCheckedItem }) => {
-  const [checked, setChecked] = useState(item.isSelected);
+const Item = ({ item, plus, minus, deleteItem, nav, onCheckedItem, openDialog, closeDialog, isDialogVisible, handleConfirm }) => {
   const onChangeCheckStatus = async () => {
     // setChecked(!checked);
     item.isSelected = !item.isSelected;
@@ -262,7 +289,14 @@ const Item = ({ item, plus, minus, deleteItem, nav, onCheckedItem }) => {
                 <TouchableOpacity onPress={minus}>
                   <Text name="squared-minus" color="black" style={{ fontWeight: '900', fontSize: 26, marginLeft: 8 }}>-</Text>
                 </TouchableOpacity>
-                <Text style={{ fontSize: 18, paddingHorizontal: 8 }}>{item.quantity}</Text>
+                <TouchableOpacity onPress={openDialog}>
+                  <Text style={{ fontSize: 18, paddingHorizontal: 8 }}>{item.quantity}</Text>
+                </TouchableOpacity>
+                <QuantityDialog
+                  visible={isDialogVisible}
+                  onClose={closeDialog}
+                  onConfirm={handleConfirm}
+                />
                 <TouchableOpacity onPress={plus}>
                   <Text name="squared-plus" color="black" style={{ fontWeight: '500', fontSize: 18, marginRight: 8 }}>+</Text>
                 </TouchableOpacity>
@@ -271,7 +305,7 @@ const Item = ({ item, plus, minus, deleteItem, nav, onCheckedItem }) => {
             <View style={{ flexDirection: 'row' }}>
               <Text style={{ fontSize: 14, fontWeight: '600', }}>Price: </Text>
               <Text style={{ fontSize: 14, fontWeight: '600', textDecorationLine: 'line-through', }}>${item.priceBeforeSale * item.quantity}</Text>
-              <Text style={{ fontSize: 14, fontWeight: '800', color: 'red' }}> ${item.price * item.quantity}</Text>
+              <Text style={{ fontSize: 14, fontWeight: '800', color: 'red' }}> ${(item.price * item.quantity).toFixed(2)}</Text>
             </View>
           </View>
         </View>

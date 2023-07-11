@@ -6,7 +6,8 @@ import { UserContext } from '../../../users/UserContext';
 import Swiper from 'react-native-swiper';
 import ProgressDialog from 'react-native-progress-dialog';
 import back from '../../../back/back';
-import QuantityDialog from './QuantityDialog';
+import QuantityDialog from '../../../dialogs/QuantityDialog';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
 const ProductDetail = ({ route, navigation }) => {
@@ -65,11 +66,11 @@ const ProductDetail = ({ route, navigation }) => {
   const addToFavorite = async () => {
     try {
       const favQuantity = 1;
-      if(like == true){
+      if (like == true) {
         setLike(false);
         console.log("favoriteId: ", favoriteId);
         await onDeleteOrderDetail(favoriteId);
-      }else{
+      } else {
         const favorite = await onAddToCart(favQuantity, productDetail.price, user.idFavorite, productDetail.id);
         if (favorite) {
           setLike(true);
@@ -90,9 +91,11 @@ const ProductDetail = ({ route, navigation }) => {
         if (item.idSubProduct === _idSubProduct) {
           setLike(true);
           setFavoriteId(item._id);
-          break;
+          return;
         }
       }
+      setLike(false);
+
     } catch (error) {
       console.log("Check favorite error: ", error);
     }
@@ -201,7 +204,7 @@ const ProductDetail = ({ route, navigation }) => {
   }, [countOrderDetail, countFavorite]);
   //lay tat ca san pham
   useEffect(() => {
-    setIsLoading(false);
+    setIsLoading(true);
 
 
     const getSubProducts = async () => {
@@ -275,7 +278,7 @@ const ProductDetail = ({ route, navigation }) => {
           }
         }
 
-        setIsLoading(true);
+        setIsLoading(false);
       } catch (error) {
         console.log("Error fetching sub-products: ", error);
       }
@@ -306,6 +309,7 @@ const ProductDetail = ({ route, navigation }) => {
       if (item.id === product.detail[i].id) {
         setSelectedIndex(i);
         setProductDetail(product.detail[i]);
+        checkFavorite(item.id);
       }
     }
     // console.log(item);
@@ -323,6 +327,10 @@ const ProductDetail = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
+      <ProgressDialog
+        visible={isLoading}
+        loaderColor="black"
+        lable="Please wait..." />
       <View style={styles.header}>
         <View style={{ marginBottom: 20 }}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -383,7 +391,7 @@ const ProductDetail = ({ route, navigation }) => {
           <View style={{ width: "60%" }}>
             {/* Price product */}
             <Text style={styles.pricProduct}>
-              {productDetail?.price - (productDetail?.price * productDetail?.sale) / 100}$
+              {(productDetail?.price - (productDetail?.price * productDetail?.sale) / 100).toFixed(2)}$
             </Text>
             <View style={{ flexDirection: "row", alignItems: "center", marginTop: 5, }}>
               {/* Sale */}
@@ -437,8 +445,7 @@ const ProductDetail = ({ route, navigation }) => {
       </View>
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => addToFavorite()} style={styles.button1}>
-          <Image style={{ width: 24, height: 24, }}
-            source={like? require('../../../../assets/images/ic_fvr1.png') : require('../../../../assets/images/ic_fvr.png')} />
+          <AntDesign name={like ? "heart" : "hearto"} size={30} color={like ? "red" : ""} />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => addToCart()} style={styles.button2}>
           <Text style={{ color: '#fff', textAlign: 'center', fontSize: 20, fontWeight: 'bold' }}>
@@ -510,8 +517,10 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   button1: {
-    backgroundColor: '#F0F0F0', height: 50, width: 50,
-    borderRadius: 8, justifyContent: 'center', alignItems: 'center'
+    height: 50,
+    width: 50,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   button2: {
     backgroundColor: '#000', height: 50, width: 280,
