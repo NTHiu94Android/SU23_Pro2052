@@ -23,6 +23,7 @@ const CheckOut = (props) => {
     React.useCallback(() => {
       const getListAddress = async () => {
         try {
+          console.log(user);
           const res = await onGetAddressByIdUser(user._id);
           console.log("getAddress", res.data);
           const addressData = res.data;
@@ -71,11 +72,15 @@ const CheckOut = (props) => {
           <View style={{ justifyContent: 'space-between', marginTop: 30 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
               <Text style={{ fontSize: 20, fontWeight: 'bold', flex: 1, color: "black", marginTop: 6 }}>Shipping Address</Text>
+              <TouchableOpacity onPress={() => {navigation.navigate('ShippingAddress')}}>
               <Image source={require('../../../../assets/images/edit2.png')} style={{ width: 28, height: 28 }} />
+              </TouchableOpacity>
             </View>
-            <View style={[styles.box, { backgroundColor: '#fff', borderRadius: 8, paddingVertical: 10 }]}>
+            <View style={[styles.box, { backgroundColor: '#fff', borderRadius: 2, paddingHorizontal: 10 }]}>
               <Text style={{ fontSize: 18, fontWeight: 'bold', borderBottomWidth: 0.5, borderBottomColor: 'grey', padding: 10 }}>{user.name}</Text>
-              <Text style={{ fontSize: 14, lineHeight: 25, fontWeight: '500', padding: 10 }}>{address}</Text>
+              <Text style={{ fontSize: 14, lineHeight: 25, fontWeight: '500', padding: 10 }}>Phone: {user.numberPhone}</Text>
+
+              <Text style={{ fontSize: 14, lineHeight: 5, fontWeight: '500', padding: 10 }}>{address}</Text>
             </View>
           </View>
 
@@ -83,11 +88,10 @@ const CheckOut = (props) => {
           <View style={{ justifyContent: 'space-between', marginTop: 30 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 20, fontWeight: 'bold', flex: 1, color: "black", marginTop: 6 }}>Payment method</Text>
-              <Image source={require('../../../../assets/images/edit2.png')} style={{ width: 28 }} />
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 }}>
+            <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <TouchableOpacity
-                style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', padding: 32, backgroundColor: selectedPaymentMethod === 'paypal' ? 'lightblue' : 'white' }]}
+                style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', marginEnd: 10, padding: 5, borderWidth: selectedPaymentMethod === 'paypal' ? 1 : 0 }]}
                 onPress={() => {
                   setSelectedPaymentMethod('paypal');
                   setTempPayment('paypal');
@@ -95,10 +99,9 @@ const CheckOut = (props) => {
               >
                 <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png' }}
                   style={{ height: 20, width: 90, margin: 10 }} />
-                <Text style={{ margin: 10, fontSize: 14, fontWeight: 'bold' }}>Fast (2-3 days)</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', padding: 32, backgroundColor: selectedPaymentMethod === 'fastShipping' ? 'lightblue' : 'white' }]}
+                style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', padding: 5, borderWidth: selectedPaymentMethod === 'fastShipping' ? 1 : 0 }]}
                 onPress={() => {
                   setSelectedPaymentMethod('fastShipping');
                   setTempPayment('fastShipping');
@@ -106,7 +109,6 @@ const CheckOut = (props) => {
               >
                 <Image source={{ uri: 'https://theme.hstatic.net/200000472237/1000829412/14/logo.png?v=584' }}
                   style={{ height: 20, width: 90, margin: 10 }} />
-                <Text style={{ margin: 10, fontSize: 14, fontWeight: 'bold' }}>Fast (2-3 days)</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -116,7 +118,7 @@ const CheckOut = (props) => {
           <View style={{ display: 'flex', flexDirection: 'row', marginTop: 30, }}>
             <TextInput
 
-              style={{ flex: 5, borderRadius: 10, borderWidth: 2, borderColor: "black", paddingStart: 10 }}
+              style={{ flex: 5, borderRadius: 10, borderWidth: 1, borderColor: "grey", paddingStart: 10 }}
               placeholder="Enter code promotion"
               placeholderTextColor="gray"
             ></TextInput>
@@ -126,23 +128,23 @@ const CheckOut = (props) => {
           </View>
           {/* Total price */}
 
-          <View style={[styles.box, { padding: 10, borderRadius: 8, height: 160, justifyContent: 'space-between', marginTop: 10, marginBottom: 30 }]}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', color: "black", marginTop: 6 }}>Infomation and Order</Text>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View style={[styles.box, { padding: 10, borderRadius: 8, height: 200, justifyContent: 'space-between', marginTop: 10, marginBottom: 30 }]}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: "black", marginTop: 6, marginBottom: 10 }}>Infomation and Order</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
               <Text style={{ fontSize: 18 }}>Number of products:</Text>
-              <Text style={{ fontSize: 18, fontWeight: '300' }}>{quantity}</Text>
+              <Text style={{ fontSize: 18, fontWeight: '300',  marginTop: 6 }}>{quantity} (Products)</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: 18 }}>Order:</Text>
-              <Text style={{ fontSize: 18, fontWeight: '300' }}>${total}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
+              <Text style={{ fontSize: 18 }}>Total (provisional):</Text>
+              <Text style={{ fontSize: 18, fontWeight: '300',  marginTop: 6 }}>${total}</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: 18 }}>Delivery:</Text>
-              <Text style={{ fontSize: 18, fontWeight: '300' }}>$5.00</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
+              <Text style={{ fontSize: 18 }}>Promotion:</Text>
+              <Text style={{ fontSize: 18, fontWeight: '300',  marginTop: 6 }}>$0.00</Text>
             </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
               <Text style={{ fontSize: 18 }}>Total:</Text>
-              <Text style={{ fontSize: 18, fontWeight: '300' }}>${total - 5.00}</Text>
+              <Text style={{ fontSize: 18, fontWeight: '900',  marginTop: 6 }}>${total - 0.00}</Text>
             </View>
           </View>
         </ScrollView>
@@ -178,13 +180,13 @@ const styles = StyleSheet.create({
   box: {
     backgroundColor: 'white',
     elevation: 5,
-    shadowColor: 'grey',
+    shadowColor: 'black',
     borderRadius: 4,
     shadowOffset: {
       width: 1,
       height: 3
     },
     shadowRadius: 5,
-    shadowOpacity: 0.3
+    shadowOpacity: 0.5
   }
 })
