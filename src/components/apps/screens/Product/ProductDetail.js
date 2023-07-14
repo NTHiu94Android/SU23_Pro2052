@@ -230,7 +230,7 @@ const ProductDetail = ({ route, navigation }) => {
           totalRating += review.rating;
         });
 
-        const averageRating = reviewCount > 0 ? totalRating / reviewCount : 0; // Tính trung bình cộng của rate
+        const averageRating = (reviewCount > 0 ? totalRating / reviewCount : 0).toFixed(1); // Tính trung bình cộng của rate
         setStar(averageRating);
         console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
 

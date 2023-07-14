@@ -1,22 +1,37 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, FlatList } from 'react-native'
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react'
 import { AppContext } from '../../AppContext';
 import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
 import { useRoute } from '@react-navigation/native';
+import ProgressDialog from 'react-native-progress-dialog';
+
 
 const ListReview = (props) => {
   const { navigation } = props;
   const route = useRoute();
+  back(navigation);
+
+  const { onGetReviews, onGetUsers, onGetPicturesByIdReview } = useContext(AppContext);
+
+  const [numberReview1, setNumberReview1] = useState(0);
+  const [numberReview2, setNumberReview2] = useState(0);
+  const [numberReview3, setNumberReview3] = useState(0);
+  const [numberReview4, setNumberReview4] = useState(0);
+  const [numberReview5, setNumberReview5] = useState(0);
+
+
   // const { idProduct } = route.params;
   const idProduct = route.params?.idProduct;
 
-  console.log(route);
+  // console.log(route);
   const [star, setStar] = useState([]);
   const [listImage, setListImage] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
   const [review, setReview] = useState([]);
   const [listReview, setListReview] = useState([]);
+
 
   const [filteredReviews, setFilteredReviews] = useState([]);
   const [showAllReviews, setShowAllReviews] = useState(false);
@@ -31,6 +46,42 @@ const ListReview = (props) => {
   } = useContext(AppContext);
 
 
+  let reviewsRef = useRef([]);
+
+  useEffect(() => {
+    const getReviewsByIdProduct = async () => {
+      setIsLoading(true);
+      const resReviews = await onGetReviews();
+      const resUser = await onGetUsers();
+      const listUser = resUser.data;
+      const reviews = resReviews.data;
+      if (!reviews || !listUser) {
+        setIsLoading(false);
+        return;
+      }
+      //Loc ra danh sach review theo san pham sau do lay user tuong ung
+      const reviewsByIdProduct = reviews.filter(review => review.idProduct === productItem._id);
+      reviewsRef.current = reviewsByIdProduct;
+      let numberReview = 0;
+      for (let i = 0; i < reviewsByIdProduct.length; i++) {
+        for (let j = 0; j < listUser.length; j++) {
+          if (reviewsByIdProduct[i].idUser === listUser[j]._id) {
+            reviewsByIdProduct[i].user = listUser[j];
+            numberReview += 1;
+            break;
+          }
+        }
+        const listPicture = await onGetPicturesByIdReview(reviewsByIdProduct[i]._id);
+        reviewsByIdProduct[i].pictures = listPicture;
+
+      }
+      productItem.numberReview = numberReview;
+      setListReview(reviewsByIdProduct);
+      getNumberReviewByStar(reviewsByIdProduct);
+      setIsLoading(false);
+    };
+    getReviewsByIdProduct();
+  }, []);
 
   useEffect(() => {
     setIsLoading(false);
@@ -46,7 +97,7 @@ const ListReview = (props) => {
         // Kiểm tra dữ liệu reviews trong console
 
         const reviewCount = reviews.length; // Lấy số lượng reviews
-        console.log(reviewCount); // Kiểm tra số lượng reviews trong console
+        // console.log(reviewCount); // Kiểm tra số lượng reviews trong console
         setReview(reviewCount);
         // Tính tổng rating
         let totalRating = 0;
@@ -54,9 +105,9 @@ const ListReview = (props) => {
           totalRating += review.rating;
         });
 
-        const averageRating = totalRating / reviewCount; // Tính trung bình cộng của rate
+        const averageRating = (totalRating / reviewCount).toFixed(1); // Tính trung bình cộng của rate
         setStar(averageRating);
-        console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
+        // console.log(averageRating); // Kiểm tra trung bình cộng của rate trong console
 
         if (products.length > 0) {
           const productId = products[0]._id; // Giả sử bạn muốn lấy hình ảnh dựa trên _id của sản phẩm đầu tiên
@@ -73,7 +124,7 @@ const ListReview = (props) => {
 
         setIsLoading(true);
       } catch (error) {
-        console.log("Error fetching sub-products: ", error);
+        // console.log("Error fetching sub-products: ", error);
       }
     };
 
@@ -114,7 +165,7 @@ const ListReview = (props) => {
         setProductDetail(product.detail[0]);
       } catch (error) {
         setIsLoading(false);
-        console.log("Error home screen: ", error);
+        // console.log("Error home screen: ", error);
       }
       setIsLoading(false);
     };
@@ -131,16 +182,34 @@ const ListReview = (props) => {
         return subProduct;
       }
     } catch (error) {
-      console.log('onGetSubProductsByIdProduct error: ', error);
+      // console.log('onGetSubProductsByIdProduct error: ', error);
     }
   };
 
   // hiện thị review theo số sao
-  const showReviewsForStar = (rating) => {
-    setShowAllReviews(false)
-    // Filter the listReview based on the selected star rating
-    const filtered = listReview.filter((review) => review.rating === rating);
-    setFilteredReviews(filtered);
+  const showReviewsForStar = (star) => {
+    let list = [];
+    if (star === 1) {
+      setShowAllReviews(true);
+      list = reviewsRef.current.filter(review => review.rating === 1);
+    }
+    if (star === 2) {
+      setShowAllReviews(true);
+      list = reviewsRef.current.filter(review => review.rating === 2);
+    }
+    if (star === 3) {
+      setShowAllReviews(true);
+      list = reviewsRef.current.filter(review => review.rating === 3);
+    }
+    if (star === 4) {
+      setShowAllReviews(true);
+      list = reviewsRef.current.filter(review => review.rating === 4);
+    }
+    if (star === 5) {
+      setShowAllReviews(true);
+      list = reviewsRef.current.filter(review => review.rating === 5);
+    }
+    setListReview(list);
   };
 
   // hiển thị tất cả review
@@ -152,187 +221,221 @@ const ListReview = (props) => {
     toggleShowAllReviews()
   }, [])
 
+  const getNumberReviewByStar = (listReview) => {
+    let numberReview1 = 0;
+    let numberReview2 = 0;
+    let numberReview3 = 0;
+    let numberReview4 = 0;
+    let numberReview5 = 0;
+    for (let i = 0; i < listReview.length; i++) {
+      if (listReview[i].rating === 1) {
+        numberReview1 += 1;
+      }
+      if (listReview[i].rating === 2) {
+        numberReview2 += 1;
+      }
+      if (listReview[i].rating === 3) {
+        numberReview3 += 1;
+      }
+      if (listReview[i].rating === 4) {
+        numberReview4 += 1;
+      }
+      if (listReview[i].rating === 5) {
+        numberReview5 += 1;
+      }
+    }
+
+    setNumberReview1(numberReview1);
+    setNumberReview2(numberReview2);
+    setNumberReview3(numberReview3);
+    setNumberReview4(numberReview4);
+    setNumberReview5(numberReview5);
+
+  }
+
   return (
     <View style={styleReview.container}>
-      <View style={styleReview.header}>
-        <View>
-          <TouchableOpacity onPress={() => navigation.navigate("ProductDetail", { idProduct: route.params.idProduct })}>
-            <Image
-              style={styleReview.icBack}
-              source={require('../../../../assets/images/back.png')}
-              resizeMode='cover'
-            ></Image>
-          </TouchableOpacity>
+
+      <ProgressDialog
+        visible={isLoading}
+        loaderColor='black'
+        lable="Please wait..." />
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 6, paddingHorizontal: 12 }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            style={{ width: 22, height: 22 }}
+            source={require('../../../../assets/images/back.png')}
+            resizeMode='cover'
+          ></Image>
+        </TouchableOpacity>
+
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: 50 }}>
+          <Text style={{ color: 'black', fontWeight: '800', fontSize: 18 }}>Rating & review</Text>
         </View>
-        <Text style={styleReview.DetailTxt}>Rating & Review</Text>
+
+        <View style={{ width: 22, height: 22 }} />
       </View>
 
-      <View style={styleReview.body}>
-        <View style={styleReview.header}>
-          <View>
-            {/* <Image
-              style={styleReview.icImg}
-              source={ listImage == [] ? {uri: 'https://static-images.vnncdn.net/files/publish/2022/8/8/iphone-14-pro-93.jpg'} : {uri: listImage[0]} }
-            /> */}
+
+
+      {/* header */}
+      <ScrollView showsVertic alScrollIndicator={false}>
+        <View style={styleReview.body}>
+          <View style={styleReview.header}>
+            <View>
+              <Image
+                style={styleReview.icImg}
+                source={{ uri: listImage[1] }}
+              />
+            </View>
+
+            <View style={styleReview.txtheader}>
+              <Text
+                numberOfLines={1}
+                maxWidth={180}
+                style={{ fontWeight: '800', fontSize: 18, color: 'black', marginBottom: 2 }}>
+                {product.name}
+              </Text>
+              {/* onPress={toggleShowAllReviews}> */}
+
+              <TouchableOpacity onPress={toggleShowAllReviews}>
+                <View style={[styleReview.Star, { marginBottom: 2 }]}>
+                  <Image
+                    style={styleReview.icStar}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Text style={{ fontSize: 16, fontWeight: '600' }}>{star} / {review} Reviews</Text>
+                </View>
+              </TouchableOpacity>
+
+
+              {/* 5 sao */}
+              <TouchableOpacity onPress={() => showReviewsForStar(5)}>
+                <View style={[styleReview.Star]}>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Text style={{ fontSize: 16, fontWeight: '600' }}>({numberReview5})</Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* 4 sao */}
+              <TouchableOpacity onPress={() => showReviewsForStar(4)}>
+                <View style={[styleReview.Star]}>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Text style={{ fontSize: 16, fontWeight: '600' }}>({numberReview4})</Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* 3 sao */}
+              <TouchableOpacity onPress={() => showReviewsForStar(3)}>
+                <View style={[styleReview.Star]}>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Text style={{ fontSize: 16, fontWeight: '600' }}>({numberReview3})</Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* 2 sao */}
+              <TouchableOpacity onPress={() => showReviewsForStar(2)}>
+                <View style={[styleReview.Star]}>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Text style={{ fontSize: 16, fontWeight: '600' }}>({numberReview2})</Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* 1 sao */}
+              <TouchableOpacity onPress={() => showReviewsForStar(1)}>
+                <View style={[styleReview.Star]}>
+                  <Image
+                    style={styleReview.icStar2}
+                    source={require('../../../../assets/images/star.png')}
+                  ></Image>
+                  <Text style={{ fontSize: 16, fontWeight: '600' }}>({numberReview1})</Text>
+                </View>
+              </TouchableOpacity>
+
+            </View>
+
+
+          </View>
+
+
+
+          <View style={{ marginTop: 12 }}>
             {
-              listImage.length > 0 ?
-                <Image
-                  style={styleReview.icImg}
-                  source={{ uri: listImage[0] }}
-                /> : null
+              listReview.map((review, index) => {
+                return (
+                  <Item review={review} key={index} />
+                )
+              })
             }
           </View>
-          <View style={styleReview.txtheader}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{product.name}</Text>
-            <View style={styleReview.Star}>
-              <Image
-                style={styleReview.icStar}
-                source={require('../../../../assets/images/star.png')}
-              ></Image>
-              <Text style={styleReview.txtStar}>{star}</Text>
-            </View>
-            <Text>{review} Reviews</Text>
-          </View>
 
         </View>
 
-        <View style={styleReview.viewSeeStart}>
-          <View>
-            <TouchableOpacity
-              onPress={toggleShowAllReviews}>
-              <Image
-                style={styleReview.icSeeAll}
-                source={require('../../../../assets/images/all.png')}
-              ></Image>
-            </TouchableOpacity>
-          </View>
+      </ScrollView>
 
-          <View style={styleReview.viewStart}>
-            <TouchableOpacity
-              onPress={() => showReviewsForStar(1)}
-            >
-              <Image
-                style={styleReview.icStar}
-                source={require('../../../../assets/images/star2.png')}
-              ></Image>
-            </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => showReviewsForStar(2)}
-            >
-              <Image
-                style={styleReview.icStar}
-                source={require('../../../../assets/images/star2.png')}
-              ></Image>
-            </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => showReviewsForStar(3)}
-            >
-              <Image
-                style={styleReview.icStar}
-                source={require('../../../../assets/images/star2.png')}
-              ></Image>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => showReviewsForStar(4)}
-            >
-              <Image
-                style={styleReview.icStar}
-                source={require('../../../../assets/images/star2.png')}
-              ></Image>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => showReviewsForStar(5)}
-            >
-              <Image
-                style={styleReview.icStar}
-                source={require('../../../../assets/images/star2.png')}
-              ></Image>
-            </TouchableOpacity>
-
-          </View>
-
-        </View>
-
-        <View style={styleReview.AllReview}>
-          <FlatList
-            data={showAllReviews ? listReview : filteredReviews}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <Item
-                userId={item.idUser}
-                content={item.content}
-                time={item.time}
-                rate={item.rating}
-              />
-            )}
-            keyExtractor={(item, index) => index.toString()}
-          />
-
-        </View>
-
-      </View>
-      {/* WRITE A REVIEW */}
-      <View style={styleReview.btn}>
-        <TouchableOpacity>
-          <Text style={styleReview.btnText}>Write a Review</Text>
-        </TouchableOpacity>
-      </View>
     </View>
 
   )
 }
 export default ListReview
 
-const Item = ({ userId, content, time, rate }) => {
-  const [userName, setUserName] = useState();
-  const [userAva, setUserAva] = useState();
-  const { onGetUserById, user } = useContext(UserContext);
 
-  useEffect(() => {
-    const getUserName = async () => {
-      try {
-        const user = await onGetUserById(userId);
-        const userName = user.name;
-        const userAva = user.avatar;
-        setUserName(userName);
-        setUserAva(userAva);
-      } catch (error) {
-        console.log('Error getting user name:', error);
-      }
-    };
-    getUserName();
-  }, [userId]);
-  return (
-    <View style={styleReview.BoxReview}>
-      <View style={{}}>
-        <Image
-          style={styleReview.icImg}
-          source={userAva ? { uri: userAva } : require('../../../../assets/images/avataruser.png')}
-        />
-        <View style={styleReview.RName}>
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }} >{userName}</Text>
-          <Text>{time}</Text>
-        </View>
-        <View style={styleReview.RatingStar}>
-          <Image
-            style={styleReview.icStar01}
-            source={require('../../../../assets/images/star.png')}
-          />
-          <Text>  {rate}</Text>
-        </View>
 
-        <View style={styleReview.comment}>
-          <Text>{content}</Text>
-        </View>
-      </View>
-    </View>
-
-  );
-};
 
 
 const styleReview = StyleSheet.create({
@@ -348,10 +451,7 @@ const styleReview = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 20,
-    paddingHorizontal: 20,
-
-
+    paddingHorizontal: 20
   },
 
   icBack: {
@@ -373,44 +473,33 @@ const styleReview = StyleSheet.create({
   },
 
   icImg: {
-    width: 70,
-    height: 70,
+    width: 150,
+    height: 150,
+    padding: 10,
     borderRadius: 10,
-    alignSelf: 'center',
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#ddd'
   },
 
   txtheader: {
-    width: '70%',
-
+    width: '70%'
   },
 
   //Star Point
-  viewStart: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-
-  },
-  viewSeeStart: {
-    marginVertical: 10,
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-
-  },
   Star: {
     flexDirection: 'row',
     alignItems: 'center',
   },
 
   icStar: {
-    width: 24,
-    height: 24,
-    marginHorizontal: 5
+    width: 18,
+    height: 18
   },
-  icSeeAll: {
-    width: 36,
-    height: 36
+
+  icStar2: {
+    width: 12,
+    height: 12
   },
 
   txtStar: {
@@ -421,44 +510,41 @@ const styleReview = StyleSheet.create({
   //Review
   BoxReview: {
     width: '90%',
-    height: 100,
     marginLeft: 20,
-    marginTop: 40,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    paddingBottom: 35,
-    backgroundColor: '#F1F1F1',
+    marginTop: 30,
+    marginBottom: 5,
+    padding: 20,
+    backgroundColor: 'white',
+    elevation: 5,
+    shadowColor: 'grey',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
     borderRadius: 10,
-    justifyContent: 'center'
-
+    justifyContent: 'center',
+    position: 'relative'
   },
 
   icAva: {
     width: 50,
     height: 50,
-    bottom: 40,
-    marginLeft: 130
+    top: -25,
+    left: '50%',
+    borderRadius: 50, position: 'absolute',
   },
 
   RName: {
-    bottom: 30,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
 
   RatingStar: {
-    bottom: 25,
     flexDirection: 'row'
   },
 
   icStar01: {
     width: 20,
     height: 20
-  },
-
-  //Comment
-  comment: {
-    bottom: 15,
   },
 
   //Button
@@ -470,12 +556,181 @@ const styleReview = StyleSheet.create({
     alignItems: 'center',
     marginHorizontal: 20,
     borderRadius: 30,
-    marginBottom: 20,
   },
 
   btnText: {
     color: 'white',
-    fontSize: 20
+    fontSize: 20,
   },
-})
+});
+
+
+const Item = ({ review }) => {
+
+  const [userName, setUserName] = useState();
+  const [userAva, setUserAva] = useState();
+  const [imgReview, setPictureReview] = useState([]);
+  const { onGetUserById, user } = useContext(UserContext);
+  const { onGetPicturesByIdReview, picture } = useContext(AppContext);
+  const [listImage, setListImage] = useState([]);
+  useEffect(() => {
+    const getUserName = async () => {
+      try {
+        const user = await onGetUserById(review.idUser);
+        const userName = user.name;
+        const userAva = user.avatar;
+        setUserName(userName);
+        setUserAva(userAva);
+      } catch (error) {
+        // console.log('Error getting user name:', error);
+      }
+    };
+    getUserName();
+  }, [review.idUser]);
+
+  useEffect(() => {
+    const getPictureReview = async () => {
+      try {
+        const picture = await onGetPicturesByIdReview(review);
+        const imgReview = picture;
+        console.log('imgreview:', imgReview);
+        setPictureReview(imgReview);
+      } catch (error) {
+        console.log('Error getting picture review:', error);
+      }
+    };
+  
+    getPictureReview();
+  }, [review.idReview]);
+
+  return (
+    <View style={styleReview.BoxReview}>
+
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 }}>
+        <Text style={{ fontWeight: '800', fontSize: 16, color: 'black' }}>{userName}</Text>
+        <Text style={{ fontWeight: '600', fontSize: 16, color: 'black' }}>{review.time}</Text>
+      </View>
+      {
+        review.rating === 1 &&
+        <View style={styleReview.RatingStar}>
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+        </View>
+      }
+      {
+        review.rating === 2 &&
+        <View style={styleReview.RatingStar}>
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+        </View>
+      }
+      {
+        review.rating === 3 &&
+        <View style={styleReview.RatingStar}>
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+        </View>
+      }
+      {
+        review.rating === 4 &&
+        <View style={styleReview.RatingStar}>
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+        </View>
+      }
+      {
+        review.rating === 5 &&
+        <View style={styleReview.RatingStar}>
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+          <Image
+            style={styleReview.icStar01}
+            source={require('../../../../assets/images/star.png')}
+          />
+        </View>
+      }
+
+      <View style={{ flexDirection: 'row', maxWidth: '90%', marginTop: 8 }}>
+      
+
+        
+      {imgReview !== null && imgReview.length > 0 ? (
+  imgReview.map((url, index) => (
+    <Image
+      key={index}
+      style={{ width: 100, height: 100, borderRadius: 10, marginRight: 5, marginVertical: 5 }}
+      source={{ uri: url }}
+    />
+  ))
+) : (
+  <Image style={{ display: 'none' }} />
+)}
+
+
+          
+
+       
+      </View>
+
+
+
+      <View style={{ marginTop: 8 }}>
+        <Text style={{ fontWeight: '600', fontSize: 14, }}>{review.content}</Text>
+      </View>
+
+
+      <Image
+        style={styleReview.icAva}
+        source={userAva ? { uri: userAva } : require('../../../../assets/images/avataruser.png')}
+      />
+    </View>
+  )
+}
 
