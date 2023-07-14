@@ -110,7 +110,7 @@ export const addPicture = async (url, idSubProduct, idReview) => {
 
 
 //Upload hinh anh
-export const upLoadPicture = async (picture) => {
+export const uploadPicture = async (picture) => {
     const response = await CustomAxios('multipart/form-data').post('/pictures/api/upload-picture', picture);
     return response;
 }

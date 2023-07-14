@@ -5,7 +5,8 @@ import {
   //Product, subProduct
   getProducts, getSubProductsByIdProduct, getSubProducts,
   //Picture
-  getPicturesByIdProduct,addPicture,upLoadPicture,
+  getPicturesByIdProduct, getPictures, uploadPicture, addPicture,
+
   //Order
   addOrder, getOrdersByIdUser, updateOrder,
 
@@ -18,12 +19,11 @@ import {
   getReviews, getReviewsById,addReview,
   //Address
   getAddressByIdUser, addAddress, updateAddress, deleteAddress,
-
   //Promotion
   getPromotions,
-  getPictures,
 
 } from './AppService';
+
 import { UserContext } from '../users/UserContext';
 
 export const AppContext = createContext();
@@ -321,10 +321,20 @@ export const AppContextProvider = (props) => {
 
 
   //Lay hinh anh theo idReview
+  // const onGetPicturesByIdReview = async (idReview) => {
+  //   try {
+  //     const res = await onGetPictures();
+  //     const listPictures = res.data.map(item => item.url);
+  //     console.log('lisst picture review:', listPictures);
+  //     return listPictures;
+  //   } catch (error) {
+  //     console.log('onGetPicturesByIdReview error: ', error);
+  //   }
+  // };
   const onGetPicturesByIdReview = async (idReview) => {
     try {
       const res = await onGetPictures();
-      const listPictures = res.data.map(item => item.url);
+      const listPictures = res.data.filter((item) => item.idReview === idReview);
       console.log('lisst picture review:', listPictures);
       return listPictures;
     } catch (error) {
@@ -346,7 +356,7 @@ export const AppContextProvider = (props) => {
   //Upload hinh anh
   const onUploadPicture = async (image) => {
     try {
-      const response = await upLoadPicture(image);
+      const response = await uploadPicture(image);
       if (response.data != null || response.data != undefined) {
         return response;
       }

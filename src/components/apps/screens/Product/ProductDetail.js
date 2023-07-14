@@ -207,6 +207,7 @@ const ProductDetail = ({ route, navigation }) => {
     const getSubProducts = async () => {
       try {
         let tempId = idProduct !== undefined ? idProduct : tempIdProduct;
+        console.log('tempId: ', idProduct);
         setId(tempId);
         // console.log("id", tempId);
         // lấy sub-product theo idProduct
@@ -420,7 +421,7 @@ const ProductDetail = ({ route, navigation }) => {
           {/* Star */}
           <Text style={{ marginLeft: 10, fontSize: 24, fontWeight: "bold", color: "black" }}>{star ?? 0}</Text>
           {/* So luong reviews */}
-          <TouchableOpacity onPress={() => navigation.navigate('ListReview', { idProduct: id })}>
+          <TouchableOpacity onPress={() => navigation.navigate('ListReview', { idProduct: idProduct })}>
             <Text style={{ marginLeft: 10, fontSize: 20, fontWeight: "bold" }}>({review} Reviews)</Text>
           </TouchableOpacity>
           <View style={{ marginLeft: 50, }}>

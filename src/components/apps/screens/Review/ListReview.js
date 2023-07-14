@@ -21,8 +21,8 @@ const ListReview = (props) => {
   const [numberReview5, setNumberReview5] = useState(0);
 
 
-  // const { idProduct } = route.params;
-  const idProduct = route.params?.idProduct;
+  const { idProduct } = route.params;
+  //console.log('idProduct------------------:', idProduct); 
 
   // console.log(route);
   const [star, setStar] = useState([]);
@@ -38,53 +38,19 @@ const ListReview = (props) => {
 
 
   const [productDetail, setProductDetail] = useState();
-  const [listPrice, setPrice] = useState([]);
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [product, setProduct] = useState({});
-  const { onGetPicturesByIdProduct, onGetSubProductsByIdProduct, onGetReviewsByIdProduct, onGetProductById, onGetProducts, onGetSubProducts, countOrderDetail
+  const { onGetPicturesByIdProduct, onGetSubProductsByIdProduct,
+    onGetReviewsByIdProduct, onGetProductById, onGetProducts,
+    onGetSubProducts, countOrderDetail
   } = useContext(AppContext);
 
 
   let reviewsRef = useRef([]);
 
-  useEffect(() => {
-    const getReviewsByIdProduct = async () => {
-      setIsLoading(true);
-      const resReviews = await onGetReviews();
-      const resUser = await onGetUsers();
-      const listUser = resUser.data;
-      const reviews = resReviews.data;
-      if (!reviews || !listUser) {
-        setIsLoading(false);
-        return;
-      }
-      //Loc ra danh sach review theo san pham sau do lay user tuong ung
-      const reviewsByIdProduct = reviews.filter(review => review.idProduct === productItem._id);
-      reviewsRef.current = reviewsByIdProduct;
-      let numberReview = 0;
-      for (let i = 0; i < reviewsByIdProduct.length; i++) {
-        for (let j = 0; j < listUser.length; j++) {
-          if (reviewsByIdProduct[i].idUser === listUser[j]._id) {
-            reviewsByIdProduct[i].user = listUser[j];
-            numberReview += 1;
-            break;
-          }
-        }
-        const listPicture = await onGetPicturesByIdReview(reviewsByIdProduct[i]._id);
-        reviewsByIdProduct[i].pictures = listPicture;
-
-      }
-      productItem.numberReview = numberReview;
-      setListReview(reviewsByIdProduct);
-      getNumberReviewByStar(reviewsByIdProduct);
-      setIsLoading(false);
-    };
-    getReviewsByIdProduct();
-  }, []);
 
   useEffect(() => {
-    setIsLoading(false);
+    setIsLoading(true);
 
     const getSubProducts = async () => {
       try {
@@ -94,6 +60,8 @@ const ListReview = (props) => {
         const tempReview = await onGetReviewsByIdProduct(route.params.idProduct);
         const reviews = tempReview.data;
         setListReview(reviews);
+        reviewsRef.current = reviews;
+        getNumberReviewByStar(reviews);
         // Kiểm tra dữ liệu reviews trong console
 
         const reviewCount = reviews.length; // Lấy số lượng reviews
@@ -122,8 +90,9 @@ const ListReview = (props) => {
 
         }
 
-        setIsLoading(true);
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         // console.log("Error fetching sub-products: ", error);
       }
     };
@@ -190,36 +159,30 @@ const ListReview = (props) => {
   const showReviewsForStar = (star) => {
     let list = [];
     if (star === 1) {
-      setShowAllReviews(true);
       list = reviewsRef.current.filter(review => review.rating === 1);
     }
     if (star === 2) {
-      setShowAllReviews(true);
       list = reviewsRef.current.filter(review => review.rating === 2);
     }
     if (star === 3) {
-      setShowAllReviews(true);
       list = reviewsRef.current.filter(review => review.rating === 3);
     }
     if (star === 4) {
-      setShowAllReviews(true);
       list = reviewsRef.current.filter(review => review.rating === 4);
     }
     if (star === 5) {
-      setShowAllReviews(true);
       list = reviewsRef.current.filter(review => review.rating === 5);
     }
+    console.log('list-----------------------:', reviewsRef.current);
     setListReview(list);
   };
 
   // hiển thị tất cả review
-  const toggleShowAllReviews = () => {
-    setShowAllReviews(true);
-  };
+  const getAllReview = () => {
+    setListReview(reviewsRef.current);
+  }
 
-  useEffect(() => {
-    toggleShowAllReviews()
-  }, [])
+
 
   const getNumberReviewByStar = (listReview) => {
     let numberReview1 = 0;
@@ -284,10 +247,14 @@ const ListReview = (props) => {
         <View style={styleReview.body}>
           <View style={styleReview.header}>
             <View>
-              <Image
-                style={styleReview.icImg}
-                source={{ uri: listImage[1] }}
-              />
+              {
+                !listImage[0] ? null :
+                  <Image
+                    style={styleReview.icImg}
+                    source={{ uri: listImage[0] }}
+                  />
+              }
+
             </View>
 
             <View style={styleReview.txtheader}>
@@ -299,7 +266,7 @@ const ListReview = (props) => {
               </Text>
               {/* onPress={toggleShowAllReviews}> */}
 
-              <TouchableOpacity onPress={toggleShowAllReviews}>
+              <TouchableOpacity onPress={getAllReview}>
                 <View style={[styleReview.Star, { marginBottom: 2 }]}>
                   <Image
                     style={styleReview.icStar}
@@ -571,8 +538,7 @@ const Item = ({ review }) => {
   const [userAva, setUserAva] = useState();
   const [imgReview, setPictureReview] = useState([]);
   const { onGetUserById, user } = useContext(UserContext);
-  const { onGetPicturesByIdReview, picture } = useContext(AppContext);
-  const [listImage, setListImage] = useState([]);
+  const { onGetPicturesByIdReview } = useContext(AppContext);
   useEffect(() => {
     const getUserName = async () => {
       try {
@@ -591,15 +557,14 @@ const Item = ({ review }) => {
   useEffect(() => {
     const getPictureReview = async () => {
       try {
-        const picture = await onGetPicturesByIdReview(review);
-        const imgReview = picture;
-        console.log('imgreview:', imgReview);
-        setPictureReview(imgReview);
+        console.log('review._id:', review._id);
+        const picture = await onGetPicturesByIdReview(review._id);
+        setPictureReview(picture);
       } catch (error) {
         console.log('Error getting picture review:', error);
       }
     };
-  
+
     getPictureReview();
   }, [review.idReview]);
 
@@ -698,25 +663,24 @@ const Item = ({ review }) => {
       }
 
       <View style={{ flexDirection: 'row', maxWidth: '90%', marginTop: 8 }}>
-      
-
-        
-      {imgReview !== null && imgReview.length > 0 ? (
-  imgReview.map((url, index) => (
-    <Image
-      key={index}
-      style={{ width: 100, height: 100, borderRadius: 10, marginRight: 5, marginVertical: 5 }}
-      source={{ uri: url }}
-    />
-  ))
-) : (
-  <Image style={{ display: 'none' }} />
-)}
 
 
-          
 
-       
+        {imgReview !== null && imgReview.length > 0 ? (
+          imgReview.map((picture, index) => (
+            <Image
+              key={index}
+              style={{ width: 100, height: 100, borderRadius: 10, marginRight: 5, marginVertical: 5 }}
+              source={{ uri: picture.url }}
+            />
+          ))
+        ) : null
+        }
+
+
+
+
+
       </View>
 
 
