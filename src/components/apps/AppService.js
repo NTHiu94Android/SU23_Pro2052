@@ -31,16 +31,7 @@ export const getSubProducts = async () => {
     const response = await CustomAxios().get('sub-products/api/get-all-sub-products');
     return response;
 };
-//Lay tat ca picture theo idProduct
-export const getPicturesByIdProduct = async (idSubProduct) => {
-    const response = await CustomAxios().get(`pictures/api/get-pictures-by-idSubProduct/${idSubProduct}`);
-    return response;
-};
-//Lay danh tat ca review
-export const getReviews = async () => {
-    const response = await CustomAxios().get('reviews/api/get-all-review');
-    return response;
-};
+
 //Them san pham vao gio hang
 export const addToCart = async (quantity, price, idOrder, idSubProduct) => {
     return await CustomAxios().post("order-details/api/add-order-detail", {quantity, price, idOrder, idSubProduct });
@@ -90,11 +81,26 @@ export const deleteAddress = async(_id) => {
     const res = await CustomAxios().get(`/address/api/delete-address/${_id}`);
     return res;
 };
+//---------------------------------Picture---------------------------------
+//Lay tat ca picture theo idProduct
+export const getPicturesByIdProduct = async (idSubProduct) => {
+    const response = await CustomAxios().get(`/pictures/api/get-pictures-by-idSubProduct/${idSubProduct}`);
+    return response;
+};
+
+
 //Lay tat ca picture 
 export const getPictures = async () => {
     const response = await CustomAxios().get('/pictures/api/get-all-picture');
     return response;
 };
+
+//Lay pictures theo idReview
+export const getPicturesByIdReview = async (idReview) => {
+    const response = await CustomAxios().get(`/picture//get-pictures-by-idReview/5f9f1b0b0b2b2c2b8c8c8c8c`);
+    return response;
+};
+
 
 //Them hinh anh
 export const addPicture = async (url, idSubProduct, idReview) => {
@@ -102,11 +108,13 @@ export const addPicture = async (url, idSubProduct, idReview) => {
     return response;
 }
 
+
 //Upload hinh anh
 export const uploadPicture = async (picture) => {
     const response = await CustomAxios('multipart/form-data').post('/pictures/api/upload-picture', picture);
     return response;
 }
+  
 //------------------------------------Order------------------------------------
 //Lay danh sach don hang theo idUser
 export const getOrdersByIdUser = async(idUser) => {
@@ -119,6 +127,20 @@ export const getReviewsById = async (idProduct) => {
     const response = await CustomAxios().get(`reviews/api/get-review-by-idProduct/${idProduct}`);
     return response;
 }
+//Lay danh tat ca review
+export const getReviews = async () => {
+    const response = await CustomAxios().get('/reviews/api/get-all-review');
+    return response;
+};
+//Them review moi
+export const addReview = async (time, content, rating, idUser, idProduct) => {
+    const data = {
+        time, content, rating, idUser, idProduct
+    }
+    const res = await CustomAxios().post('/reviews/api/add-review', data);
+    return res;
+}
+
 //Them don hang
 export const addOrder = async (dateCreate, datePayment, totalPrice, status, paymentMethod, address, idUser) => {
     const data = {
