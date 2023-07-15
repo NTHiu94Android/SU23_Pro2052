@@ -70,10 +70,10 @@ const CheckOut = (props) => {
         <ScrollView style={{ marginHorizontal: 6 }}>
           {/* Address */}
           <View style={{ justifyContent: 'space-between', marginTop: 30 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12, alignItems:'center'}}>
               <Text style={{ fontSize: 20, fontWeight: 'bold', flex: 1, color: "black", marginTop: 6 }}>Shipping Address</Text>
               <TouchableOpacity onPress={() => {navigation.navigate('ShippingAddress')}}>
-              <Image source={require('../../../../assets/images/edit2.png')} style={{ width: 28, height: 28 }} />
+              <Image source={require('../../../../assets/images/edit.png')} style={{ width: 20, height: 20, marginTop: 10 }} />
               </TouchableOpacity>
             </View>
             <View style={[styles.box, { backgroundColor: '#fff', borderRadius: 2, paddingHorizontal: 10 }]}>
@@ -91,24 +91,24 @@ const CheckOut = (props) => {
             </View>
             <View style={{ flexDirection: 'row', marginTop: 10 }}>
               <TouchableOpacity
-                style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', marginEnd: 10, padding: 5, borderWidth: selectedPaymentMethod === 'paypal' ? 1 : 0 }]}
+                style={[styles.box, { borderRadius: 8, paddingVertical: 10, justifyContent: 'center', height: 100, flexDirection: 'column', marginEnd: 10, padding: 5, borderWidth: selectedPaymentMethod === 'paypal' ? 1 : 0 }]}
                 onPress={() => {
                   setSelectedPaymentMethod('paypal');
                   setTempPayment('paypal');
                 }}
               >
                 <Image source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png' }}
-                  style={{ height: 20, width: 90, margin: 10 }} />
+                  style={{ height: 23, width: 90, margin: 10}} />
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.box, { borderRadius: 8, paddingVertical: 10, flexDirection: 'column', padding: 5, borderWidth: selectedPaymentMethod === 'fastShipping' ? 1 : 0 }]}
+                style={[styles.box, { borderRadius: 8, paddingVertical: 10, justifyContent: 'center', height: 100, flexDirection: 'column', padding: 5, borderWidth: selectedPaymentMethod === 'fastShipping' ? 1 : 0 }]}
                 onPress={() => {
                   setSelectedPaymentMethod('fastShipping');
                   setTempPayment('fastShipping');
                 }}
               >
-                <Image source={{ uri: 'https://theme.hstatic.net/200000472237/1000829412/14/logo.png?v=584' }}
-                  style={{ height: 20, width: 90, margin: 10 }} />
+                <Image source={{uri: 'https://itcircle.lk/wp-content/uploads/2022/12/1-cash-on-delivery-steacker-free-vector.jpg'}}
+                  style={{ height: 50, width: 90, margin: 10 }} />
               </TouchableOpacity>
             </View>
           </View>
