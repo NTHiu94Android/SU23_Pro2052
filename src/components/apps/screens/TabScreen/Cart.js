@@ -4,7 +4,7 @@ import { AppContext } from '../../AppContext';
 import { UserContext } from '../../../users/UserContext';
 import back from '../../../back/back';
 import ProgressDialog from 'react-native-progress-dialog';
-import CircleCheckBox from 'react-native-circle-checkbox';
+import CircleCheckBox from '../../../checkBox/RoundedCheckBox';
 import QuantityDialog from '../../../dialogs/QuantityDialog';
 const Cart = (props) => {
   const { navigation } = props;
